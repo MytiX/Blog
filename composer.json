@@ -1,0 +1,16 @@
+{
+    "name": "ferre/blog",
+    "description": "Openclassroom blog project coding in PHP 8",
+    "authors": [
+        {
+            "name": "MytiX",
+            "email": "ferreirajose84700@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {}
+}

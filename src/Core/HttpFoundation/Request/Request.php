@@ -23,8 +23,19 @@ class Request
         $this->server = $_SERVER;
     }
 
-    public function get($key = null) {
+    public function get($key = null) 
+    {
         
+        if ($key === null) 
+        {
+            return $this->get;
+        }
+
         return $this->get[$key];
+    }
+
+    public function getRequestUri() 
+    {
+        return $this->server["REQUEST_URI"];
     }
 }

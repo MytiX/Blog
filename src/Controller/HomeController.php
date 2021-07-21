@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Core\Routing\Route;
+use App\Core\HttpFoundation\Request\Request;
 
 class HomeController 
 {
-    public function index() 
+    public function index()
     {
         echo "HomeController";
     }

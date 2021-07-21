@@ -6,4 +6,4 @@ require "../vendor/autoload.php";
 
 $application = new Application();
 
-$application->getController();
+$application->initialization();

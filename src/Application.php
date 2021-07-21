@@ -2,31 +2,38 @@
 
 namespace App;
 
-use App\Core\HttpFoundation\Response\Response;
+use App\Controller\ErrorController;
 use App\Core\HttpFoundation\Request\Request;
-
-use ReflectionClass;
+use Config\RouteConfig;
 
 class Application
 {
-    public function getController() 
+    public function initialization() 
     {
         $request = new Request();
 
-        $class = "\App\Controller\\" . ucfirst($request->get("action")) . "Controller";
+        $requestUri = $request->getRequestUri();
 
-        if (class_exists($class)) 
+        if (str_contains($requestUri, "?")) 
         {
-            $controller = new $class();
-
-            // var_dump(new ReflectionClass($controller));
+            $options = substr($requestUri, strpos($requestUri, "?"));
     
-            $controller->index();
+            $requestUri = str_replace($options, "", $requestUri);
         }
-        else 
+        
+        foreach (RouteConfig::getRouteConfig() as $keyRoute => $classFunction) 
         {
-            Response::redirect("home");
+            if ($keyRoute == $requestUri) 
+            {
+                foreach ($classFunction as $className => $functionName) 
+                {
+                    $className = "\App\Controller\\" . ucfirst($className);
+                    $class = new $className();
+                    call_user_func_array([$class, $functionName], []);
+                    exit;
+                }
+            }
         }
-
+        ErrorController::error404();
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-class ProposController 
+class ContactController 
 {
-    public function index() 
+    public function index()
     {
         echo __CLASS__;
     }

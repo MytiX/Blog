@@ -7,7 +7,8 @@ class RouteConfig
     public static function getRouteConfig()
     {
         return [
-            "/" => ["HomeController" => "index"],
+            "^\/blog\/(?<slug>[a-zA-Z0-9]+)$" => ["HomeController" => "index"],
+            "/user/contact" => ["ContactController" => "index"],
             "/propos" => ["ProposController" => "index"]
         ];
     }

@@ -4,8 +4,8 @@ namespace App\Controller;
 
 class HomeController 
 {
-    public function index()
+    public function test($slug)
     {
-        echo __CLASS__;
+        echo __CLASS__ . " " . $slug;
     }
 }

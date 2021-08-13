@@ -38,4 +38,8 @@ class Request
     {
         return $this->server["REQUEST_URI"];
     }
+    public function getHost() 
+    {
+        return $this->server["HTTP_HOST"];
+    }
 }

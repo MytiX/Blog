@@ -4,7 +4,7 @@ namespace App\Controller;
 
 class ProposController 
 {
-    public function index() 
+    public function __invoke() 
     {
         echo __CLASS__;
     }

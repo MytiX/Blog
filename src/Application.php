@@ -2,31 +2,23 @@
 
 namespace App;
 
-use Config\RouteConfig;
+use App\Controller\ErrorController;
+use App\Core\Routing\Router;
 use App\Core\HttpFoundation\Request\Request;
-use App\Core\Routing\Route;
 
 class Application
 {
-    public function initialization() 
+    public function initialization(): void
     {
         $request = new Request();
-        $route = new Route();
-        
-        foreach (RouteConfig::getRouteConfig() as $patternRoute => $arrayClassFonction) 
-        {
-            if ($route->routeMatch($patternRoute, $request->getRequestUri())) 
-            {
-                foreach ($arrayClassFonction as $className => $functionName) 
-                {
-                    $className = "\App\Controller\\" . $className;
+        $router = new Router();
 
-                    $instance = new $className();
-
-                    call_user_func_array([$instance, $functionName], $route->getMatches());
-                }
-            }
+        if (null === ($route = $router->match($request->getRequestUri()))) {
+            ErrorController::error404();
+            die;
         }
+
+        call_user_func_array($route->getInstance(), $route->getParams());
     }
     
 }

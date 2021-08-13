@@ -2,43 +2,24 @@
 
 namespace App\Core\Routing;
 
-use App\Core\HttpFoundation\Request\Request;
-use Config\RouteConfig;
-
 class Route 
 {
-    private $matches;
+    public function __construct(private string $controller, private ?string $action = null, private array $params = [])
+    {}
 
-    public function routeMatch(string $patternUri, string $requestUri)
+    public function getInstance(): mixed
     {
-        if (preg_match("/" . $patternUri . "/", $requestUri, $matches)) 
-        {
-            if (!is_null($matches)) 
-            {
-                foreach ($matches as $matche => $value) 
-                {
-                    if (is_numeric($matche)) 
-                    {
-                        unset($matches[$matche]);
-                    }
-                }
-
-                $this->setMatches($matches);
-            }
-
-            return true;
+        if ($this->action === null) {
+            $instance = new $this->controller();
+        } else {
+            $instance = [new $this->controller, $this->action];
         }
 
-        return false;
+        return $instance;
     }
 
-    private function setMatches($matches) 
+    public function getParams(): array
     {
-        $this->matches = $matches;
-    }
-
-    public function getMatches() 
-    {
-        return $this->matches;
+        return $this->params;
     }
 }

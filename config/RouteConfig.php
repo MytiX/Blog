@@ -4,12 +4,13 @@ namespace Config;
 
 class RouteConfig
 {
-    public static function getRouteConfig()
+    public static function getRouteConfig(): array
     {
         return [
-            "^\/blog\/(?<slug>[a-zA-Z0-9]+)$" => ["HomeController" => "test"],
-            "^\/user\/contact$" => ["ContactController" => "index"],
-            "^\/propos$" => ["ProposController" => "index"],
+            "/^\/$/" => "HomeController",
+            "/^\/blog\/(?<slug>[a-zA-Z0-9-]+)$/" => "BlogController::index",
+            "/^\/contact$/" => "ContactController::index",
+            "/^\/propos$/" => "ProposController",
         ];
     }
 }

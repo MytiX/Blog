@@ -15,10 +15,11 @@ class Application
 
         if (null === ($route = $router->match($request->getRequestUri()))) {
             ErrorController::error404();
-            die;
         }
 
-        call_user_func_array($route->getInstance(), $route->getParams());
+        $response = call_user_func_array($route->getInstance(), $route->getParams());
+
+        $response->send();
     }
     
 }

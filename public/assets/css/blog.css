@@ -105,9 +105,39 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0;
 }
 
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
 /* Custom */
 
+
+html
+{
+    height: 100%;
+}
+body
+{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.blog-footer
+{
+    margin-top: auto;
+}
 .bg-custom {
-    background-image: url("../img/header.jpg");
+    background-image: url("http://localhost:8741/public/assets/img/header.png");
     background-repeat: no-repeat;
+    background-size: cover;
 }

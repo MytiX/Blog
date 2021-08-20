@@ -6,9 +6,24 @@ use ReflectionClass;
 
 class Response {
 
-    public static function redirect($action) 
+    public function __construct(private string $content)
+    {}
+
+    // public static function redirect($action) 
+    // {
+    //     header("Location: http://localhost:8741/?action=" . $action);
+    //     exit;
+    // }
+
+    public function send() 
     {
-        header("Location: http://localhost:8741/?action=" . $action);
-        exit;
+        // $this->setHeader();
+
+        echo $this->content;
+    }
+
+    private function setHeader() 
+    {
+        
     }
 }

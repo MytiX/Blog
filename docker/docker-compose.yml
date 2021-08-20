@@ -40,7 +40,7 @@ services:
         ports: 
             - 8741:80
         volumes: 
-            - ./vhosts:/etc/apache2/sites-enabled
+            - ./php/vhosts:/etc/apache2/sites-enabled
             - ../:/var/www
         restart: always
         networks: 

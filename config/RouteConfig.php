@@ -8,9 +8,8 @@ class RouteConfig
     {
         return [
             "/^\/$/" => "HomeController",
-            "/^\/blog\/(?<slug>[a-zA-Z0-9-]+)$/" => "BlogController::index",
-            "/^\/contact$/" => "ContactController::index",
-            "/^\/propos$/" => "ProposController",
+            // "/^\/blog$/" => "BlogController::viewAllPosts",
+            "/^\/blog\/(?<slug>[a-zA-Z0-9-]+)$/" => "BlogController::viewPos",
         ];
     }
 }

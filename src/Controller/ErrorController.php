@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
-class ErrorController
+use App\Core\Controller\AbstractController;
+
+class ErrorController extends AbstractController
 {
-    public static function error404()
+    public function error404()
     {
-        echo "404";
-        die;
+        return $this->render("/error/404.php");
     }
 }

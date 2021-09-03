@@ -36,6 +36,12 @@ class Router
                 // Set l'action
                 
                 if (count($controllerDefinition) > 1) {
+
+                    // TODO Revoir les exceptions
+
+                    // if (false === method_exists($controllerDefinition[0], $controllerDefinition[1])) {
+                    //     throw new Exception("Error Processing Request", 1);
+                    // }
                     $this->setAction($controllerDefinition[1]);
                 }                
                 

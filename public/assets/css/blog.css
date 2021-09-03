@@ -137,7 +137,7 @@ body
     margin-top: auto;
 }
 .bg-custom {
-    background-image: url("http://localhost:8741/public/assets/img/header.png");
+    background-image: url("../img/header.png");
     background-repeat: no-repeat;
     background-size: cover;
 }

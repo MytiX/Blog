@@ -12,12 +12,15 @@ class Templating
     public function __construct()
     {
         $this->configTemplate = TemplatingConfig::getConfig();
+
+        $this->error = new ErrorController();
     }
 
-    public function render(string $file, array $args = []) 
+    public function getView(string $file, array $args = []) 
     {
         if (!file_exists($this->configTemplate["path"] . $file) ) {
-            ErrorController::error404();
+            echo 'Chemin fichier incorrect';
+            die;
         }
 
         if (!is_null($args)) {

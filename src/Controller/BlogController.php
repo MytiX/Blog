@@ -2,23 +2,26 @@
 
 namespace App\Controller;
 
-class BlogController 
+use App\Core\Controller\AbstractController;
+
+class BlogController extends AbstractController
 {
 
     public function viewAllPosts()
     {
-        echo 'View All Posts';
+        // echo 'View All Posts';
         // Tous les requis pour la page d'affichage de tous les blogs posts
 
         // Le titre ;
         // La date de dernière modification ;
         // Le châpo ;
         // Lien vers le blog post.
+        return $this->render("/home/home.php");
     }
     
     public function viewPost(string $slug)
     {
-        echo __CLASS__ . " Article : " . $slug;
+        // echo __CLASS__ . " Article : " . $slug;
         // Tous les requis pour la page d'affichage de tous les blogs posts
 
         // Le titre ;
@@ -28,6 +31,7 @@ class BlogController
         // La date de dernière mise à jour ;
         // Le formulaire permettant d’ajouter un commentaire (soumis pour validation) ;
         // Les listes des commentaires validés et publiés.
+        return $this->render("/home/home.php");
     }
 
     public function addPost()

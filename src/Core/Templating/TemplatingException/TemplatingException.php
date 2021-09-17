@@ -2,7 +2,7 @@
 
 namespace App\Core\Templating\TemplatingException;
 
-use App\Core\Exception\CoreException;
+use App\Core\HttpFoundation\Exception\HttpException;
 
-class TemplatingException extends CoreException
+class TemplatingException extends HttpException
 {}

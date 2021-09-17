@@ -2,7 +2,7 @@
 
 namespace App\Core\Route\Exception;
 
-use App\Core\Exception\CoreException;
+use App\Core\HttpFoundation\Exception\HttpException;
 
-class RouteMatchException extends CoreException
+class RouteMatchException extends HttpException
 {}

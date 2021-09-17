@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Core\Exception;
+namespace App\Core\HttpFoundation\Exception;
 
 use Exception;
 use Throwable;
-use App\Core\HttpFoundation\HttpFoundationInterface\HttpFoundationInterface;
 
-class CoreException extends Exception implements HttpFoundationInterface
+class HttpException extends Exception implements HttpExceptionInterface
 {
     private int $statusCode;
 
@@ -17,7 +16,7 @@ class CoreException extends Exception implements HttpFoundationInterface
         parent::__construct($message, $code, $previous);
     }
 
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }

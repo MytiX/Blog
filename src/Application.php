@@ -2,9 +2,12 @@
 
 namespace App;
 
+use App\Core\Route\Router;
 use App\Controller\ErrorController;
-use App\Core\Routing\Router;
 use App\Core\HttpFoundation\Request\Request;
+use App\Core\HttpFoundation\Response\Response;
+use App\Core\Route\Exception\RouteMatchException;
+use App\Core\HttpFoundation\HttpFoundationInterface\HttpFoundationInterface;
 
 class Application
 {
@@ -12,11 +15,9 @@ class Application
     
     private $router;
 
-    private $error;
-
     public function __construct()
     {
-        $this->request = new Request();
+        $this->request = Request::createFromGlobals();
         
         $this->router = new Router();
 
@@ -25,18 +26,27 @@ class Application
 
     public function initialization(): void
     {
-        if (($route = $this->router->match($this->request->getRequestUri())) === null) {
-            $response = $this->error->error404();
-        } else {
-            
-            // TODO Comment ne pas avoir l'erreur PHP afficher mais plutôt une 404 si la function ou la class n'existe pas ???
-            if (($response = call_user_func_array($route->getInstance(), $route->getParams())) === false) {
-                // TODO Faire plutôt un render du controller 404 sur l'url indiquer ou rediriger sur le controller 404 avec l'url du controller 404 ???
-                $response = $this->error->error404();
+        try {
+            if (($route = $this->router->match($this->request->getRequestUri())) === null) {
+                throw new RouteMatchException("Page not found", 404);
+            } else {
+                $response = call_user_func_array($route->getInstance(), $route->getParams());
             }
+        } catch (HttpFoundationInterface $e) {
+            $response = $this->getExceptionResponse($e);
         }
-
+        
         $response->send();
+    }
+
+    private function getExceptionResponse(HttpFoundationInterface $exception): Response
+    {
+        if ($exception->getStatusCode() === 404) {
+            $errorController = new ErrorController();
+            return $errorController->error404();
+        } else {
+            return new Response($exception->getMessage(), $exception->getStatusCode());
+        }
     }
     
 }

@@ -8,7 +8,6 @@ class TemplatingConfig
     {
         return [
             "path" => "../template",
-            "base" => "../template/base.php",
         ];
     }
 }

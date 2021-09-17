@@ -15,5 +15,8 @@
     },
     "require-dev": {
         "symfony/error-handler": "^5.3"
+    },
+    "require": {
+        "symfony/http-foundation": "^5.3"
     }
 }

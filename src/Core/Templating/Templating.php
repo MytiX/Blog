@@ -3,6 +3,7 @@
 namespace App\Core\Templating;
 
 use App\Controller\ErrorController;
+use App\Core\Templating\TemplatingException\TemplatingException;
 use Config\TemplatingConfig;
 
 class Templating
@@ -19,8 +20,7 @@ class Templating
     public function getView(string $file, array $args = []) 
     {
         if (!file_exists($this->configTemplate["path"] . $file) ) {
-            echo 'Chemin fichier incorrect';
-            die;
+            throw new TemplatingException("Incorrect file path : " . $this->configTemplate["path"] . $file, 500);
         }
 
         if (!is_null($args)) {
@@ -30,13 +30,6 @@ class Templating
         ob_start();
 
         include $this->configTemplate["path"] . $file;
-
-        $content = ob_get_clean();
-
-        
-        ob_start();
-
-        include $this->configTemplate["base"];
 
         return ob_get_clean();
     }

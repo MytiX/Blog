@@ -3,10 +3,7 @@
 namespace App\Controller;
 
 use App\Core\Controller\AbstractController;
-use App\Core\HttpFoundation\Response\Response;
 use App\Core\ORM\ActiveRecord;
-use App\Core\PDO\ConnectionDB;
-use App\Core\Templating\Templating;
 use App\Entity\User;
 
 class HomeController extends AbstractController
@@ -17,7 +14,11 @@ class HomeController extends AbstractController
 
         $entityManager = new ActiveRecord();
 
-        $entityManager->findById(1, $user);
+        // $result = $entityManager->findById(1, $user);
+        $users = $entityManager->findAll($user);
+
+        dd($users);
+        // dd($users[1]->getName());
 
 
 

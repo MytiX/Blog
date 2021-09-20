@@ -14,27 +14,53 @@ class ActiveRecord
         $this->db = PDOConnection::getConnection();
     }
 
-    public function findById(int $id, $entity)
+    public function findById(int $id, $entityClass)
     {
-        
-        $query = $this->db->prepare(sprintf('SELECT * FROM %s WHERE `id` = :id', $this->getTable($entity)));
+        $query = $this->db->prepare(sprintf('SELECT * FROM %s WHERE `id` = :id', $this->getTable($entityClass)));
         
         $query->execute([
             ':id' => $id
         ]);
-        
-        $result = $query->fetch();
-        
-        dd($result);
-        
+        dd($query->fetch());
+        return $this->mapping($query->fetch(), $entityClass);    
     }
 
-    public function getTable($entity): string
+    public function findAll($entityClass)
+    {
+        $query = $this->db->prepare(sprintf('SELECT * FROM %s', $this->getTable($entityClass)));
+        
+        $query->execute();
+        
+        return $this->mapping($query->fetchAll(), $entityClass);
+    }
+
+    private function getTable($entity): string
     {
         $class = explode("\\", get_class($entity));
 
         $parts = preg_split('/(?=[A-Z])/', $class[2]);
 
         return substr(strtolower(implode('_', $parts)), 1);
+    }
+
+    private function mapping($results, $entityClass)
+    {
+        $array = [];
+
+        foreach ($results as $result) {
+            
+            $class = get_class($entityClass);
+
+            $instance = new $class();
+            
+            foreach ($result as $key => $value) {
+                if (method_exists($instance, "set" . ucfirst($key))) {
+                    $value = !empty($value) ? $value : null;
+                    $instance->{"set" . ucfirst($key)}($value);
+                }
+            }
+            $array[] = $instance;
+        }
+        return $array;
     }
 }

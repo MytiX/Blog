@@ -4,6 +4,8 @@ services:
         image: mysql
         container_name: db_blog
         restart: always
+        ports:
+          - 3306:3306
         volumes: 
             - db-data:/var/lib/mysql
         environment: 

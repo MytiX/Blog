@@ -17,6 +17,11 @@ class PDOConnection
 
     private static $instance = null;
 
+    private function __construct()
+    {
+        
+    }
+
     public static function getConnection(): ?PDO
     {
         if (self::$instance === null) {

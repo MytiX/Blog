@@ -2,10 +2,10 @@
 
 namespace App\Core\ORM;
 
-use App\Core\PDO\PDOConnection;
 use PDO;
+use App\Core\PDO\PDOConnection;
 
-class ActiveRecord
+abstract class ActiveRecord
 {
     private $db;
 
@@ -14,24 +14,23 @@ class ActiveRecord
         $this->db = PDOConnection::getConnection();
     }
 
-    public function findById(int $id, $entityClass)
+    public function findById(int $id)
     {
-        $query = $this->db->prepare(sprintf('SELECT * FROM %s WHERE `id` = :id', $this->getTable($entityClass)));
+        $query = $this->db->prepare(sprintf('SELECT * FROM %s WHERE `id` = :id', $this->getTable($this)));
         
         $query->execute([
             ':id' => $id
         ]);
-        dd($query->fetch());
-        return $this->mapping($query->fetch(), $entityClass);    
+        return $this->mappingResult($query->fetch(), get_class($this));
     }
 
-    public function findAll($entityClass)
+    public function findAll()
     {
-        $query = $this->db->prepare(sprintf('SELECT * FROM %s', $this->getTable($entityClass)));
+        $query = $this->db->prepare(sprintf('SELECT * FROM %s', $this->getTable($this)));
         
         $query->execute();
-        
-        return $this->mapping($query->fetchAll(), $entityClass);
+        dd($query->fetchAll());
+        return $this->mapping($query->fetchAll(), $this);
     }
 
     private function getTable($entity): string
@@ -43,15 +42,21 @@ class ActiveRecord
         return substr(strtolower(implode('_', $parts)), 1);
     }
 
-    private function mapping($results, $entityClass)
+    private function mapping($results)
     {
         $array = [];
+        $class = get_class($this);
 
         foreach ($results as $result) {
             
-            $class = get_class($entityClass);
+            $array[] = $this->mappingResult($result, $class);
+        }
+        return $array;
+    }
 
-            $instance = new $class();
+    private function mappingResult($result, $class): self
+    {
+        $instance = new $class();
             
             foreach ($result as $key => $value) {
                 if (method_exists($instance, "set" . ucfirst($key))) {
@@ -59,8 +64,7 @@ class ActiveRecord
                     $instance->{"set" . ucfirst($key)}($value);
                 }
             }
-            $array[] = $instance;
-        }
-        return $array;
+        
+        return $instance;
     }
 }

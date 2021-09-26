@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
-class User
+use App\Core\ORM\ActiveRecord;
+
+class User extends ActiveRecord
 {
     private ?int $id;
 

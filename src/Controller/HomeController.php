@@ -12,12 +12,11 @@ class HomeController extends AbstractController
     {
         $user = new User();
 
-        $entityManager = new ActiveRecord();
+        dd($user->findById(1));
 
         // $result = $entityManager->findById(1, $user);
-        $users = $entityManager->findAll($user);
+        // $users = $entityManager->findAll($user);
 
-        dd($users);
         // dd($users[1]->getName());
 
 

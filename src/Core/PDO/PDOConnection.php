@@ -15,26 +15,33 @@ class PDOConnection
 
     private static $db_pass = PDOConfig::DB_PASS;
 
-    private static $instance = null;
+    private static $_instance = null;
+
+    private PDO $connection;
 
     private function __construct()
     {
-        
+        $this->connection = new PDO(
+            sprintf("mysql:dbname=%s;host=%s", self::$db_name, self::$db_host), 
+            self::$db_user, 
+            self::$db_pass,
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]
+        );
     }
 
-    public static function getConnection(): ?PDO
+    public static function getConnection(): self
     {
-        if (self::$instance === null) {
-            self::$instance = new PDO(
-                sprintf("mysql:dbname=%s;host=%s", self::$db_name, self::$db_host), 
-                self::$db_user, 
-                self::$db_pass,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                ]
-            );
+        if (self::$_instance === null) {
+            self::$_instance = new PDOConnection();
         }
-        return self::$instance;
+        return self::$_instance;
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        return call_user_func_array([$this->connection, $name], $arguments);
     }
 }

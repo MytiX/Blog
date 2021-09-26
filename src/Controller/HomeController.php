@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Core\Controller\AbstractController;
 use App\Core\ORM\ActiveRecord;
 use App\Entity\User;
+use ReflectionClass;
 
 class HomeController extends AbstractController
 {
@@ -12,7 +13,15 @@ class HomeController extends AbstractController
     {
         $user = new User();
 
-        dd($user->findById(1));
+        $user->setName("Jose");
+        $user->setPrenom("Henry");
+        $user->setAge(25);
+
+        // $reflection = new ReflectionClass($user);
+
+        // dd($reflection->getProperties());
+
+        $user->insert();
 
         // $result = $entityManager->findById(1, $user);
         // $users = $entityManager->findAll($user);

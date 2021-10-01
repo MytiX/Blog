@@ -2,73 +2,86 @@
 
 namespace App\Core\Route;
 
-use Config\RouteConfig;
-use App\Core\Route\Route;
-use App\Core\Route\Exception\RouteMatchException;
+use ReflectionClass;
+use Symfony\Component\HttpFoundation\Request;
 
-class Router
+class Router 
 {
-    private $routes;
+    private Request $request;
 
-    private $controller; 
+    private array $controllers;
 
-    private $action; 
+    const DELIMITER = "/";
 
-    private $params; 
-
-    public function __construct()
+    public function __construct(array $controllers)
     {
-        $this->routes = RouteConfig::getRouteConfig();
+        $this->controllers = $controllers;
+        $this->request = Request::createFromGlobals();
     }
 
-    public function match(string $requestUri): ?Route 
-    {
-        foreach ($this->routes as $patternRoute => $arrayClassFonction) {
+    public function getRoute(): ?Route
+    {        
+        foreach ($this->controllers as $fichier) {
+            $className = "App\Controller\\" . str_replace(".php", "", $fichier);
+        
+            $reflection = new ReflectionClass($className);
+        
+            foreach ($reflection->getMethods() as $method) {
+        
+                $routeAttributes = $method->getAttributes();
+                    
+                foreach ($routeAttributes as $routeAttribute) {
+        
+                    $arguments = $routeAttribute->getArguments();
+                    
+                    /** @var Route $route */
+                    $route = $routeAttribute->newInstance();
 
-            if (preg_match($patternRoute, $requestUri, $matches)) {
+                    if ($route->getPath() === $this->request->getRequestUri()) {
+                        $route->setController($className);
+                        $route->setAction($method->getName());
 
-                $controllerDefinition = explode('::', $arrayClassFonction);
-                
-                // Set Classcontroller
-                if (!class_exists($controllerDefinition[0])) {
-                    throw new RouteMatchException("The class does not exist", 500);
-                } else {
-                    $this->setController($controllerDefinition[0]);
-                }
-                
-                // Set function
-                if (count($controllerDefinition) > 1) {
-                    if (method_exists($controllerDefinition[0], $controllerDefinition[1]) === false) {
-                        throw new RouteMatchException("The method does not exist in the Class", 500);
+                        return $route;
                     }
-                    $this->setAction($controllerDefinition[1]);
-                }                
-                
-                // Set params
-                if (!is_null($matches)) {
-                    $this->setParams($this->cleanMatches($matches));
-                }
 
-                return new Route($this->controller, $this->action, $this->params);
+                    $regex = $this->getParamsRegex($route);
+
+                    if ($regex !== null) {
+                        if (preg_match($regex, $this->request->getRequestUri(), $matches)) {               
+                            
+                            $route->setController($className);
+                            $route->setAction($method->getName());
+                            // Set params
+                            if (!is_null($matches)) {
+                                $route->setParams($this->cleanMatches($matches));
+                            }
+                            return $route;
+                        }
+                    }
+                }
             }
         }
-
-       return null;
+        return null;
     }
 
-    private function setController(string $controller): void
+    private function getParamsRegex(Route $route): ?string
     {
-        $this->controller = $controller;
-    }
+        if (preg_match_all("/{[a-zA-Z0-9-]+}/", $route->getPath(), $matches)) {
 
-    private function setAction(string $action): void
-    {
-        $this->action = $action;
-    }
+            $regex = $route->getPath();
+            
+            foreach ($matches[0] as $matche) {
+                
+                $matcheFormate = str_replace("{", "", $matche);
+                $matcheFormate = str_replace("}", "", $matcheFormate);
 
-    private function setParams(array $matches): void
-    {
-        $this->params = $matches;
+                $regexMatche = "(?<" . $matcheFormate . ">[a-zA-Z0-9-]+)";
+
+                $regex = str_replace($matche, $regexMatche, $regex);
+            }
+            return self::DELIMITER . str_replace("/", "\/", $regex) . self::DELIMITER;
+        }
+        return null;
     }
 
     private function cleanMatches(array $matches): array
@@ -79,7 +92,6 @@ class Router
                 unset($matches[$matche]);
             }
         }
-
         return $matches;
     }
 }

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Entity;
+// namespace App\Entity;
 
-class User
+use App\Core\ORM\ActiveRecord;
+
+class User extends ActiveRecord
 {
-    private int $id;
+    private ?int $id;
 
-    private string $name;
-
-    private string $nomArticle;
+    private ?string $name;
 
     // private ?string $prenom;
 
@@ -30,15 +30,6 @@ class User
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function setNomArticle(string $nomArticle): void
-    {
-        $this->nomArticle = $nomArticle;
-    }
-    public function getNomArticle(): string
-    {
-        return $this->nomArticle;
     }
 
     // public function setPrenom(string $prenom): void

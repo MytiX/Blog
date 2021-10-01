@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
 
 class BlogController extends AbstractController
 {
-
     public function viewAllPosts()
     {
         // echo 'View All Posts';
@@ -18,9 +18,11 @@ class BlogController extends AbstractController
         // Lien vers le blog post.
         return $this->render("/home/home.php");
     }
-    
+
+    #[Route("/blog/{slug}")]
     public function viewPost(string $slug)
     {
+        dd(__CLASS__ . " " . $slug);
         // echo __CLASS__ . " Article : " . $slug;
         // Tous les requis pour la page d'affichage de tous les blogs posts
 

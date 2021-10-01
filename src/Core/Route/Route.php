@@ -2,31 +2,47 @@
 
 namespace App\Core\Route;
 
-class Route 
+use Attribute;
+
+#[Attribute]
+class Route
 {
+    private string $path;
 
     private string $controller;
 
-    private ?string $action;
+    private string $action;
 
-    private array $params;
+    private array $params = [];
 
-    public function __construct(string $controller, ?string $action = null, array $params = [])
+    public function __construct(string $path)
+    {
+        $this->path = $path;
+    }
+
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    public function setController(string $controller): void
     {
         $this->controller = $controller;
+    }
+
+    public function setAction(string $action): void
+    {
         $this->action = $action;
-        $this->params = $params;
+    }
+
+    public function setParams(array $matches): void
+    {
+        $this->params = $matches;
     }
 
     public function getInstance(): mixed
     {
-        if ($this->action === null) {
-            $instance = new $this->controller();
-        } else {
-            $instance = [new $this->controller, $this->action];
-        }
-
-        return $instance;
+        return [new $this->controller(), $this->action];
     }
 
     public function getParams(): array

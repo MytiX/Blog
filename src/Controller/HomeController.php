@@ -16,14 +16,14 @@ class HomeController extends AbstractController
     {
         $user = new User();
 
-        $user->setId(6);
-        $user->setName("José");
-        $user->setNomArticle("Mon beau PHP");
+        $user->setName("Qdrdgf");
         
+        $user->save();
+        $user->insert();
+
+        // dd($orm->getProperties());
         
-        $orm = new ORMReflection($user);
-        
-        dd($orm->getTable(), $orm->getColumns(), $orm->getValues());
+        // dd($orm->getTable(), $orm->getColumns(), $orm->getValues());
 
 
 

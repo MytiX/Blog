@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
-class User
+use App\Core\ORM\ActiveRecord;
+use App\Core\ORM\ORMColumn;
+
+class User extends ActiveRecord
 {
+    #[ORMColumn(["GeneratedValue" => true])]
     private int $id;
 
     private string $name;
 
-    private string $nomArticle;
+    // private string $nomArticle;
 
     // private ?string $prenom;
 
@@ -32,14 +36,14 @@ class User
         return $this->name;
     }
 
-    public function setNomArticle(string $nomArticle): void
-    {
-        $this->nomArticle = $nomArticle;
-    }
-    public function getNomArticle(): string
-    {
-        return $this->nomArticle;
-    }
+    // public function setNomArticle(string $nomArticle): void
+    // {
+    //     $this->nomArticle = $nomArticle;
+    // }
+    // public function getNomArticle(): string
+    // {
+    //     return $this->nomArticle;
+    // }
 
     // public function setPrenom(string $prenom): void
     // {

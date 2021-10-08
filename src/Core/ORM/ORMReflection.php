@@ -8,8 +8,6 @@ class ORMReflection
 {
     private object $instance;
 
-    private array $properties;
-
     private string $table;
     
     private array $columns;
@@ -21,56 +19,114 @@ class ORMReflection
     public function __construct($instance)
     {
         $this->instance = $instance;
-        $this->reflection = new ReflectionClass($instance);
+        $this->initializeORM();
     }
 
-    private function getProperties(): array
+    public function initializeORM(): void
     {
-        if (empty($this->properties)) {
-            foreach ($this->reflection->getProperties() as $propertie) {
+        $this->reflection = new ReflectionClass($this->instance);
+        
+        $this->setTable($this->instance);
+        
+        foreach ($this->reflection->getProperties() as $propertie) {
             
-                $this->properties[] = $propertie->getName();
+            /** @var ReflectionAttribute $attributes */
+            $attributes = $propertie->getAttributes(ORMColumn::class);
+            
+            if (!empty($attributes)) {
+                foreach ($attributes as $attribute) {
+                    /** @var ORMColumn $ormColumn */
+                    $ormColumn = $attribute->newInstance();
+                    
+                    if (!$ormColumn->isGenerateValue()) {
+                        $this->setColumns($this->formatColumnName($propertie->getName()));
+                        $this->setValues($this->instance->{"get" . ucfirst($propertie->getName())}());
+                    }
+                }
+            } else {
+                $this->setColumns($this->formatColumnName($propertie->getName()));
+                $this->setValues($this->instance->{"get" . ucfirst($propertie->getName())}());
             }
         }
-        return $this->properties;
+    }
+    
+    private function formatColumnName($columnsName)
+    {
+        $parts = preg_split('/(?=[A-Z])/', $columnsName);
+        
+        if (count($parts) > 1) {
+            return strtolower(implode('_', $parts));
+        } else {
+            return $columnsName;
+        }
+    }
+    
+    public function getTable(): string
+    {
+        return $this->table;
     }
 
-    public function getTable(): string
+    private function setTable($instance): void
     {
         if (empty($this->table)) {
             
-            $class = explode("\\", get_class($this->instance));
+            $class = explode("\\", get_class($instance));
     
             $parts = preg_split('/(?=[A-Z])/', $class[2]);
     
             $this->table = substr(strtolower(implode('_', $parts)), 1);
         }
-
-        return $this->table;
     }
 
     public function getColumns(): array
     {
-        if (empty($this->columns)) {
-            foreach ($this->reflection->getProperties() as $propertie) {
-
-                $parts = preg_split('/(?=[A-Z])/', $propertie->getName());
-
-                if (count($parts) > 1) {
-                    $this->columns[] = strtolower(implode('_', $parts));
-                } else {
-                    $this->columns[] = $propertie->getName();
-                }
-            }
-        }
         return $this->columns;
+    }
+
+    private function setColumns($columns): void
+    {
+        $this->columns[] = $columns;
     }
 
     public function getValues(): array
     {
-        foreach ($this->getProperties() as $propertie) {
-            $this->values[] = $this->instance->{"get" . ucfirst($propertie)}();
-        }
         return $this->values;
+    }
+
+    private function setValues($value): void
+    {
+        $this->values[] = $value;
+    }
+
+    public function getStringColumnsInsert()
+    {
+        $sqlColumns = "(";
+
+        foreach ($this->columns as $column) {
+            
+            $sqlColumns .= $column . ", ";
+        }
+
+        $sqlColumns = substr($sqlColumns, 0, -2);
+
+        $sqlColumns .= ")";
+
+        return $sqlColumns;
+    }
+
+    public function getStringValueInsert()
+    {
+        $sqlValues = "(";
+
+        foreach ($this->values as $value) {
+            
+            $sqlValues .= "'" . $value . "', ";
+        }
+
+        $sqlValues = substr($sqlValues, 0, -2);
+
+        $sqlValues .= ")";
+
+        return $sqlValues;
     }
 }

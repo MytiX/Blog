@@ -8,8 +8,8 @@ use Attribute;
 class ORMColumn
 {
     public array $attributes = [
-        "GeneratedValue" => false,
-        "Unique" => false
+        "AutoIncrement" => false,
+        "Id" => false
     ];
 
     public function __construct(array $attributes)
@@ -28,19 +28,19 @@ class ORMColumn
         }
     }
 
-    public function isGenerateValue(): bool
+    public function isAutoIncrement(): bool
     {
-        if (in_array("GeneratedValue", $this->attributes)) {
+        if (in_array("AutoIncrement", $this->attributes)) {
  
-            return $this->attributes["GeneratedValue"];
+            return $this->attributes["AutoIncrement"];
         }
     }
 
-    public function isUnique(): bool
+    public function isId(): bool
     {
-        if (in_array("Unique", $this->attributes)) {
+        if (in_array("Id", $this->attributes)) {
  
-            return $this->attributes["Unique"];
+            return $this->attributes["Id"];
         }
     }
 }

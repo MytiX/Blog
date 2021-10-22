@@ -7,12 +7,15 @@ use App\Core\ORM\ORMColumn;
 
 class User extends ActiveRecord
 {
-    #[ORMColumn(["GeneratedValue" => true, "Unique" => true])]
+    #[ORMColumn([
+        "AutoIncrement" => true, 
+        "Id" => true
+    ])]
     private int $id;
 
     private string $name;
 
-    // private string $nomArticle;
+    private string $nomArticle;
 
     private string $prenom;
 
@@ -39,14 +42,14 @@ class User extends ActiveRecord
         return $this->name;
     }
 
-    // public function setNomArticle(string $nomArticle): void
-    // {
-    //     $this->nomArticle = $nomArticle;
-    // }
-    // public function getNomArticle(): string
-    // {
-    //     return $this->nomArticle;
-    // }
+    public function setNomArticle(string $nomArticle): void
+    {
+        $this->nomArticle = $nomArticle;
+    }
+    public function getNomArticle(): string
+    {
+        return $this->nomArticle;
+    }
 
     public function setPrenom(string $prenom): void
     {
@@ -61,7 +64,7 @@ class User extends ActiveRecord
     {
         $this->age = $age;
     }
-    public function getAge(): string
+    public function getAge(): int
     {
         return $this->age;
     }

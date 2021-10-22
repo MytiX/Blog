@@ -14,7 +14,11 @@ class ORMReflection
     
     private array $values;
 
-    private ?string $uniqueColumn = null;
+    private string $autoIncrement;
+
+    private array $columnsWithValues = [];
+
+    private ?string $IdColumn = null;
 
     private ReflectionClass $reflection;
 
@@ -28,6 +32,8 @@ class ORMReflection
     public function saveEntity(): void
     {
         foreach ($this->reflection->getProperties() as $propertie) {
+
+            $this->setColumnsWithValues($this->formatColumnName($propertie->getName()), $this->instance->{"get" . ucfirst($propertie->getName())}());
             
             /** @var ReflectionAttribute $attributes */
             $attributes = $propertie->getAttributes(ORMColumn::class);
@@ -37,29 +43,35 @@ class ORMReflection
                     /** @var ORMColumn $ormColumn */
                     $ormColumn = $attribute->newInstance();
                     
-                    if (!$ormColumn->isGenerateValue()) {
-                        $this->setColumns($this->formatColumnName($propertie->getName()));
-                        $this->setValues($this->instance->{"get" . ucfirst($propertie->getName())}());
+                    if ($ormColumn->isAutoIncrement()) {
+                        $this->setAutoIncrementKey($this->formatColumnName($propertie->getName()));
                     }
-
-                    if ($ormColumn->isUnique()) {
-                        $this->setUniqueColumn($propertie->getName());
+                    
+                    if ($ormColumn->isId()) {
+                        $this->setIdColumn($propertie->getName());
                     }
                 }
-            } else {
-                $this->setColumns($this->formatColumnName($propertie->getName()));
-                $this->setValues($this->instance->{"get" . ucfirst($propertie->getName())}());
             }
         }
     }
 
-    private function setUniqueColumn(string $column)
+    private function setIdColumn(string $column)
     {
         $this->uniqueColumn = $column;
     }
-    public function getUniqueColumn()
+
+    public function getIdColumn()
     {
         return $this->uniqueColumn;
+    }
+
+    private function setAutoIncrementKey(string $column)
+    {
+        $this->autoIncrement = $column;
+    }
+    public function getAutoIncrementKey()
+    {
+        return $this->autoIncrement;
     }
     
     private function formatColumnName($columnsName)
@@ -67,10 +79,9 @@ class ORMReflection
         $parts = preg_split('/(?=[A-Z])/', $columnsName);
         
         if (count($parts) > 1) {
-            return strtolower(implode('_', $parts));
-        } else {
-            return $columnsName;
-        }
+            $columnsName = strtolower(implode('_', $parts));
+        } 
+        return ":" . $columnsName;
     }
     
     public function getTable(): string
@@ -90,55 +101,110 @@ class ORMReflection
         }
     }
 
-    private function getColumns(): array
+    // private function getColumns(): array
+    // {
+    //     return $this->columns;
+    // }
+
+    // private function setColumns($columns): void
+    // {
+    //     $this->columns[] = $columns;
+    // }
+
+    // private function getValues(): array
+    // {
+    //     return $this->values;
+    // }
+
+    // private function setValues($value): void
+    // {
+    //     $this->values[] = $value;
+    // }
+
+    private function setColumnsWithValues(string $column, mixed $value)
     {
-        return $this->columns;
+        $this->columnsWithValues[$column] = $value;
     }
 
-    private function setColumns($columns): void
+    public function getColumnsWithValues()
     {
-        $this->columns[] = $columns;
+        return $this->columnsWithValues;
     }
 
-    private function getValues(): array
+    public function buildSQLInsert()
     {
-        return $this->values;
-    }
+        $columnsString = "";
+        $valuesString = "";
 
-    private function setValues($value): void
-    {
-        $this->values[] = $value;
-    }
+        $sql = "INSERT INTO {$this->getTable()} ";
 
-    public function getStringColumnsInsert()
-    {
-        $sqlColumns = "(";
-
-        foreach ($this->columns as $column) {
-            
-            $sqlColumns .= $column . ", ";
+        foreach ($this->getColumnsWithValues() as $column => $value) {
+            if ($column != $this->getAutoIncrementKey())
+            {
+                $columnsString .= str_replace(":", "", $column) . ", ";
+                $valuesString .= $column . ", ";
+            }
         }
 
-        $sqlColumns = substr($sqlColumns, 0, -2);
+        $columnsString = "(" . substr($columnsString, 0, -2) . ")";
+        $valuesString = " VALUES (" . substr($valuesString, 0, -2) . ")";
 
-        $sqlColumns .= ")";
+        $sql .= $columnsString . $valuesString;
 
-        return $sqlColumns;
-    }
+        return $sql;
+    } 
 
-    public function getStringValueInsert()
+    public function buildSQLUpdate(array $conditions = [])
     {
-        $sqlValues = "(";
+        $sql = "UPDATE {$this->getTable()} SET ";
 
-        foreach ($this->values as $value) {
-            
-            $sqlValues .= "'" . $value . "', ";
+        foreach ($this->getColumnsWithValues() as $column => $value) {
+
+            if ($column != $this->getAutoIncrementKey()) {
+                $sql .= str_replace(":", "", $column) . " = " . $column . ", ";
+            }
         }
 
-        $sqlValues = substr($sqlValues, 0, -2);
+        $sql = substr($sql, 0, -2);
 
-        $sqlValues .= ")";
+        $where = " WHERE ";
 
-        return $sqlValues;
-    }
+        $where .= $this->getIdColumn() . " = :" . $this->getIdColumn() . "";
+
+        $sql .= $where;
+
+        return $sql;
+    } 
+
+    // public function getStringColumnsInsert()
+    // {
+    //     $sqlColumns = "(";
+
+    //     foreach ($this->columns as $column) {
+            
+    //         $sqlColumns .= $column . ", ";
+    //     }
+
+    //     $sqlColumns = substr($sqlColumns, 0, -2);
+
+    //     $sqlColumns .= ")";
+
+    //     return $sqlColumns;
+    // }
+
+    // public function getStringValueInsert()
+    // {
+    //     $sqlValues = "(";
+
+    //     foreach ($this->values as $value) {
+            
+    //         $sqlValues .= "'" . $value . "', ";
+    //     }
+
+    //     $sqlValues = substr($sqlValues, 0, -2);
+
+    //     $sqlValues .= ")";
+
+    //     return $sqlValues;
+    // }
 }

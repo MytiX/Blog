@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
+use App\Core\ORM\ORMReflection;
 
 class HomeController extends AbstractController
 {
@@ -13,13 +14,21 @@ class HomeController extends AbstractController
     {
         $user = new User();
 
-        // $user->setId(74);
-        $user->setName("Ferreira Jose");
+        // $orm->setColumnsWithValues("nom", "toto");
+        // $orm->setColumnsWithValues("age", 26);
+
+        // dd($orm->getColumnsWithValues());
+
+        $user->setId(20);
+        $user->setName("TOTO");
         $user->setPrenom("Jose");
         $user->setAge(28);
+        $user->setNomArticle("toto");
+
+        // var_dump($user->getAge());
         
         $user->save();
-        // $user->insert();
+        // $user->update();
 
         // dd($orm->getProperties());
         

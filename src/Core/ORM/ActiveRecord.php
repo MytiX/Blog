@@ -19,22 +19,29 @@ abstract class ActiveRecord
     public function save()
     {
         $this->orm->saveEntity();
+        // $id = $this->insert();
+        
+        // dd($id);
+        
+        dd($this->orm->buildSQLUpdate(), $this->orm->buildSQLInsert());
+        // dd($this->orm->buildSQLInsert());
+
 
         // Si l'entity ne comporte pas de clé unique créer une erreur
-        if (empty($this->orm->getUniqueColumn())) {
-            // throw Exception
-            dd("Pas de clé unique sur l'entity");
-        }
+        // if (empty($this->orm->getUniqueColumn())) {
+        //     // throw Exception
+        //     dd("Pas de clé unique sur l'entity");
+        // }
 
-        // Si la valeur de la cle unique est vide c'est une insertion sinon une update
-        if (!empty($this->{"get" . ucfirst($this->orm->getUniqueColumn())}())) {
-            // UPDATE
-            $this->update();
-        } else {
-            // INSERT
-            $lastInsert = $this->insert();
-            dd($lastInsert);
-        }
+        // // Si la valeur de la cle unique est vide c'est une insertion sinon une update
+        // if (!empty($this->{"get" . ucfirst($this->orm->getUniqueColumn())}())) {
+        //     // UPDATE
+        //     $this->update();
+        // } else {
+        //     // INSERT
+        //     $lastInsert = $this->insert();
+        //     dd($lastInsert);
+        // }
 
         
         
@@ -42,8 +49,12 @@ abstract class ActiveRecord
 
     }
 
-    // Créer la findById, findBy, findAll
-    public function findBy(array $where)
+    // Créer la find, findBy, findAll
+    // public function findBy($key, $value = null)
+    // {
+
+    // }
+    public function findBy($key, $value = null)
     {
         $sql = "SELECT * FROM {$this->orm->getTable()} WHERE ";
 
@@ -54,16 +65,25 @@ abstract class ActiveRecord
 
     public function insert()
     {
-        $sql = "INSERT INTO {$this->orm->getTable()} {$this->orm->getStringColumnsInsert()} VALUES {$this->orm->getStringValueInsert()}";
+        $this->orm->saveEntity();
 
-        $this->db->query($sql);
+        $query = $this->db->prepare($this->orm->buildSQLInsert());
+
+        $query->execute($this->orm->getColumnsWithValues());
 
         return $this->db->lastInsertId();
     }
 
     public function update()
     {
-        // 
+        $this->orm->saveEntity();
+
+        $query = $this->db->prepare($this->orm->buildSQLUpdate());
+
+        $query->execute($this->orm->getColumnsWithValues());
+
+        return $this;
+        
     }
 
     public function delete()

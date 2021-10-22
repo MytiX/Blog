@@ -7,23 +7,26 @@ use App\Core\ORM\ORMColumn;
 
 class User extends ActiveRecord
 {
-    #[ORMColumn(["GeneratedValue" => true])]
+    #[ORMColumn(["GeneratedValue" => true, "Unique" => true])]
     private int $id;
 
     private string $name;
 
     // private string $nomArticle;
 
-    // private ?string $prenom;
+    private string $prenom;
 
-    // private ?int $age;
+    private int $age;
 
     public function setId(int $id): void
     {
         $this->id = $id;
     }
-    public function getId(): int
+    public function getId(): ?int
     {
+        if (empty($this->id)) {
+            return null;
+        }
         return $this->id;
     }
 
@@ -45,21 +48,21 @@ class User extends ActiveRecord
     //     return $this->nomArticle;
     // }
 
-    // public function setPrenom(string $prenom): void
-    // {
-    //     $this->prenom = $prenom;
-    // }
-    // public function getPrenom(): string
-    // {
-    //     return $this->prenom;
-    // }
+    public function setPrenom(string $prenom): void
+    {
+        $this->prenom = $prenom;
+    }
+    public function getPrenom(): string
+    {
+        return $this->prenom;
+    }
 
-    // public function setAge(int $age): void
-    // {
-    //     $this->age = $age;
-    // }
-    // public function getAge(): string
-    // {
-    //     return $this->age;
-    // }
+    public function setAge(int $age): void
+    {
+        $this->age = $age;
+    }
+    public function getAge(): string
+    {
+        return $this->age;
+    }
 }

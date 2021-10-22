@@ -3,11 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use ReflectionClass;
 use App\Core\Route\Route;
-use App\Core\ORM\ActiveRecord;
 use App\Core\Controller\AbstractController;
-use App\Core\ORM\ORMReflection;
 
 class HomeController extends AbstractController
 {
@@ -16,10 +13,13 @@ class HomeController extends AbstractController
     {
         $user = new User();
 
-        $user->setName("Qdrdgf");
+        // $user->setId(74);
+        $user->setName("Ferreira Jose");
+        $user->setPrenom("Jose");
+        $user->setAge(28);
         
         $user->save();
-        $user->insert();
+        // $user->insert();
 
         // dd($orm->getProperties());
         

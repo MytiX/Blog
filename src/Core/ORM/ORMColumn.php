@@ -9,6 +9,7 @@ class ORMColumn
 {
     public array $attributes = [
         "GeneratedValue" => false,
+        "Unique" => false
     ];
 
     public function __construct(array $attributes)
@@ -32,6 +33,14 @@ class ORMColumn
         if (in_array("GeneratedValue", $this->attributes)) {
  
             return $this->attributes["GeneratedValue"];
+        }
+    }
+
+    public function isUnique(): bool
+    {
+        if (in_array("Unique", $this->attributes)) {
+ 
+            return $this->attributes["Unique"];
         }
     }
 }

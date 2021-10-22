@@ -14,20 +14,19 @@ class ORMReflection
     
     private array $values;
 
+    private ?string $uniqueColumn = null;
+
     private ReflectionClass $reflection;
 
     public function __construct($instance)
     {
+        $this->reflection = new ReflectionClass($instance);
+        $this->setTable($instance);
         $this->instance = $instance;
-        $this->initializeORM();
     }
 
-    public function initializeORM(): void
+    public function saveEntity(): void
     {
-        $this->reflection = new ReflectionClass($this->instance);
-        
-        $this->setTable($this->instance);
-        
         foreach ($this->reflection->getProperties() as $propertie) {
             
             /** @var ReflectionAttribute $attributes */
@@ -42,12 +41,25 @@ class ORMReflection
                         $this->setColumns($this->formatColumnName($propertie->getName()));
                         $this->setValues($this->instance->{"get" . ucfirst($propertie->getName())}());
                     }
+
+                    if ($ormColumn->isUnique()) {
+                        $this->setUniqueColumn($propertie->getName());
+                    }
                 }
             } else {
                 $this->setColumns($this->formatColumnName($propertie->getName()));
                 $this->setValues($this->instance->{"get" . ucfirst($propertie->getName())}());
             }
         }
+    }
+
+    private function setUniqueColumn(string $column)
+    {
+        $this->uniqueColumn = $column;
+    }
+    public function getUniqueColumn()
+    {
+        return $this->uniqueColumn;
     }
     
     private function formatColumnName($columnsName)
@@ -78,7 +90,7 @@ class ORMReflection
         }
     }
 
-    public function getColumns(): array
+    private function getColumns(): array
     {
         return $this->columns;
     }
@@ -88,7 +100,7 @@ class ORMReflection
         $this->columns[] = $columns;
     }
 
-    public function getValues(): array
+    private function getValues(): array
     {
         return $this->values;
     }

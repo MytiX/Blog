@@ -10,9 +10,7 @@ class ORMReflection
 
     private string $table;
     
-    private array $columns;
-    
-    private array $values;
+    private array $whereParams;
 
     private string $autoIncrement;
 
@@ -32,9 +30,6 @@ class ORMReflection
     public function saveEntity(): void
     {
         foreach ($this->reflection->getProperties() as $propertie) {
-
-            $this->setColumnsWithValues($this->formatColumnName($propertie->getName()), $this->instance->{"get" . ucfirst($propertie->getName())}());
-            
             /** @var ReflectionAttribute $attributes */
             $attributes = $propertie->getAttributes(ORMColumn::class);
             
@@ -45,12 +40,16 @@ class ORMReflection
                     
                     if ($ormColumn->isAutoIncrement()) {
                         $this->setAutoIncrementKey($this->formatColumnName($propertie->getName()));
+                    } else {
+                        $this->setColumnsWithValues($this->formatColumnName($propertie->getName()), $this->instance->{"get" . ucfirst($propertie->getName())}());
                     }
                     
                     if ($ormColumn->isId()) {
                         $this->setIdColumn($propertie->getName());
                     }
                 }
+            } else {
+                $this->setColumnsWithValues($this->formatColumnName($propertie->getName()), $this->instance->{"get" . ucfirst($propertie->getName())}());
             }
         }
     }
@@ -101,26 +100,6 @@ class ORMReflection
         }
     }
 
-    // private function getColumns(): array
-    // {
-    //     return $this->columns;
-    // }
-
-    // private function setColumns($columns): void
-    // {
-    //     $this->columns[] = $columns;
-    // }
-
-    // private function getValues(): array
-    // {
-    //     return $this->values;
-    // }
-
-    // private function setValues($value): void
-    // {
-    //     $this->values[] = $value;
-    // }
-
     private function setColumnsWithValues(string $column, mixed $value)
     {
         $this->columnsWithValues[$column] = $value;
@@ -158,6 +137,8 @@ class ORMReflection
     {
         $sql = "UPDATE {$this->getTable()} SET ";
 
+        dd($this->getColumnsWithValues());
+
         foreach ($this->getColumnsWithValues() as $column => $value) {
 
             if ($column != $this->getAutoIncrementKey()) {
@@ -174,37 +155,46 @@ class ORMReflection
         $sql .= $where;
 
         return $sql;
-    } 
+    }
 
-    // public function getStringColumnsInsert()
-    // {
-    //     $sqlColumns = "(";
+    public function buildWhereSQL($keyOrArray, $value = null)
+    {
+        $wherePrepare = [];
 
-    //     foreach ($this->columns as $column) {
-            
-    //         $sqlColumns .= $column . ", ";
-    //     }
+        $where = "WHERE ";
 
-    //     $sqlColumns = substr($sqlColumns, 0, -2);
+        if (is_array($keyOrArray)) {
+            foreach ($keyOrArray as $key => $value) {
+                if (is_array($value)) {
+                    $where .= "(";
+                    for ($i=0; $i < count($value); $i++) { 
+                        $keyPrepare = ":w_" . $key . $i;
+                        $where .= $key . " = " . $keyPrepare . " OR ";
+                        $this->setWhereParams($keyPrepare, $value[$i]);
+                    }
+                    $where = substr($where, 0, -4) . ") AND ";
+                } else {
+                    $keyPrepare = ":w_" . $key;
+                    $where .= $key . " = " . $keyPrepare;
+                    $this->setWhereParams($keyPrepare, $value);
+                }
+            }
+        } else {
+            $keyPrepare = ":w_" . $keyOrArray;
+            $where .= $keyOrArray . " = " . $keyPrepare;
+            $this->setWhereParams($keyPrepare, $value);
+        }
 
-    //     $sqlColumns .= ")";
+        return $where;
+    }
 
-    //     return $sqlColumns;
-    // }
+    private function setWhereParams($key, $value)
+    {
+        $this->whereParams[$key] = $value;
+    }
 
-    // public function getStringValueInsert()
-    // {
-    //     $sqlValues = "(";
-
-    //     foreach ($this->values as $value) {
-            
-    //         $sqlValues .= "'" . $value . "', ";
-    //     }
-
-    //     $sqlValues = substr($sqlValues, 0, -2);
-
-    //     $sqlValues .= ")";
-
-    //     return $sqlValues;
-    // }
+    public function getWhereParams(): array
+    {
+        return $this->whereParams;
+    }
 }

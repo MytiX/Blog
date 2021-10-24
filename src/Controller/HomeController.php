@@ -14,16 +14,34 @@ class HomeController extends AbstractController
     {
         $user = new User();
 
+        $orm = new ORMReflection($user);
+
+        // $orm->buildWhereSQL("email", "test@gmail.com");
+
+        // $test = $user->findBy("name", "Jose");
+        // $test = $user->find(7);
+        // $test = $user->findAll();
+        // $test = $user->delete("id", 10);
+
+        // dd($test);
+
+        // $orm->buildWhereSQL(["email" => [
+        //     "test@gmail.com",
+        //     "jose@gmail.com",
+        //     ],
+        //     "id" => 3
+        // ]);
+
         // $orm->setColumnsWithValues("nom", "toto");
         // $orm->setColumnsWithValues("age", 26);
 
         // dd($orm->getColumnsWithValues());
 
-        $user->setId(20);
-        $user->setName("TOTO");
+        $user->setId(11);
+        $user->setName("TEST");
         $user->setPrenom("Jose");
         $user->setAge(28);
-        $user->setNomArticle("toto");
+        // $user->setNomArticle("toto");
 
         // var_dump($user->getAge());
         

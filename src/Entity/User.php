@@ -15,7 +15,7 @@ class User extends ActiveRecord
 
     private string $name;
 
-    private string $nomArticle;
+    // private string $nomArticle;
 
     private string $prenom;
 
@@ -42,14 +42,14 @@ class User extends ActiveRecord
         return $this->name;
     }
 
-    public function setNomArticle(string $nomArticle): void
-    {
-        $this->nomArticle = $nomArticle;
-    }
-    public function getNomArticle(): string
-    {
-        return $this->nomArticle;
-    }
+    // public function setNomArticle(string $nomArticle): void
+    // {
+    //     $this->nomArticle = $nomArticle;
+    // }
+    // public function getNomArticle(): string
+    // {
+    //     return $this->nomArticle;
+    // }
 
     public function setPrenom(string $prenom): void
     {

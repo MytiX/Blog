@@ -18,30 +18,36 @@ abstract class ActiveRecord
 
     public function save()
     {
-        $this->orm->saveEntity();
-        // $id = $this->insert();
+        $this->orm->saveEntity();    
         
-        // dd($id);
-        
-        dd($this->orm->buildSQLUpdate(), $this->orm->buildSQLInsert());
-        // dd($this->orm->buildSQLInsert());
-
-
         // Si l'entity ne comporte pas de clé unique créer une erreur
-        // if (empty($this->orm->getUniqueColumn())) {
-        //     // throw Exception
-        //     dd("Pas de clé unique sur l'entity");
-        // }
+        if (empty($this->orm->getIdColumn())) {
+            // throw Exception
+            dd("Pas de clé unique sur l'entity");
+        }
 
-        // // Si la valeur de la cle unique est vide c'est une insertion sinon une update
-        // if (!empty($this->{"get" . ucfirst($this->orm->getUniqueColumn())}())) {
-        //     // UPDATE
-        //     $this->update();
-        // } else {
-        //     // INSERT
-        //     $lastInsert = $this->insert();
-        //     dd($lastInsert);
-        // }
+        // dd($this->orm->getIdColumn());
+
+        // Si la valeur de la cle unique est vide c'est une insertion sinon une update
+        if (empty($this->{"get" . ucfirst($this->orm->getIdColumn())}())) {
+            // INSERT
+            $lastInsert = $this->insert();
+
+            $result = $this->find($lastInsert); 
+
+            // $instance = $this;
+
+            foreach ($result as $key => $value) {
+                if (method_exists($this, "set" . ucfirst($key))) {
+                    $this->{"set" . ucfirst($key)}($value);
+                }
+            }
+            dd("Insert");
+        } else {
+            // UPDATE
+            $this->update();
+            dd("Update");
+        }
 
         
         
@@ -49,24 +55,41 @@ abstract class ActiveRecord
 
     }
 
-    // Créer la find, findBy, findAll
-    // public function findBy($key, $value = null)
-    // {
+    public function findAll()
+    {
+        $sql = "SELECT * FROM {$this->orm->getTable()} ";
 
-    // }
+        $query = $this->db->prepare($sql);
+
+        $query->execute();
+
+        return $this->mapping($query->fetchAll());
+    }
+
+    public function find($id)
+    {
+        $sql = "SELECT * FROM {$this->orm->getTable()} {$this->orm->buildWhereSQL('id', $id)} ";
+
+        $query = $this->db->prepare($sql);
+
+        $query->execute($this->orm->getWhereParams());
+
+        return $this->mappingResult($query->fetch());
+    }
+
     public function findBy($key, $value = null)
     {
-        $sql = "SELECT * FROM {$this->orm->getTable()} WHERE ";
+        $sql = "SELECT * FROM {$this->orm->getTable()} {$this->orm->buildWhereSQL($key, $value)} ";
 
-        $result = $this->db->query($sql);
+        $query = $this->db->prepare($sql);
 
-        $this->mapping($result->fetchAll());
+        $query->execute($this->orm->getWhereParams());
+
+        return $this->mapping($query->fetchAll());
     }
 
-    public function insert()
+    private function insert()
     {
-        $this->orm->saveEntity();
-
         $query = $this->db->prepare($this->orm->buildSQLInsert());
 
         $query->execute($this->orm->getColumnsWithValues());
@@ -74,10 +97,8 @@ abstract class ActiveRecord
         return $this->db->lastInsertId();
     }
 
-    public function update()
+    private function update()
     {
-        $this->orm->saveEntity();
-
         $query = $this->db->prepare($this->orm->buildSQLUpdate());
 
         $query->execute($this->orm->getColumnsWithValues());
@@ -86,9 +107,13 @@ abstract class ActiveRecord
         
     }
 
-    public function delete()
+    public function delete($key, $value)
     {
-        // 
+        $sql = "DELETE FROM {$this->orm->getTable()} {$this->orm->buildWhereSQL($key, $value)} ";
+
+        $query = $this->db->prepare($sql);
+
+        $query->execute($this->orm->getWhereParams());
     }
 
     private function mapping($results)
@@ -111,13 +136,12 @@ abstract class ActiveRecord
             return null;
         }
 
-        $class = $this->class;
+        $class = $this;
 
         $instance = new $class();
             
             foreach ($result as $key => $value) {
                 if (method_exists($instance, "set" . ucfirst($key))) {
-                    $value = !empty($value) ? $value : null;
                     $instance->{"set" . ucfirst($key)}($value);
                 }
             }

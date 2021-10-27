@@ -3,61 +3,53 @@
 namespace App\Core\ORM;
 
 use App\Core\PDO\PDOConnection;
+use App\Core\ORM\SQLBuilder\SQLBuilder;
+use App\Core\ORM\EntityReflection\EntityReflection;
 
 abstract class ActiveRecord
 {
-    private $db;
+    private PDOConnection $db;
 
-    private ORMReflection $orm;
+    private SQLBuilder $sqlBuilder;
+
+    private EntityReflection $entityReflection;
 
     public function __construct()
     {
         $this->db = PDOConnection::getConnection();
-        $this->orm = new ORMReflection($this);
+        $this->entityReflection = new EntityReflection($this);
+        $this->sqlBuilder = new SQLBuilder($this, $this->entityReflection);
     }
 
     public function save()
     {
-        $this->orm->saveEntity();    
-        
+        $this->entityReflection->persistEntity();
+
         // Si l'entity ne comporte pas de clé unique créer une erreur
-        if (empty($this->orm->getIdColumn())) {
+        if (empty($this->entityReflection->getIdColumn())) {
             // throw Exception
             dd("Pas de clé unique sur l'entity");
         }
 
-        // dd($this->orm->getIdColumn());
-
         // Si la valeur de la cle unique est vide c'est une insertion sinon une update
-        if (empty($this->{"get" . ucfirst($this->orm->getIdColumn())}())) {
+
+        if (empty($this->{"get" . ucfirst($this->entityReflection->getIdColumn())}())) {
             // INSERT
             $lastInsert = $this->insert();
 
-            $result = $this->find($lastInsert); 
-
-            // $instance = $this;
-
-            foreach ($result as $key => $value) {
-                if (method_exists($this, "set" . ucfirst($key))) {
-                    $this->{"set" . ucfirst($key)}($value);
-                }
+            if ($lastInsert) {
+                $this->{"setId"}($lastInsert);
             }
-            dd("Insert");
+
         } else {
             // UPDATE
             $this->update();
-            dd("Update");
         }
-
-        
-        
-
-
     }
 
     public function findAll()
     {
-        $sql = "SELECT * FROM {$this->orm->getTable()} ";
+        $sql = $this->sqlBuilder->buildSQLSelect();
 
         $query = $this->db->prepare($sql);
 
@@ -68,52 +60,55 @@ abstract class ActiveRecord
 
     public function find($id)
     {
-        $sql = "SELECT * FROM {$this->orm->getTable()} {$this->orm->buildWhereSQL('id', $id)} ";
+        $sql = $this->sqlBuilder->buildSQLSelect($id);
 
         $query = $this->db->prepare($sql);
 
-        $query->execute($this->orm->getWhereParams());
+        $query->execute($this->sqlBuilder->getWhereParams());
 
         return $this->mappingResult($query->fetch());
     }
 
     public function findBy($key, $value = null)
     {
-        $sql = "SELECT * FROM {$this->orm->getTable()} {$this->orm->buildWhereSQL($key, $value)} ";
+        $sql = $this->sqlBuilder->buildSQLSelect($key, $value);
 
         $query = $this->db->prepare($sql);
 
-        $query->execute($this->orm->getWhereParams());
+        $query->execute($this->sqlBuilder->getWhereParams());
 
         return $this->mapping($query->fetchAll());
     }
 
     private function insert()
     {
-        $query = $this->db->prepare($this->orm->buildSQLInsert());
+        $sql = $this->sqlBuilder->buildSQLInsert();
 
-        $query->execute($this->orm->getColumnsWithValues());
+        $query = $this->db->prepare($sql);
+
+        $query->execute($this->sqlBuilder->getParamsExecute($sql));
 
         return $this->db->lastInsertId();
     }
 
     private function update()
     {
-        $query = $this->db->prepare($this->orm->buildSQLUpdate());
-
-        $query->execute($this->orm->getColumnsWithValues());
-
-        return $this;
-        
-    }
-
-    public function delete($key, $value)
-    {
-        $sql = "DELETE FROM {$this->orm->getTable()} {$this->orm->buildWhereSQL($key, $value)} ";
+        $sql = $this->sqlBuilder->buildSQLUpdate();
 
         $query = $this->db->prepare($sql);
 
-        $query->execute($this->orm->getWhereParams());
+        $query->execute($this->sqlBuilder->getParamsExecute($sql));
+
+        return $this;
+    }
+
+    public function delete()
+    {
+        $sql = $this->sqlBuilder->buildSQLDelete();
+
+        $query = $this->db->prepare($sql);
+
+        $query->execute($this->sqlBuilder->getParamsExecute($sql));
     }
 
     private function mapping($results)

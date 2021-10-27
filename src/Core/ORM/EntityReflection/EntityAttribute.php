@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Core\ORM;
+namespace App\Core\ORM\EntityReflection;
 
 use Attribute;
 
 #[Attribute]
-class ORMColumn
+class EntityAttribute
 {
     public array $attributes = [
         "AutoIncrement" => false,

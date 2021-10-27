@@ -12,10 +12,10 @@ class ErrorController extends AbstractController
         return $this->render("/error/404.php", [], 404);
     }
 
-    public function error500(): Response
-    {
-        return $this->render("/error/500.php", [], 500);
-    }
+    // public function error500(): Response
+    // {
+    //     return $this->render("/error/500.php", [], 500);
+    // }
 
     public function error(string $message, int $statusCode): Response
     {

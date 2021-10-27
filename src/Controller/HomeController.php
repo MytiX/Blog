@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
-use App\Core\ORM\ORMReflection;
 
 class HomeController extends AbstractController
 {
@@ -14,63 +13,27 @@ class HomeController extends AbstractController
     {
         $user = new User();
 
-        $orm = new ORMReflection($user);
+        // $user->setId(24);
+        $user->setName("Insert");
+        $user->setPrenom("Alyssia");
+        $user->setAge(70);
+        
 
-        // $orm->buildWhereSQL("email", "test@gmail.com");
+        // $user->save(); //OK
 
-        // $test = $user->findBy("name", "Jose");
-        // $test = $user->find(7);
-        // $test = $user->findAll();
-        // $test = $user->delete("id", 10);
+        // dd($user);
 
-        // dd($test);
-
-        // $orm->buildWhereSQL(["email" => [
-        //     "test@gmail.com",
-        //     "jose@gmail.com",
+        // $user->delete(); // OK
+        // dd($user->findAll()); // OK
+        dd($user->find(22)); // OK
+        // dd($user->findBy("name", "Doe")); // OK
+        // dd($user->findBy([
+        //     "name" => [
+        //         "Doe",
+        //         "Ferreira"
         //     ],
-        //     "id" => 3
-        // ]);
-
-        // $orm->setColumnsWithValues("nom", "toto");
-        // $orm->setColumnsWithValues("age", 26);
-
-        // dd($orm->getColumnsWithValues());
-
-        $user->setId(11);
-        $user->setName("TEST");
-        $user->setPrenom("Jose");
-        $user->setAge(28);
-        // $user->setNomArticle("toto");
-
-        // var_dump($user->getAge());
-        
-        $user->save();
-        // $user->update();
-
-        // dd($orm->getProperties());
-        
-        // dd($orm->getTable(), $orm->getColumns(), $orm->getValues());
-
-
-
-
-
-        
-        // $result = $user->findById(1);
-        // $user->setName("Jose");
-        // $user->setPrenom("Henry");
-        // $user->setAge(25);
-
-        // $reflection = new ReflectionClass($user);
-
-        // dd($reflection->getProperties());
-
-        // $user->insert();
-
-        // $users = $entityManager->findAll($user);
-
-        // dd($users[1]->getName());
+        //     "age" => 28
+        // ]));
 
 
 

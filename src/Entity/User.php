@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use App\Core\ORM\ActiveRecord;
-use App\Core\ORM\ORMColumn;
+use App\Core\ORM\EntityReflection\EntityAttribute;
 
 class User extends ActiveRecord
 {
-    #[ORMColumn([
+    #[EntityAttribute([
         "AutoIncrement" => true, 
         "Id" => true
     ])]

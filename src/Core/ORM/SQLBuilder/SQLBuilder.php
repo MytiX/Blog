@@ -125,6 +125,7 @@ class SQLBuilder
 
         // find
         if (is_integer($keyOrArray)) {
+            // @TODO faire que l'id soit récuperer depuis l'attribute de la class
             $where .= "id = :id";
             $this->setWhereParams(":id", $keyOrArray);
             return $where;

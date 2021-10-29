@@ -2,40 +2,34 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
+use App\Entity\Posts;
+use App\Entity\Users;
 
 class HomeController extends AbstractController
 {
     #[Route("/")]
     public function home()
     {
-        $user = new User();
+        // $user = new Users();
+        $article = new Posts();
 
-        // $user->setId(24);
-        $user->setName("Insert");
-        $user->setPrenom("Alyssia");
-        $user->setAge(70);
+        // dd($article->findAll());
         
+        // for ($i=1; $i < 50; $i++) { 
+        //     $date = new DateTime();
 
-        // $user->save(); //OK
+        //     $article->setTitle("Article PHP N°" . $i);
+        //     $article->setHeader("Introduction article N°" . $i);
+        //     $article->setContent("Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea veritatis delectus ullam, voluptatibus totam cumque suscipit quas alias facilis, corrupti explicabo illo corporis laborum iste rerum eos debitis odio porro.");
+        //     $article->setAuthor(1);
+        //     $article->setCreatedAt($date->format('Y-m-d H:i:s'));
+        //     $article->setUpdateAt($date->format('Y-m-d H:i:s'));
+        //     $article->setActive(1);
 
-        // dd($user);
-
-        // $user->delete(); // OK
-        // dd($user->findAll()); // OK
-        dd($user->find(22)); // OK
-        // dd($user->findBy("name", "Doe")); // OK
-        // dd($user->findBy([
-        //     "name" => [
-        //         "Doe",
-        //         "Ferreira"
-        //     ],
-        //     "age" => 28
-        // ]));
-
-
+        //     $article->save();
+        // }
 
         // Votre nom et votre prénom ;
         // Une photo et/ou un logo ;

@@ -92,4 +92,20 @@ class EntityReflection
     {
         return $this->columnsWithValues;
     }
+
+    public function formatFunctionName(string $columnName)
+    {
+        $functionName = "";
+        
+        $columns = explode("_", $columnName);
+
+        if (count($columns) > 1) {
+            for ($i=0; $i < count($columns); $i++) { 
+                $functionName .= ucfirst($columns[$i]);
+            }
+            return lcfirst($functionName);
+        }
+
+        return ucfirst($columns[0]);
+    }
 }

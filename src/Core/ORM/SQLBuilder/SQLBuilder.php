@@ -184,8 +184,10 @@ class SQLBuilder
         foreach ($matches[0] as $column) {
             $paramsEntity = preg_replace("/:/", "", $column);
 
-            if (method_exists($this->instance, "get" . ucfirst($paramsEntity))) {
-                $params[$column] = $this->instance->{"get" . ucfirst($paramsEntity)}();
+            $method = "get" . $this->entityReflection->formatFunctionName($paramsEntity);
+
+            if (method_exists($this->instance, $method)) {
+                $params[$column] = $this->instance->{$method}();
             }
         }
 

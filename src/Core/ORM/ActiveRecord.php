@@ -86,6 +86,8 @@ abstract class ActiveRecord
 
         $query = $this->db->prepare($sql);
 
+        // dd($sql, $this->sqlBuilder->getParamsExecute($sql), $this->entityReflection->getColumnsWithValues());
+
         $query->execute($this->sqlBuilder->getParamsExecute($sql));
 
         return $this->db->lastInsertId();
@@ -136,8 +138,13 @@ abstract class ActiveRecord
         $instance = new $class();
             
             foreach ($result as $key => $value) {
-                if (method_exists($instance, "set" . ucfirst($key))) {
-                    $instance->{"set" . ucfirst($key)}($value);
+
+                $method = "set" . $this->entityReflection->formatFunctionName($key);
+
+                if (method_exists($instance, $method)) {
+                    $instance->{$method}($value);
+                } else {
+                    dd("Pas de méthode pour " . $key);
                 }
             }
         

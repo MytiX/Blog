@@ -22,7 +22,7 @@ class BlogController extends AbstractController
     #[Route("/blog/{slug}")]
     public function viewPost(string $slug)
     {
-        dd(__CLASS__ . " " . $slug);
+        // dd(__CLASS__ . " " . $slug);
         // echo __CLASS__ . " Article : " . $slug;
         // Tous les requis pour la page d'affichage de tous les blogs posts
 
@@ -33,7 +33,7 @@ class BlogController extends AbstractController
         // La date de dernière mise à jour ;
         // Le formulaire permettant d’ajouter un commentaire (soumis pour validation) ;
         // Les listes des commentaires validés et publiés.
-        return $this->render("/home/home.php");
+        return $this->render("/post/post.php");
     }
 
     public function addPost()

@@ -1,6 +1,6 @@
 .blog-header {
     line-height: 1;
-    border-bottom: 1px solid #55595c;
+    /* border-bottom: 1px solid #55595c; */
 }
 
 .blog-header-logo {
@@ -84,6 +84,9 @@ h1, h2, h3, h4, h5, h6 {
 .blog-post {
     margin-bottom: 2rem;
 }
+.blog-post p {
+    text-align: justify;
+}
 .blog-post-title {
     margin-bottom: .25rem;
     font-size: 28px;
@@ -165,9 +168,11 @@ body
 }
 .link-secondary {
     color: white;
+    text-decoration: none;
 }
 .link-secondary:focus, .link-secondary:hover {
     color: #f0f6fcb3;
+    text-decoration: underline;
 }
 .border-rounded {
     border: 1px solid #30363d;
@@ -181,4 +186,23 @@ body
 }
 .shadow-custom {
     box-shadow: -5px 5px 5px #0d1117;
+}
+
+.form-group input, .form-group textarea, .form-check-input {
+    background-color: #0d1117 !important;
+    border-color: #30363d !important;
+    color: white !important;
+}
+
+.btn-custom {
+    padding: 8px 20px;
+    background-color: #0d1117;
+    color: white;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+.btn-custom:hover {
+    border-radius: 30px;
+    text-decoration: underline;
 }

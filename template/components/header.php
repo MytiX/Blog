@@ -33,7 +33,7 @@
                 </div>
             </header>
 
-            <div class="nav-scroller py-1 mb-2">
+            <div class="nav-scroller py-1 mb-2 border-bottom-custom">
                 <nav class="nav d-flex justify-content-center">
                     <a class="p-2 link-secondary" href="#">PHP</a>
                     <a class="p-2 link-secondary" href="#">Symfony</a>

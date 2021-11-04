@@ -22,8 +22,8 @@ class PDOConnection
     private function __construct()
     {
         $this->connection = new PDO(
-            sprintf("mysql:dbname=%s;host=%s", self::$db_name, self::$db_host), 
-            self::$db_user, 
+            sprintf('mysql:dbname=%s;host=%s', self::$db_name, self::$db_host),
+            self::$db_user,
             self::$db_pass,
             [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -34,9 +34,10 @@ class PDOConnection
 
     public static function getConnection(): self
     {
-        if (self::$_instance === null) {
+        if (null === self::$_instance) {
             self::$_instance = new PDOConnection();
         }
+
         return self::$_instance;
     }
 

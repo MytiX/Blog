@@ -8,8 +8,8 @@ use Attribute;
 class EntityAttribute
 {
     public array $attributes = [
-        "AutoIncrement" => false,
-        "Id" => false
+        'AutoIncrement' => false,
+        'Id' => false,
     ];
 
     public function __construct(array $attributes)
@@ -30,17 +30,15 @@ class EntityAttribute
 
     public function isAutoIncrement(): bool
     {
-        if (in_array("AutoIncrement", $this->attributes)) {
- 
-            return $this->attributes["AutoIncrement"];
+        if (in_array('AutoIncrement', $this->attributes)) {
+            return $this->attributes['AutoIncrement'];
         }
     }
 
     public function isId(): bool
     {
-        if (in_array("Id", $this->attributes)) {
- 
-            return $this->attributes["Id"];
+        if (in_array('Id', $this->attributes)) {
+            return $this->attributes['Id'];
         }
     }
 }

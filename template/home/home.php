@@ -10,7 +10,7 @@
                 compliquer il reste StackOverflow.</p>
         </div>
     </div>
-
+    
     <div class="row mb-2">
         <div class="col-md-6">
             <div class="row g-0 border-rounded flex-md-row mb-4 shadow-custom h-md-250">

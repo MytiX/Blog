@@ -3,18 +3,17 @@
 namespace App\Core\ORM\EntityReflection;
 
 use ReflectionClass;
-use App\Core\ORM\EntityReflection\EntityAttribute;
 
 class EntityReflection
 {
     private object $instance;
 
     private string $uniqueColumn;
-    
+
     private string $autoIncrement;
 
     private array $columnsWithValues;
-    
+
     public function __construct($instance)
     {
         $this->reflection = new ReflectionClass($instance);
@@ -26,24 +25,24 @@ class EntityReflection
         foreach ($this->reflection->getProperties() as $propertie) {
             /** @var ReflectionAttribute $attributes */
             $attributes = $propertie->getAttributes(EntityAttribute::class);
-            
+
             if (!empty($attributes)) {
                 foreach ($attributes as $attribute) {
                     /** @var EntityAttribute $entityAttribute */
                     $entityAttribute = $attribute->newInstance();
-                    
+
                     if ($entityAttribute->isAutoIncrement()) {
                         $this->setAutoIncrementKey($this->formatKeyName($propertie->getName()));
                     } else {
-                        $this->setColumnsWithValues($this->formatKeyName($propertie->getName()), $this->instance->{"get" . ucfirst($propertie->getName())}());
+                        $this->setColumnsWithValues($this->formatKeyName($propertie->getName()), $this->instance->{'get'.ucfirst($propertie->getName())}());
                     }
-                    
+
                     if ($entityAttribute->isId()) {
                         $this->setIdColumn($propertie->getName());
                     }
                 }
             } else {
-                $this->setColumnsWithValues($this->formatKeyName($propertie->getName()), $this->instance->{"get" . ucfirst($propertie->getName())}());
+                $this->setColumnsWithValues($this->formatKeyName($propertie->getName()), $this->instance->{'get'.ucfirst($propertie->getName())}());
             }
         }
     }
@@ -72,15 +71,16 @@ class EntityReflection
     {
         return $this->autoIncrement;
     }
-    
+
     private function formatKeyName($columnsName)
     {
         $parts = preg_split('/(?=[A-Z])/', $columnsName);
-        
+
         if (count($parts) > 1) {
             $columnsName = strtolower(implode('_', $parts));
-        } 
-        return ":" . $columnsName;
+        }
+
+        return ':'.$columnsName;
     }
 
     private function setColumnsWithValues(string $column, mixed $value)
@@ -95,14 +95,15 @@ class EntityReflection
 
     public function formatFunctionName(string $columnName)
     {
-        $functionName = "";
-        
-        $columns = explode("_", $columnName);
+        $functionName = '';
+
+        $columns = explode('_', $columnName);
 
         if (count($columns) > 1) {
-            for ($i=0; $i < count($columns); $i++) { 
+            for ($i = 0; $i < count($columns); ++$i) {
                 $functionName .= ucfirst($columns[$i]);
             }
+
             return lcfirst($functionName);
         }
 

@@ -8,8 +8,8 @@ use App\Core\ORM\EntityReflection\EntityAttribute;
 class Users extends ActiveRecord
 {
     #[EntityAttribute([
-        "AutoIncrement" => true, 
-        "Id" => true
+        'AutoIncrement' => true,
+        'Id' => true,
     ])]
     private int $id;
 
@@ -24,7 +24,7 @@ class Users extends ActiveRecord
     private ?string $role;
 
     private string $createdAt;
-    
+
     private int $active;
 
     private ?string $codeAuth;

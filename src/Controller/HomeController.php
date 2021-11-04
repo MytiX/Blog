@@ -2,22 +2,26 @@
 
 namespace App\Controller;
 
-use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
+use App\Core\Route\Route;
 use App\Entity\Posts;
 use App\Entity\Users;
 
 class HomeController extends AbstractController
 {
-    #[Route("/")]
+    #[Route('/', 'app_home')]
     public function home()
     {
         // $user = new Users();
-        $article = new Posts();
+        $posts = new Posts();
 
-        // dd($article->findAll());
-        
-        // for ($i=1; $i < 50; $i++) { 
+        $resultPosts = $posts->findBy('active', 1);
+
+        // dd($resultPosts);
+
+        // dd($resultPosts);
+
+        // for ($i=1; $i < 50; $i++) {
         //     $date = new DateTime();
 
         //     $article->setTitle("Article PHP N°" . $i);
@@ -41,7 +45,8 @@ class HomeController extends AbstractController
         // Un lien vers votre CV au format PDF ;
         // Et l’ensemble des liens vers les réseaux sociaux où l’on peut vous suivre (GitHub, LinkedIn, Twitter…).
 
-
-        return $this->render("/home/home.php");
+        return $this->render('/home/home.php', [
+            'posts' => $resultPosts,
+        ]);
     }
 }

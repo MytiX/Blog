@@ -2,8 +2,8 @@
 
 namespace App\Core\Controller;
 
-use App\Core\Templating\Templating;
 use App\Core\HttpFoundation\Response\Response;
+use App\Core\Templating\Templating;
 
 abstract class AbstractController
 {

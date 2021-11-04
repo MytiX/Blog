@@ -2,9 +2,9 @@
 
 namespace App\Core\ORM;
 
-use App\Core\PDO\PDOConnection;
-use App\Core\ORM\SQLBuilder\SQLBuilder;
 use App\Core\ORM\EntityReflection\EntityReflection;
+use App\Core\ORM\SQLBuilder\SQLBuilder;
+use App\Core\PDO\PDOConnection;
 
 abstract class ActiveRecord
 {
@@ -33,14 +33,13 @@ abstract class ActiveRecord
 
         // Si la valeur de la cle unique est vide c'est une insertion sinon une update
 
-        if (empty($this->{"get" . ucfirst($this->entityReflection->getIdColumn())}())) {
+        if (empty($this->{'get'.ucfirst($this->entityReflection->getIdColumn())}())) {
             // INSERT
             $lastInsert = $this->insert();
 
             if ($lastInsert) {
-                $this->{"setId"}($lastInsert);
+                $this->{'setId'}($lastInsert);
             }
-
         } else {
             // UPDATE
             $this->update();
@@ -66,7 +65,13 @@ abstract class ActiveRecord
 
         $query->execute($this->sqlBuilder->getWhereParams());
 
-        return $this->mappingResult($query->fetch());
+        $result = $query->fetch();
+
+        if (false === $result) {
+            return null;
+        }
+
+        return $this->mappingResult($result);
     }
 
     public function findBy($key, $value = null)
@@ -85,8 +90,6 @@ abstract class ActiveRecord
         $sql = $this->sqlBuilder->buildSQLInsert();
 
         $query = $this->db->prepare($sql);
-
-        // dd($sql, $this->sqlBuilder->getParamsExecute($sql), $this->entityReflection->getColumnsWithValues());
 
         $query->execute($this->sqlBuilder->getParamsExecute($sql));
 
@@ -121,9 +124,9 @@ abstract class ActiveRecord
         $array = [];
 
         foreach ($results as $result) {
-            
             $array[] = $this->mappingResult($result);
         }
+
         return $array;
     }
 
@@ -136,18 +139,17 @@ abstract class ActiveRecord
         $class = $this;
 
         $instance = new $class();
-            
-            foreach ($result as $key => $value) {
 
-                $method = "set" . $this->entityReflection->formatFunctionName($key);
+        foreach ($result as $key => $value) {
+            $method = 'set'.$this->entityReflection->formatFunctionName($key);
 
-                if (method_exists($instance, $method)) {
-                    $instance->{$method}($value);
-                } else {
-                    dd("Pas de méthode pour " . $key);
-                }
+            if (method_exists($instance, $method)) {
+                $instance->{$method}($value);
+            } else {
+                dd('Pas de méthode pour '.$key);
             }
-        
+        }
+
         return $instance;
     }
 }

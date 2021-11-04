@@ -9,21 +9,23 @@ use DateTime;
 class Posts extends ActiveRecord
 {
     #[EntityAttribute([
-        "AutoIncrement" => true, 
-        "Id" => true
+        'AutoIncrement' => true,
+        'Id' => true,
     ])]
     private int $id;
 
     private string $title;
-    
+
+    private string $slug;
+
     private string $header;
-    
+
     private string $content;
-    
+
     private int $author;
-    
+
     private string $createdAt;
-    
+
     private string $updateAt;
 
     private int $active;
@@ -38,6 +40,7 @@ class Posts extends ActiveRecord
         if (empty($this->id)) {
             return null;
         }
+
         return $this->id;
     }
 
@@ -50,7 +53,17 @@ class Posts extends ActiveRecord
     {
         return $this->title;
     }
-    
+
+    public function setSlug(string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
     public function setHeader(string $header): void
     {
         $this->header = $header;
@@ -86,9 +99,9 @@ class Posts extends ActiveRecord
         $this->createdAt = $createdAt;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): DateTime
     {
-        return $this->createdAt;
+        return new DateTime($this->createdAt);
     }
 
     public function setUpdateAt(string $updateAt): void

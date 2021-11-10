@@ -5,35 +5,30 @@ namespace App\Controller;
 use App\Core\Controller\AbstractController;
 use App\Core\Route\Route;
 use App\Entity\Posts;
-use App\Entity\Users;
 
 class HomeController extends AbstractController
 {
     #[Route('/', 'app_home')]
     public function home()
     {
-        // $user = new Users();
         $posts = new Posts();
 
-        $resultPosts = $posts->findBy('active', 1);
+        $resultPosts = $posts->findBy([
+            'params' => [
+                'active' => 1,
+            ],
+            'orderBy' => [
+                'created_at DESC',
+            ],
+            'limit' => 10,
+        ]);
 
-        // dd($resultPosts);
-
-        // dd($resultPosts);
-
-        // for ($i=1; $i < 50; $i++) {
-        //     $date = new DateTime();
-
-        //     $article->setTitle("Article PHP N°" . $i);
-        //     $article->setHeader("Introduction article N°" . $i);
-        //     $article->setContent("Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea veritatis delectus ullam, voluptatibus totam cumque suscipit quas alias facilis, corrupti explicabo illo corporis laborum iste rerum eos debitis odio porro.");
-        //     $article->setAuthor(1);
-        //     $article->setCreatedAt($date->format('Y-m-d H:i:s'));
-        //     $article->setUpdateAt($date->format('Y-m-d H:i:s'));
-        //     $article->setActive(1);
-
-        //     $article->save();
-        // }
+        $postsPromote = $posts->findBy([
+            'params' => [
+                'active' => 1,
+                'promote' => 1,
+            ],
+        ]);
 
         // Votre nom et votre prénom ;
         // Une photo et/ou un logo ;
@@ -47,6 +42,7 @@ class HomeController extends AbstractController
 
         return $this->render('/home/home.php', [
             'posts' => $resultPosts,
+            'postsPromote' => $postsPromote,
         ]);
     }
 }

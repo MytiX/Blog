@@ -38,16 +38,28 @@ class SQLBuilder
         }
     }
 
-    public function buildSQLSelect($key = null, $value = null)
+    public function buildSQLSelect(mixed $idOrParams = null): string
     {
         $sql = "SELECT * FROM {$this->getTable()}";
 
         // findAll
-        if (empty($key)) {
+        if (empty($idOrParams)) {
             return $sql;
         }
 
-        $sql .= $this->buildSQLWhere($key, $value);
+        if (!empty($idOrParams['params']) or is_integer($idOrParams)) {
+            $sql .= $this->buildSQLWhere($idOrParams);
+        }
+
+        if (!empty($idOrParams['orderBy'])) {
+            $sql .= $this->buildSQLOrderBy($idOrParams['orderBy']);
+        }
+
+        if (!empty($idOrParams['limit']) and empty($idOrParams['offset'])) {
+            $sql .= $this->buildSQLLimit($idOrParams['limit']);
+        } elseif (!empty($idOrParams['limit']) and !empty($idOrParams['offset'])) {
+            $sql .= $this->buildSQLLimit($idOrParams['limit'], $idOrParams['offset']);
+        }
 
         return $sql;
     }
@@ -114,31 +126,22 @@ class SQLBuilder
         return $sql;
     }
 
-    public function buildSQLWhere($keyOrArray, $value)
+    public function buildSQLWhere($idOrParams)
     {
         $where = ' WHERE ';
 
         // find
-        if (is_integer($keyOrArray)) {
+        if (is_integer($idOrParams)) {
             // @TODO faire que l'id soit récuperer depuis l'attribute de la class
             $where .= 'id = :id';
-            $this->setWhereParams(':id', $keyOrArray);
-
-            return $where;
-        }
-
-        // findBy key and value
-        if (is_string($keyOrArray) && !empty($value)) {
-            $keyPrepare = ':w_'.$keyOrArray;
-            $where .= $keyOrArray.' = '.$keyPrepare;
-            $this->setWhereParams($keyPrepare, $value);
+            $this->setWhereParams(':id', $idOrParams);
 
             return $where;
         }
 
         // findBy array multiple condition
-        if (is_array($keyOrArray)) {
-            foreach ($keyOrArray as $key => $value) {
+        if (is_array($idOrParams['params'])) {
+            foreach ($idOrParams['params'] as $key => $value) {
                 if (is_array($value)) {
                     $where .= '(';
                     for ($i = 0; $i < count($value); ++$i) {
@@ -152,6 +155,7 @@ class SQLBuilder
                     $where .= $key.' = '.$keyPrepare;
                     $this->setWhereParams($keyPrepare, $value);
                 }
+
                 $where .= ' AND ';
             }
             $where = substr($where, 0, -4);
@@ -160,6 +164,28 @@ class SQLBuilder
         }
 
         throw new SQLBuilderException('An error occurred while generating the where condition, with the values. </br>'.__FILE__, 500);
+    }
+
+    private function buildSQLOrderBy(array $paramsOrder)
+    {
+        $orderBy = ' ORDER BY ';
+
+        foreach ($paramsOrder as $param) {
+            $orderBy .= $param.', ';
+        }
+
+        return substr($orderBy, 0, -2);
+    }
+
+    private function buildSQLLimit(int $limit, int $offset = null)
+    {
+        $sql = ' LIMIT '.$limit;
+
+        if (!empty($offset)) {
+            $sql .= ' OFFSET '.$offset;
+        }
+
+        return $sql;
     }
 
     private function setWhereParams($key, $value)

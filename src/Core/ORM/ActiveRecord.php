@@ -57,7 +57,7 @@ abstract class ActiveRecord
         return $this->mapping($query->fetchAll());
     }
 
-    public function find($id)
+    public function find(int $id)
     {
         $sql = $this->sqlBuilder->buildSQLSelect($id);
 
@@ -74,9 +74,16 @@ abstract class ActiveRecord
         return $this->mappingResult($result);
     }
 
-    public function findBy($key, $value = null)
+    /**
+     * findBy.
+     *
+     * @param array $idOrParams takes as parameter an array accepting the keys params, orderBy, limit, offset
+     *
+     * @return void
+     */
+    public function findBy(array $idOrParams)
     {
-        $sql = $this->sqlBuilder->buildSQLSelect($key, $value);
+        $sql = $this->sqlBuilder->buildSQLSelect($idOrParams);
 
         $query = $this->db->prepare($sql);
 

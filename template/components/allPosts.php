@@ -10,10 +10,16 @@
                     <h2 class="blog-post-title"><?= $posts[$i]->getTitle() ?></h2>
                     <p><?= $posts[$i]->getHeader(); ?></p>
                 </a>
-                <p class="blog-post-meta"><?php $date = $posts[$i]->getCreatedAt(); echo($date->format("d/m/Y")); ?></p>
+                <p class="blog-post-meta">
+                    <?php
+                        $date = new DateTime($posts[$i]->getCreatedAt());
+
+                        echo($date->format('d/m/Y'));
+                    ?>
+                </p>
             </article>
         <?php endfor; ?>
     </div>
 
-    <?php include "aside.php" ?>
+    <?php include 'aside.php' ?>
 </div>

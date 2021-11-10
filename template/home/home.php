@@ -10,44 +10,36 @@
                 compliquer il reste StackOverflow.</p>
         </div>
     </div>
-    
+
     <div class="row mb-2">
-        <div class="col-md-6">
-            <div class="row g-0 border-rounded flex-md-row mb-4 shadow-custom h-md-250">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <article>
-                        <strong class="d-inline-block mb-2 text-primary">PHP</strong>
-                        <a href="#" class="a-custom">
-                            <h2 class="mb-0 blog-post-title">Comprendre la ReflectionClass</h2>
-                            <div class="mb-1 blog-post-meta">Nov 12</div>
-                            <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to
-                                additional content.</p>
-                        </a>
-                    </article>
+        <?php foreach ($postsPromote as $post) : ?>
+            <div class="col-md-6">
+                <div class="row g-0 border-rounded flex-md-row mb-4 shadow-custom h-md-250">
+                    <div class="col p-4 d-flex flex-column position-static">
+                        <article>
+                            <strong class="d-inline-block mb-2 text-primary">PHP</strong>
+                            <a href="/blog/<?= $post->getSlug() . '-' . $post->getId()  ?>" class="a-custom">
+                                <h2 class="mb-0 blog-post-title"><?= $post->getTitle() ?></h2>
+                                <div class="mb-1 blog-post-meta">
+                                    <?php
+                                        $date = new DateTime($post->getCreatedAt());
+
+                                        echo($date->format('d/m/Y'));
+                                    ?>
+                                </div>
+                                <p class="card-text mb-auto"><?= $post->getHeader(); ?></p>
+                            </a>
+                        </article>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="row g-0 border-rounded flex-md-row mb-4 shadow-custom h-md-250">
-                <div class="col p-4 d-flex flex-column position-static">
-                    <article>
-                        <strong class="d-inline-block mb-2 text-primary">PHP</strong>
-                        <a href="#" class="a-custom">
-                            <h2 class="mb-0 blog-post-title">Est-ce-que GIT est un outil essentiel au développeur ?</h2>
-                            <div class="mb-1 blog-post-meta">Nov 12</div>
-                            <p class="card-text mb-auto">This is a wider card with supporting text below as a natural lead-in to
-                                additional content.</p>
-                        </a>
-                    </article>
-                </div>
-            </div>
-        </div>
+        <?php endforeach; ?>
     </div>
 
     <?php include "../template/components/allPosts.php" ?>
-    
+
     <?php include "../template/components/contactForm.php" ?>
-    
+
 </main>
 
 <!-- Footer -->

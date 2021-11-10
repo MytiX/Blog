@@ -9,7 +9,13 @@
                 <h2 class="pb-4 mt-4 fst-italic blog-post-title">
                     <?php echo $post->getTitle(); ?>
                 </h2>
-                <p class="blog-post-meta">Dernière mise à jour le : <?php $date = $post->getCreatedAt(); echo $date->format('d/m/Y'); ?></p>
+                <p class="blog-post-meta">Dernière mise à jour le :
+                    <?php
+                        $date = new DateTime($post->getCreatedAt());
+
+                        echo($date->format('d/m/Y'));
+                    ?>
+                </p>
 
                 <img src="../assets/img/header.png" alt="" class="img-fluid pb-3">
 

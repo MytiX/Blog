@@ -2,6 +2,7 @@
 
 namespace App\Core\Route;
 
+use App\Core\Controller\AbstractController;
 use Attribute;
 
 #[Attribute]
@@ -9,7 +10,7 @@ class Route
 {
     private string $path;
 
-    private string $controller;
+    private $controller;
 
     private string $action;
 
@@ -27,7 +28,12 @@ class Route
 
     public function setController(string $controller): void
     {
-        $this->controller = $controller;
+        $this->controller = new $controller();
+    }
+
+    public function getController()
+    {
+        return $this->controller;
     }
 
     public function setAction(string $action): void
@@ -35,18 +41,24 @@ class Route
         $this->action = $action;
     }
 
+    public function getAction()
+    {
+        return $this->action;
+    }
+
     public function setParams(array $matches): void
     {
         $this->params = $matches;
-    }
-
-    public function getInstance(): mixed
-    {
-        return [new $this->controller(), $this->action];
     }
 
     public function getParams(): array
     {
         return $this->params;
     }
+
+    // public function getInstance(): mixed
+    // {
+    //     return [new $this->controller(), $this->action];
+    // }
+
 }

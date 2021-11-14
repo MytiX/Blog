@@ -9,7 +9,8 @@ class SignUpFormSecurity extends FormSecurity
     protected array $configInput = [
         'pseudoInput' => [
             'isNull' => false,
-            'constraint' => '/^([a-zA-Z0-9_]{4,16})$/'
+            'constraint' => '/^([a-zA-Z0-9_]{4,16})$/',
+            'errorMessage' => 'Le champs est invalide'
         ],
         'emailInput' => [
             'isNull' => false,
@@ -17,15 +18,15 @@ class SignUpFormSecurity extends FormSecurity
         ],
         'passwordInput' => [
             'isNull' => false,
-            'constraint' => ''
+            'constraint' => '/^[^\s]{8,16}$/'
         ],
         'cPasswordInput' => [
             'isNull' => false,
-            'constraint' => ''
+            'constraint' => '/^[^\s]{8,16}$/'
         ],
         'checkInput' => [
             'isNull' => false,
-            'constraint' => ''
+            'constraint' => '/^[1]{1}$/'
         ],
     ];
 }

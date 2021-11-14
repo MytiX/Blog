@@ -14,15 +14,22 @@ abstract class FormSecurity implements FormSecurityInterface
 
     protected array $requestParams = [];
 
-    public function __construct()
+    protected array $formErrors = [];
+
+    public function __construct(Request $request)
     {
-        $this->request = Request::createFromGlobals();
-        $this->requestParams = $this->setRequestParams();
+        $this->request = $request;
+        $this->setRequestParams();
     }
 
-    private function setRequestParams()
+    private function setRequestParams(): void
     {
-        return $this->request->request->all();
+        $this->requestParams = $this->request->request->all();
+    }
+
+    private function getRequestParams(): array
+    {
+        return $this->requestParams;
     }
 
     public function isSubmit()
@@ -35,12 +42,36 @@ abstract class FormSecurity implements FormSecurityInterface
 
     public function isValid()
     {
-        // foreach ($this->requestParams as $inputName => $value) {
+        foreach ($this->getRequestParams() as $inputName => $value) {
 
-        //     // if (!in_array($inputName, $this->configInput)) {
-        //     //     throw new FormSecurityException("You're fucking Input is broken", 500);
-        //     // }
-        // }
+            if (key_exists($inputName, $this->configInput)) {
+                if ($this->configInput[$inputName]['isNull'] === false) {
+                    if (!empty($value)) {
+                        $this->setErrors($inputName, $this->configInput[$inputName]['errorMessage']);
+                    }
+                }
+                // TODO checker les messages d'erreurs
+                if (!preg_match($this->configInput[$inputName]['constraint'], $value)) {
+                    // return message d'erreur
+                    dd("preg match pas bon pour $inputName");
+                }
+            } else {
+                dd('Throw la clé n\'existe pas');
+            }
+        }
+        if (!empty($this->getErrors())) {
+            return false;
+        }
+        return true;
+    }
+
+    public function setErrors($key, $message): void
+    {
+        $this->formErrors[$key] = $message;
+    }
+    public function getErrors(): array
+    {
+        return $this->formErrors;
     }
 
     public function getData()

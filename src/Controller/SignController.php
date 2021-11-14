@@ -13,13 +13,15 @@ class SignController extends AbstractController
 
     public function __construct()
     {
-        $this->request = Request::createFromGlobals();
+        // $this->request = Request::createFromGlobals();
     }
 
     #[Route('/signup')]
     public function signUp()
     {
-        $form = new SignUpFormSecurity();
+        $form = new SignUpFormSecurity($this->getRequest());
+
+        // dd($this->getRequest());
 
         // $pseudo = 'DevryX';
 
@@ -30,10 +32,13 @@ class SignController extends AbstractController
 
         // }
 
-        if ($form->isSubmit()) {
-            dd($form->getData());
+        if ($form->isSubmit() && $form->isValid()) {
+
+            $form->getData();
         }
-        return $this->render('/sign/signUp.php');
+        return $this->render('/sign/signUp.php', [
+            'formErrors' => $form->getErrors(),
+        ]);
     }
 
     #[Route('/signin')]

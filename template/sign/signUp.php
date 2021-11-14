@@ -11,6 +11,13 @@
                         <div class="form-group pb-2">
                             <label for="pseudoInput">Votre pseudo :</label>
                             <input type="text" class="form-control mt-2" id="pseudoInput" name="pseudoInput" value="" required>
+                            <?php
+                                if (!empty($formErrors['pseudoInput'])):
+                            ?>
+                                <p class=""><?= $formErrors['pseudoInput'] ?></p>
+                            <?php
+                                endif;
+                            ?>
                         </div>
 
                         <div class="form-group pb-2">

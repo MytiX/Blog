@@ -30,7 +30,9 @@ class Application
             if (($route = $this->router->getRoute()) === null) {
                 throw new RouteMatchException('Page not found', 404);
             } else {
-                $response = call_user_func_array($route->getInstance(), $route->getParams());
+                $class = $route->getController();
+                $class->setRequest($this->request);
+                $response = call_user_func_array([$route->getController(), $route->getAction()], $route->getParams());
             }
         } catch (HttpExceptionInterface $e) {
             $response = $this->getExceptionResponse($e);

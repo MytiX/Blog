@@ -60,13 +60,13 @@ h1, h2, h3, h4, h5, h6 {
     flex: 0 0 auto;
 }
 
-.h-250 { 
-    height: 250px; 
+.h-250 {
+    height: 250px;
 }
 
 @media (min-width: 768px) {
-    .h-md-250 { 
-        height: 250px; 
+    .h-md-250 {
+        height: 250px;
     }
 }
 
@@ -190,7 +190,7 @@ body
 
 .form-group input, .form-group textarea, .form-check-input {
     background-color: #0d1117 !important;
-    border-color: #30363d !important;
+    border-color: #30363d;
     color: white !important;
 }
 

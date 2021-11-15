@@ -16,6 +16,8 @@ abstract class FormSecurity implements FormSecurityInterface
 
     protected array $formErrors = [];
 
+    protected string $isNullError = 'Le champs ne peux pas être vide';
+
     public function __construct(Request $request)
     {
         $this->request = $request;
@@ -43,18 +45,19 @@ abstract class FormSecurity implements FormSecurityInterface
     public function isValid()
     {
         foreach ($this->getRequestParams() as $inputName => $value) {
-
             if (key_exists($inputName, $this->configInput)) {
+
                 if ($this->configInput[$inputName]['isNull'] === false) {
-                    if (!empty($value)) {
-                        $this->setErrors($inputName, $this->configInput[$inputName]['errorMessage']);
+                    if (empty($value)) {
+                        $this->setErrors($inputName, $this->isNullError);
                     }
                 }
-                // TODO checker les messages d'erreurs
-                if (!preg_match($this->configInput[$inputName]['constraint'], $value)) {
-                    // return message d'erreur
-                    dd("preg match pas bon pour $inputName");
+                if (!key_exists($inputName, $this->getErrors())) {
+                    if (!preg_match($this->configInput[$inputName]['constraint'], $value)) {
+                        $this->setErrors($inputName, $this->configInput[$inputName]['constraintError']);
+                    }
                 }
+
             } else {
                 dd('Throw la clé n\'existe pas');
             }
@@ -65,10 +68,11 @@ abstract class FormSecurity implements FormSecurityInterface
         return true;
     }
 
-    public function setErrors($key, $message): void
+    private function setErrors($key, $message): void
     {
         $this->formErrors[$key] = $message;
     }
+
     public function getErrors(): array
     {
         return $this->formErrors;

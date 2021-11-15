@@ -21,20 +21,9 @@ class SignController extends AbstractController
     {
         $form = new SignUpFormSecurity($this->getRequest());
 
-        // dd($this->getRequest());
-
-        // $pseudo = 'DevryX';
-
-        // if (preg_match_all('/[a-z]+/', $pseudo)) {
-        //     dd('Ok pseudo');
-        // } else {
-        //     dd('PAS Ok pseudo');
-
-        // }
-
         if ($form->isSubmit() && $form->isValid()) {
 
-            $form->getData();
+            dd($form->getData());
         }
         return $this->render('/sign/signUp.php', [
             'formErrors' => $form->getErrors(),

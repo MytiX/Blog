@@ -35,17 +35,19 @@ class Router
                     /** @var Route $route */
                     $route = $routeAttribute->newInstance();
 
-                    if ($route->getPath() === $this->request->getRequestUri()) {
+                    if ($route->getPath() === $this->request->getPathInfo()) {
                         $route->setController($className);
                         $route->setAction($method->getName());
 
                         return $route;
                     }
 
+
                     $regex = $this->getParamsRegex($route);
 
+
                     if (null !== $regex) {
-                        if (preg_match($regex, $this->request->getRequestUri(), $matches)) {
+                        if (preg_match($regex, $this->request->getPathInfo(), $matches)) {
                             $route->setController($className);
                             $route->setAction($method->getName());
                             // Set params

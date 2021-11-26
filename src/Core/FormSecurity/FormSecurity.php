@@ -45,35 +45,36 @@ abstract class FormSecurity implements FormSecurityInterface
     public function isValid()
     {
         foreach ($this->getRequestParams() as $inputName => $value) {
-            if (key_exists($inputName, $this->configInput)) {
+            if (array_key_exists($inputName, $this->configInput)) {
+                $inputConfig = $this->configInput[$inputName];
 
-                if ($this->configInput[$inputName]['isNull'] === false) {
-                    if (empty($value)) {
-                        $this->setErrors($inputName, $this->isNullError);
-                    }
+                if (empty($value) && array_key_exists('isNull', $inputConfig) && true !== $inputConfig['isNull']) {
+                    $this->setMessages($inputName, $this->isNullError);
+                    continue;
                 }
-                if (!key_exists($inputName, $this->getErrors())) {
-                    if (!preg_match($this->configInput[$inputName]['constraint'], $value)) {
-                        $this->setErrors($inputName, $this->configInput[$inputName]['constraintError']);
-                    }
+
+                if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
+                    $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
+
+                    $this->setMessages($inputName, $errorMessage);
                 }
 
             } else {
                 dd('Throw la clé n\'existe pas');
             }
         }
-        if (!empty($this->getErrors())) {
+        if (!empty($this->getMessages())) {
             return false;
         }
         return true;
     }
 
-    private function setErrors($key, $message): void
+    public function setMessages($key, $message): void
     {
         $this->formErrors[$key] = $message;
     }
 
-    public function getErrors(): array
+    public function getMessages(): array
     {
         return $this->formErrors;
     }

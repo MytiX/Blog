@@ -195,7 +195,9 @@ class SQLBuilder
 
     public function getWhereParams(): array
     {
-        return $this->whereParams;
+        $whereParams = $this->whereParams;
+        $this->whereParams = [];
+        return $whereParams;
     }
 
     public function getParamsExecute(string $sql): array

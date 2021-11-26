@@ -92,6 +92,17 @@ abstract class ActiveRecord
         return $this->mapping($query->fetchAll());
     }
 
+    public function findOneBy(array $idOrParams)
+    {
+        $sql = $this->sqlBuilder->buildSQLSelect($idOrParams);
+
+        $query = $this->db->prepare($sql);
+
+        $query->execute($this->sqlBuilder->getWhereParams());
+
+        return $this->mappingResult($query->fetch());
+    }
+
     private function insert()
     {
         $sql = $this->sqlBuilder->buildSQLInsert();
@@ -125,9 +136,10 @@ abstract class ActiveRecord
 
     private function mapping($results)
     {
-        if (is_null($results)) {
+        if (empty($results)) {
             return null;
         }
+
         $array = [];
 
         foreach ($results as $result) {
@@ -137,9 +149,9 @@ abstract class ActiveRecord
         return $array;
     }
 
-    private function mappingResult($result): self
+    private function mappingResult($result)
     {
-        if (is_null($result)) {
+        if (empty($result)) {
             return null;
         }
 

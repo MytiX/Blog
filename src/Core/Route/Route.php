@@ -2,7 +2,6 @@
 
 namespace App\Core\Route;
 
-use App\Core\Controller\AbstractController;
 use Attribute;
 
 #[Attribute]
@@ -16,7 +15,7 @@ class Route
 
     private array $params = [];
 
-    public function __construct(string $path)
+    public function __construct(string $path, bool $secure = null, array $roles = null)
     {
         $this->path = $path;
     }

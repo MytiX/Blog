@@ -14,7 +14,7 @@ class SignUpFormSecurity extends FormSecurity
         ],
         'emailInput' => [
             'isNull' => false,
-            'constraint' => '/^[a-zA-Z0-9-_.]+[@]{1}[a-zA-Z0-9-]+[.]{1}[a-z]{2,4}$/',
+            'constraint' => '/^[a-zA-Z0-9-_.+]+[@]{1}[a-zA-Z0-9-]+[.]{1}[a-z]{2,4}$/',
             'constraintError' => 'Veuillez renseignez une adresse mail valide',
         ],
         'passwordInput' => [

@@ -11,32 +11,34 @@ class Users extends ActiveRecord
         'AutoIncrement' => true,
         'Id' => true,
     ])]
-    private int $id;
+    private ?int $id = null;
 
     private string $email;
 
     private string $password;
 
-    private string $firstname;
+    private string $pseudo;
 
-    private string $lastname;
+    // private string $firstname;
 
-    private ?string $role;
+    // private string $lastname;
+
+    private string $role = 'ROLE_USER';
 
     private string $createdAt;
 
-    private int $active;
+    private int $active = 0;
 
-    private ?string $codeAuth;
+    private ?string $codeAuth = null;
 
-    private ?string $resetPassRequest;
+    private ?string $resetPassRequest = null;
 
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -61,42 +63,52 @@ class Users extends ActiveRecord
         return $this->password;
     }
 
-    public function setFirstname(string $firstname): void
+    // public function setFirstname(string $firstname): void
+    // {
+    //     $this->firstname = $firstname;
+    // }
+
+    // public function getFirstname(): string
+    // {
+    //     return $this->firstname;
+    // }
+
+    // public function setLastname(string $lastname): void
+    // {
+    //     $this->lastname = $lastname;
+    // }
+
+    // public function getLastname(): string
+    // {
+    //     return $this->lastname;
+    // }
+
+    public function setPseudo(string $pseudo): void
     {
-        $this->firstname = $firstname;
+        $this->pseudo = $pseudo;
     }
 
-    public function getFirstname(): string
+    public function getPseudo(): string
     {
-        return $this->firstname;
+        return $this->pseudo;
     }
 
-    public function setLastname(string $lastname): void
-    {
-        $this->lastname = $lastname;
-    }
-
-    public function getLastname(): string
-    {
-        return $this->lastname;
-    }
-
-    public function setRole(?string $role): void
+    public function setRole(string $role): void
     {
         $this->role = $role;
     }
 
-    public function getRole(): ?string
+    public function getRole(): string
     {
         return $this->role;
     }
 
-    public function setActive(string $active): void
+    public function setActive(int $active): void
     {
         $this->active = $active;
     }
 
-    public function getActive(): string
+    public function getActive(): int
     {
         return $this->active;
     }

@@ -2,12 +2,13 @@
 
 namespace App;
 
-use App\Controller\ErrorController;
-use App\Core\HttpFoundation\Exception\HttpExceptionInterface;
-use App\Core\HttpFoundation\Request\Request;
-use App\Core\HttpFoundation\Response\Response;
-use App\Core\Route\Exception\RouteMatchException;
 use App\Core\Route\Router;
+use App\Controller\ErrorController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use App\Core\Route\Exception\RouteMatchException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use App\Core\HttpFoundation\Exception\HttpExceptionInterface;
 
 class Application
 {
@@ -50,11 +51,10 @@ class Application
         return $errorController->error($exception->getMessage(), $exception->getStatusCode());
     }
 
-    private function executeController($route): Response
+    private function executeController($route): Response|RedirectResponse
     {
         $controller = $route->getController();
 
-        
         $controller->setRequest($this->request);
         return call_user_func_array([$controller, $route->getAction()], $route->getParams());
     }

@@ -2,7 +2,7 @@
 
 namespace Config;
 
-class SwiftMailerConfig
+class MailerConfig
 {
     const HOST_MAILER = "maildev_blog";
     const PORT_MAILER = 25;

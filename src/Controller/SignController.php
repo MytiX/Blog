@@ -2,34 +2,20 @@
 
 namespace App\Controller;
 
-use App\Core\Route\Route;
-use App\Core\Controller\AbstractController;
-use App\Entity\Users;
-use App\Security\SignUpFormSecurity;
-use Config\SwiftMailerConfig;
 use DateTime;
+use App\Entity\Users;
+use App\Core\Route\Route;
+use App\Core\Mailer\Mailer;
+use App\Core\Templating\Templating;
+use App\Security\Form\SignUpFormSecurity;
+use App\Core\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 class SignController extends AbstractController
 {
     #[Route('/signup', false)]
-    public function signUp()
+    public function signUp(): Response
     {
-        $transport = (new \Swift_SmtpTransport(SwiftMailerConfig::HOST_MAILER));
-
-        $mailer = new \Swift_Mailer($transport);
-
-        $message = (new \Swift_Message('Confirmer votre compte DevCoding'))
-        ->setFrom(SwiftMailerConfig::FROM_MAILER)
-        ->setTo(['test@test.fr'])
-        ->setBody("<div style='text-align: center'>
-        <p>Veulliez valider votre compte DevCoding en cliquant sur le lien si dessous :</p>
-        <a href='http://localhost:8741/validate-account?email=test@test.fr&code=test'>Cliquez ici</a>
-        </div>", 'text/html');
-
-        $result = $mailer->send($message);
-
-        dd($result);
-
         $form = new SignUpFormSecurity($this->getRequest());
 
         if ($form->isSubmit() && $form->isValid()) {
@@ -60,7 +46,28 @@ class SignController extends AbstractController
                     $user->save();
 
                     if (!empty($user->getId())) {
-                        $form->setMessages('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
+
+                        $templating = new Templating();
+
+                        $message = $templating->getView('/emails/signup.php', [
+                            'email' => $user->getEmail(),
+                            'code' => $user->getCodeAuth(),
+                        ]);
+
+                        try {
+                            $mailer = new Mailer();
+
+                            $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
+
+                            $form->setMessages('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
+
+                        } catch (\Throwable $th) {
+                            // Supprime l'utilisateur
+                            // Message d'erreur
+                            // $form->setMessages('globalError', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
+                        }
+
+
                     } else {
                         $form->setMessages('globalError', 'Une erreur est survenu, veuillez réessayer ultérieurement.');
                     }
@@ -79,6 +86,11 @@ class SignController extends AbstractController
     #[Route('/signin')]
     public function signIn()
     {
+        $session = $this->getSession();
+
+        // $session->set('__user', $user);
+
+
         return $this->render('/sign/signIn.php');
     }
 }

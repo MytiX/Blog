@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Security;
+namespace App\Security\Form;
 
 use App\Core\FormSecurity\FormSecurity;
 

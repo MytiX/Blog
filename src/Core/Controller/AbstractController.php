@@ -2,9 +2,10 @@
 
 namespace App\Core\Controller;
 
+use App\Core\Session\Session;
 use App\Core\Templating\Templating;
 use Symfony\Component\HttpFoundation\Request;
-use App\Core\HttpFoundation\Response\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController
 {
@@ -25,5 +26,10 @@ abstract class AbstractController
     protected function getRequest(): Request
     {
         return $this->request;
+    }
+
+    protected function getSession(): Session
+    {
+        return Session::getSession();
     }
 }

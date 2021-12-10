@@ -27,8 +27,12 @@
                         <a class="blog-header-logo" href="/">DevCoding</a>
                     </div>
                     <div class="col-4 d-flex justify-content-end align-items-center">
-                        <a class="btn btn-sm btn-outline-secondary mx-2" href="/signup">Inscrivez-vous</a>
-                        <a class="btn btn-sm btn-outline-secondary" href="/signin">Connexion</a>
+                        <?php if (!empty($session->get('__user'))): ?>
+                            <a class="btn btn-sm btn-outline-secondary mx-2" href="/logout">Déconnexion</a>
+                        <?php else: ?>
+                            <a class="btn btn-sm btn-outline-secondary mx-2" href="/signup">Inscrivez-vous</a>
+                            <a class="btn btn-sm btn-outline-secondary" href="/signin">Connexion</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>

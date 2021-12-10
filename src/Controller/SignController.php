@@ -102,7 +102,6 @@ class SignController extends AbstractController
 
             try {
                 $auth->attemptLogin($credientials);
-                $session->set('successFlash', 'Bienvenue ' . $session->get('__user')->getPseudo());
                 return new RedirectResponse(AppConfig::URL);
             } catch (\Exception $e) {
                 $session->set('errorFlash', $e->getMessage());

@@ -15,6 +15,8 @@ class Authentication
 
     private int $maxAttempt = 5;
 
+    private int $timeout = 900;
+
     private Session $session;
 
     private Request $request;
@@ -29,42 +31,43 @@ class Authentication
     {
         $ip = $this->request->getClientIp();
 
-        $attempt = new AttemptConnection();
-
-        /** @var AttemptConncetion $resultAttempt */
-        $resultAttempt = $attempt->findOneBy([
+        /** @var AttemptConncetion $attempt */
+        $attempt = (new AttemptConnection())->findOneBy([
             'params' => [
                 'ip' => $ip
             ],
-            'extraSQL' => ' AND attempt_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)'
         ]);
 
-        $date = new DateTime();
+        $now = new DateTime();
 
-        if (null === $resultAttempt) {
+        if (null === $attempt) {
+            $attempt = new AttemptConnection();
             $attempt->setIp($ip);
-            $attempt->setAttempt(1);
-            $attempt->setAttemptAt($date->format('Y-m-d H:i:s'));
+            $attempt->setAttemptAt($now->format('Y-m-d H:i:s'));
+        }
 
-            $attempt->save();
-        } else {
-            if ($attempt >= 5) {
-                throw new AuthenticationException('Votre session à été bloquer pour une durée de 15 min');
-            } else {
-                $resultAttempt->setAttempt($resultAttempt->getAttempt() + 1);
-                $resultAttempt->setAttemptAt($date->format('Y-m-d H:i:s'));
-                $resultAttempt->save();
-            }
+        if ($now->getTimestamp() - $attempt->getAttemptAt()->getTimestamp() > $this->timeout) {
+            $attempt->setAttempt(0);
+        }
+
+        if ($attempt->getAttempt() >= $this->maxAttempt && $now->getTimestamp() - $attempt->getAttemptAt()->getTimestamp() < $this->timeout) {
+            $timeoutInterval = (new DateTime())->setTimestamp($attempt->getAttemptAt()->getTimestamp() + $this->timeout);
+            throw new AuthenticationException('Votre session à été bloquer pour une durée de 15 min. </br> Temps restant : ' . $now->diff($timeoutInterval)->format('%i min %s sec'));
         }
 
         // Contrôle les données de l'utilisateur
 
-        if (null !== ($user = $this->getUser($credentials))) {
-            // mise en session de l'utilisateur
-            $this->session->set(self::SESSION_USER_KEY, $user);
+        if (null === ($user = $this->getUser($credentials))) {
+            $attempt->setAttempt($attempt->getAttempt() + 1);
+            $attempt->setAttemptAt($now->format('Y-m-d H:i:s'));
+            $attempt->save();
+            throw new AuthenticationException('Votre mot de passe ou email est incorrect, tentative restante : ' . ($this->maxAttempt - $attempt->getAttempt()));
         }
 
-        throw new AuthenticationException('Votre mot de passe ou email est incorrect, tentative restante : ' . ($this->maxAttempt - $resultAttempt->getAttempt()));
+        $attempt->delete($attempt->getId());
+
+        // mise en session de l'utilisateur
+        $this->session->set(self::SESSION_USER_KEY, $user);
     }
 
     public function getUser(array $credentials): ?Users

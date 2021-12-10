@@ -4,6 +4,7 @@ namespace App\Core\ORM\SQLBuilder;
 
 use App\Core\ORM\EntityReflection\EntityReflection;
 use App\Core\ORM\SQLBuilder\SQLBuilderException\SQLBuilderException;
+use DateTime;
 
 class SQLBuilder
 {
@@ -216,7 +217,11 @@ class SQLBuilder
             $method = 'get'.$this->entityReflection->formatFunctionName($paramsEntity);
 
             if (method_exists($this->instance, $method)) {
-                $params[$column] = $this->instance->{$method}();
+                $value = $this->instance->{$method}();
+                if ($value instanceof DateTime) {
+                    $value = $value->format('Y-m-d H:i:s');
+                }
+                $params[$column] = $value;
             }
         }
 

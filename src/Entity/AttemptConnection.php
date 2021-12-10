@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Core\ORM\ActiveRecord;
 use App\Core\ORM\EntityReflection\EntityAttribute;
+use DateTime;
 
 class AttemptConnection extends ActiveRecord
 {
@@ -15,7 +16,7 @@ class AttemptConnection extends ActiveRecord
 
     private string $ip;
 
-    private int $attempt;
+    private int $attempt = 0;
 
     private string $attemptAt;
 
@@ -54,9 +55,9 @@ class AttemptConnection extends ActiveRecord
         $this->attemptAt = $attemptAt;
     }
 
-    public function getAttemptAt(): string
+    public function getAttemptAt(): Datetime
     {
-        return $this->attemptAt;
+        return new DateTime($this->attemptAt);
     }
 }
 

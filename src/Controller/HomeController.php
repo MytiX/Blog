@@ -30,6 +30,9 @@ class HomeController extends AbstractController
             ],
         ]);
 
+
+        dump($this->getSession()->get('__user'));
+
         // Votre nom et votre prénom ;
         // Une photo et/ou un logo ;
         // Une phrase d’accroche qui vous ressemble (exemple : “Martin Durand, le développeur qu’il vous faut !”)

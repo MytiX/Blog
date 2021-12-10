@@ -7,8 +7,12 @@ use App\Entity\Users;
 use App\Core\Route\Route;
 use App\Core\Mailer\Mailer;
 use App\Core\Templating\Templating;
+use App\Security\Form\SignInFormSecurity;
 use App\Security\Form\SignUpFormSecurity;
 use App\Core\Controller\AbstractController;
+use App\Security\Authentication\Authentication;
+use Config\AppConfig;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class SignController extends AbstractController
@@ -84,12 +88,26 @@ class SignController extends AbstractController
     }
 
     #[Route('/signin')]
-    public function signIn()
+    public function signIn(): Response
     {
         $session = $this->getSession();
 
-        // $session->set('__user', $user);
+        $form = new SignInFormSecurity($this->getRequest());
 
+        if ($form->isSubmit() && $form->isValid()) {
+
+            $credientials = $form->getData();
+
+            $auth = new Authentication($session, $this->getRequest());
+
+            try {
+                $auth->attemptLogin($credientials);
+                $session->set('successFlash', 'Bienvenue ' . $session->get('__user')->getPseudo());
+                return new RedirectResponse(AppConfig::URL);
+            } catch (\Exception $e) {
+                $session->set('errorFlash', $e->getMessage());
+            }
+        }
 
         return $this->render('/sign/signIn.php');
     }

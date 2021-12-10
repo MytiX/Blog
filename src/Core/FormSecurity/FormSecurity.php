@@ -60,7 +60,7 @@ abstract class FormSecurity implements FormSecurityInterface
                 }
 
             } else {
-                dd('Throw la clé n\'existe pas');
+                throw new FormSecurityException("Name of Input form does not exist", 500);
             }
         }
         if (!empty($this->getMessages())) {

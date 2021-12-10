@@ -2,9 +2,10 @@
 
 namespace App\Core\Templating;
 
+use Config\TemplatingConfig;
+use App\Core\Session\Session;
 use App\Controller\ErrorController;
 use App\Core\Templating\TemplatingException\TemplatingException;
-use Config\TemplatingConfig;
 
 class Templating
 {

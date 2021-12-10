@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Core\Controller\AbstractController;
-use App\Core\HttpFoundation\Response\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class ErrorController extends AbstractController
 {

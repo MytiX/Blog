@@ -49,6 +49,10 @@ class SQLBuilder
 
         if (!empty($idOrParams['params']) or is_integer($idOrParams)) {
             $sql .= $this->buildSQLWhere($idOrParams);
+
+            if (!empty($idOrParams['extraSQL'])) {
+                $sql .= ' ' . $idOrParams['extraSQL'];
+            }
         }
 
         if (!empty($idOrParams['orderBy'])) {

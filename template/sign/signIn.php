@@ -7,10 +7,21 @@
             <div class="row justify-content-center align-items-center h-100">
                 <div class="col-4 bgd-darklight rounded p-4">
                     <h3 class="text-center pb-3">Connexion</h3>
+                    <?php if (!empty($errorFlash = $session->flash('errorFlash'))):?>
+                        <div class="alert alert-warning" role="alert">
+                            <?= $errorFlash ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($successFlash = $session->flash('successFlash'))):?>
+                        <div class="alert alert-success" role="alert">
+                            <?= $successFlash ?>
+                        </div>
+                    <?php endif; ?>
                     <form action="/signin" method="post" class="pb-4">
                         <div class="form-group pb-2">
-                            <label for="pseudoInput">Votre email ou pseudo :</label>
-                            <input type="text" class="form-control mt-2" id="pseudoInput" name="pseudoInput" value="" required>
+                            <label for="emailInput">Votre email :</label>
+                            <input type="email" class="form-control mt-2" id="emailInput" name="emailInput" value="" required>
                         </div>
 
                         <div class="form-group pb-2">

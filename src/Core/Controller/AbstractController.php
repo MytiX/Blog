@@ -15,6 +15,10 @@ abstract class AbstractController
     {
         $template = new Templating();
 
+        $args = array_merge($args, [
+            'session' => $this->getSession(),
+        ]);
+
         return new Response($template->getView($file, $args), $statusCode);
     }
 

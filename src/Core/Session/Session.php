@@ -39,6 +39,15 @@ class Session
         $_SESSION[$key] = $value;
     }
 
+    public function flash($key)
+    {
+        $value = $this->get($key);
+
+        $this->remove($key);
+
+        return $value;
+    }
+
     public function remove(string $key): void
     {
         unset($_SESSION[$key]);

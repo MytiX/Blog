@@ -67,7 +67,12 @@ class Authentication
         $attempt->delete($attempt->getId());
 
         // mise en session de l'utilisateur
-        $this->session->set(self::SESSION_USER_KEY, $user);
+        $this->session->set(self::SESSION_USER_KEY, [
+            'id' => $user->getId(),
+            'pseudo' => $user->getPseudo(),
+            'email' => $user->getEmail(),
+            'role' => $user->getRole(),
+        ]);
     }
 
     public function getUser(array $credentials): ?Users

@@ -8,7 +8,7 @@ use App\Entity\Posts;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', 'app_home')]
+    #[Route('/')]
     public function home()
     {
         $posts = new Posts();
@@ -29,9 +29,6 @@ class HomeController extends AbstractController
                 'promote' => 1,
             ],
         ]);
-
-
-        dump($this->getSession()->get('__user'));
 
         // Votre nom et votre prénom ;
         // Une photo et/ou un logo ;

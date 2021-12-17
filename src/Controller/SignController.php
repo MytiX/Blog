@@ -110,4 +110,14 @@ class SignController extends AbstractController
 
         return $this->render('/sign/signIn.php');
     }
+
+    #[Route('/logout')]
+    public function logOut(): RedirectResponse
+    {
+        $session = $this->getSession();
+
+        $session->remove('__user');
+
+        return new RedirectResponse(AppConfig::URL);
+    }
 }

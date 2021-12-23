@@ -13,13 +13,13 @@ class Posts extends ActiveRecord
     ])]
     private int $id;
 
-    private string $title;
+    private ?string $title = null;
 
-    private string $slug;
+    private ?string $slug = null;
 
-    private string $header;
+    private ?string $header = null;
 
-    private string $content;
+    private ?string $content = null;
 
     private int $author;
 
@@ -30,6 +30,8 @@ class Posts extends ActiveRecord
     private int $active;
 
     private int $promote;
+
+    private mixed $image;
 
     public function setId(int $id): void
     {
@@ -50,7 +52,7 @@ class Posts extends ActiveRecord
         $this->title = $title;
     }
 
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -60,7 +62,7 @@ class Posts extends ActiveRecord
         $this->slug = $slug;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
@@ -70,7 +72,7 @@ class Posts extends ActiveRecord
         $this->header = $header;
     }
 
-    public function getHeader(): string
+    public function getHeader(): ?string
     {
         return $this->header;
     }
@@ -80,7 +82,7 @@ class Posts extends ActiveRecord
         $this->content = $content;
     }
 
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
@@ -133,5 +135,15 @@ class Posts extends ActiveRecord
     public function getPromote(): int
     {
         return $this->promote;
+    }
+
+    public function setImage(mixed $image): void
+    {
+        $this->image = $image;
+    }
+
+    public function getImage(): mixed
+    {
+        return $this->image;
     }
 }

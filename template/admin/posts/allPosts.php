@@ -8,6 +8,9 @@
             <?php if (!empty($successFlash = $session->flash('successFlash'))):?>
                 <span class="alert alert-success mx-5" role="alert"><?= $successFlash ?></span>
             <?php endif; ?>
+            <?php if (!empty($errorFlash = $session->flash('errorFlash'))):?>
+                <span class="alert alert-danger mx-5" role="alert"><?= $errorFlash ?></span>
+            <?php endif; ?>
         </div>
     </div>
     <div class="row">
@@ -27,8 +30,8 @@
                         <tr>
                             <td><?= $post->getId() ?></td>
                             <td><?= $post->getTitle() ?></td>
-                            <td><?= (new DateTime($post->getCreatedAt()))->format('d-m-Y H:i:s') ?></td>
-                            <td><?= (new DateTime($post->getUpdateAt()))->format('d-m-Y H:i:s') ?></td>
+                            <td><?= (new DateTime($post->getCreatedAt()))->format('d/m/Y H:i:s') ?></td>
+                            <td><?= (new DateTime($post->getUpdateAt()))->format('d/m/Y H:i:s') ?></td>
                             <td><a href="/admin/post/edit/<?= $post->getId() ?>" class="btn btn-custom a-custom">Edition</a></td>
                             <td><a href="/admin/post/delete/<?= $post->getId() ?>" class="btn btn-custom a-custom">Suppression</a></td>
                         </tr>

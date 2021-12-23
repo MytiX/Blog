@@ -17,7 +17,7 @@
                     ?>
                 </p>
 
-                <img src="../assets/img/header.png" alt="" class="img-fluid pb-3">
+                <img src="../uploads/img/<?= $post->getImage() ?>" alt="" class="img-fluid pb-3">
 
                 <?php echo $post->getContent(); ?>
 

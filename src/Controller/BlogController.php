@@ -43,19 +43,4 @@ class BlogController extends AbstractController
             'post' => $resultPost,
         ]);
     }
-
-    public function addPost()
-    {
-        // Ajout d'un Article
-    }
-
-    public function editPost(int $idPost)
-    {
-        // Modification d'un article
-    }
-
-    public function deletePost(int $idPost)
-    {
-        // Suppression d'un article
-    }
 }

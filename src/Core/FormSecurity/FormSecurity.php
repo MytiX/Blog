@@ -2,6 +2,7 @@
 
 namespace App\Core\FormSecurity;
 
+use App\Core\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
 use App\Core\FormSecurity\FormSecurityException\FormSecurityException;
 use App\Core\FormSecurity\FormSecurityInterface\FormSecurityInterface;
@@ -10,23 +11,28 @@ abstract class FormSecurity implements FormSecurityInterface
 {
     protected Request $request;
 
+    protected Session $session;
+
     protected array $configInput = [];
 
-    protected array $requestParams = [];
+    public array $requestParams = [];
 
     protected array $formErrors = [];
 
     protected string $isNullError = 'Le champs ne peux pas être vide';
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, Session $session)
     {
         $this->request = $request;
+
+        $this->session = $session;
+
         $this->setRequestParams();
     }
 
     private function setRequestParams(): void
     {
-        $this->requestParams = $this->request->request->all();
+        $this->requestParams = array_merge($this->request->request->all(), $this->request->files->all());
     }
 
     private function getRequestParams(): array
@@ -44,26 +50,65 @@ abstract class FormSecurity implements FormSecurityInterface
 
     public function isValid()
     {
-        foreach ($this->getRequestParams() as $inputName => $value) {
+        $error = false;
+
+        $allInput = $this->getRequestParams();
+
+        foreach ($allInput as $inputName => $value) {
+
             if (array_key_exists($inputName, $this->configInput)) {
+
                 $inputConfig = $this->configInput[$inputName];
 
-                if (empty($value) && array_key_exists('isNull', $inputConfig) && true !== $inputConfig['isNull']) {
-                    $this->setMessages($inputName, $this->isNullError);
-                    continue;
+                switch ($inputConfig['type']) {
+                    case 'string':
+
+                        if (empty($value) && array_key_exists('isNull', $inputConfig) && true !== $inputConfig['isNull']) {
+                            $this->setMessages($inputName, $this->isNullError);
+                            $error = true;
+                            continue;
+                        }
+
+                        if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
+                            $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
+                            $this->setMessages($inputName, $errorMessage);
+                            $error = true;
+                        }
+
+                        break;
+
+                    case 'file':
+                        if (empty($class = $inputConfig['class']) || empty($function = $inputConfig['function'])) {
+                            dd('Throw File');
+                        }
+
+                        if (!class_exists($class) || !method_exists($class, $function)) {
+                            dd('function ou class n\'existe pas');
+                        }
+
+                        $nullable = !empty($inputConfig['params']['nullable']) ? $inputConfig['params']['nullable'] : false;
+
+                        $class = new $class($this->request, $this->session);
+
+                        $result = call_user_func_array([$class, $function], [$inputName, $nullable]);
+
+                        if (false === $result) {
+                            $error = true;
+                        }
+                        $this->requestParams[$inputName] = $result;
+
+                        break;
+
+                    default:
+                        dd('Throw');
+                        break;
                 }
-
-                if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
-                    $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
-
-                    $this->setMessages($inputName, $errorMessage);
-                }
-
             } else {
                 throw new FormSecurityException("Name of Input form does not exist", 500);
             }
         }
-        if (!empty($this->getMessages())) {
+
+        if ($error) {
             return false;
         }
         return true;
@@ -71,17 +116,28 @@ abstract class FormSecurity implements FormSecurityInterface
 
     public function setMessages($key, $message): void
     {
-        $this->formErrors[$key] = $message;
-    }
-
-    public function getMessages(): array
-    {
-        return $this->formErrors;
+        $this->session->set($key, $message);
     }
 
     public function getData()
     {
-        return $this->requestParams;
+        $data = $this->getRequestParams();
+
+        if (null !== ($class = $this->getDataClass()) && class_exists($class)) {
+
+            $data = new $class();
+
+            foreach ($this->getRequestParams() as $key => $value) {
+                $data->{'set'.ucfirst($key)}($value);
+            }
+        }
+
+        return $data;
+    }
+
+    protected function getDataClass(): ?string
+    {
+        return null;
     }
 }
 

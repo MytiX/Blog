@@ -17,4 +17,6 @@ RUN docker-php-ext-install pdo pdo_mysql gd opcache intl zip calendar dom mbstri
 RUN pecl install apcu && docker-php-ext-enable apcu
 RUN a2enmod rewrite
 
+COPY php.ini /usr/local/etc/php
+
 WORKDIR /var/www/

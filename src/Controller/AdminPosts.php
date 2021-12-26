@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
-use DateTime;
-use App\Entity\Posts;
-use Config\AppConfig;
-use App\Core\Route\Route;
-use App\Security\Form\PostFormSecurity;
 use App\Core\Controller\AbstractController;
+use App\Core\Route\Route;
 use App\Core\Uploads\UploadImage;
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Posts;
+use App\Security\Form\PostFormSecurity;
+use Config\AppConfig;
+use DateTime;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminPosts extends AbstractController
 {
@@ -28,14 +28,14 @@ class AdminPosts extends AbstractController
     public function deletePost(int $id): RedirectResponse
     {
         if (!is_numeric($id)) {
-            return new RedirectResponse(AppConfig::URL . '/admin/posts');
+            return new RedirectResponse(AppConfig::URL.'/admin/posts');
         }
 
         /** @var Posts $post */
         $post = (new Posts())->findOneBy([
             'params' => [
-                'id' => $id
-            ]
+                'id' => $id,
+            ],
         ]);
 
         if (null !== $post) {
@@ -43,7 +43,7 @@ class AdminPosts extends AbstractController
 
             ($this->getSession())->set('successFlash', "L'article numéro $id a bien été supprimer");
 
-            return new RedirectResponse(AppConfig::URL . '/admin/posts');
+            return new RedirectResponse(AppConfig::URL.'/admin/posts');
         }
     }
 
@@ -54,10 +54,9 @@ class AdminPosts extends AbstractController
         $post = (new Posts())->find($id);
 
         if (null === $post) {
-
             $this->getSession()->set('errorFlash', "Cet article n'existe pas");
 
-            return new RedirectResponse(AppConfig::URL . '/admin/posts');
+            return new RedirectResponse(AppConfig::URL.'/admin/posts');
         }
 
         $formData = [
@@ -75,7 +74,6 @@ class AdminPosts extends AbstractController
         $form->setConfigInput('image', 'nullable', true);
 
         if ($form->isValid() && $form->isSubmit()) {
-
             $formData = $form->getData();
 
             $session = $this->getSession();
@@ -104,7 +102,7 @@ class AdminPosts extends AbstractController
             }
 
             if (null !== ($image = $formData['image'])) {
-                /** @var UploadImage $image */
+                /* @var UploadImage $image */
                 $image->uploadFile('image', $post->getId());
 
                 $post->setImage($image->getFilename());
@@ -114,13 +112,12 @@ class AdminPosts extends AbstractController
 
             $session->set('successFlash', "L'article à bien été mis à jour !");
 
-            return new RedirectResponse(AppConfig::URL . '/admin/posts');
-
+            return new RedirectResponse(AppConfig::URL.'/admin/posts');
         }
 
         return $this->render('/admin/posts/editPost.php', [
             'post' => $formData,
-            'edit' => true
+            'edit' => true,
         ]);
     }
 
@@ -149,7 +146,7 @@ class AdminPosts extends AbstractController
             $post->setAuthor($user['id']);
             $post->setCreatedAt($date);
             $post->setUpdateAt($date);
-            
+
             if (array_key_exists('promote', $formData)) {
                 $post->setPromote(1);
             } else {
@@ -175,9 +172,9 @@ class AdminPosts extends AbstractController
 
             $session->set('successFlash', "L'article à bien été créer !");
 
-            return new RedirectResponse(AppConfig::URL . '/admin/posts');
-
+            return new RedirectResponse(AppConfig::URL.'/admin/posts');
         }
+
         return $this->render('/admin/posts/editPost.php', [
             'post' => $form->getData(),
             'edit' => false,

@@ -60,4 +60,3 @@ class AttemptConnection extends ActiveRecord
         return new DateTime($this->attemptAt);
     }
 }
-

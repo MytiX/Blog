@@ -52,7 +52,7 @@ class SQLBuilder
             $sql .= $this->buildSQLWhere($idOrParams);
 
             if (!empty($idOrParams['extraSQL'])) {
-                $sql .= ' ' . $idOrParams['extraSQL'];
+                $sql .= ' '.$idOrParams['extraSQL'];
             }
         }
 
@@ -202,6 +202,7 @@ class SQLBuilder
     {
         $whereParams = $this->whereParams;
         $this->whereParams = [];
+
         return $whereParams;
     }
 

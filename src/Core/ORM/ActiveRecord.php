@@ -27,7 +27,7 @@ abstract class ActiveRecord
         $this->entityReflection->persistEntity();
 
         if (empty($this->entityReflection->getIdColumn())) {
-            throw new ORMException("No unique key on the entity", 500);
+            throw new ORMException('No unique key on the entity', 500);
         }
 
         if (empty($this->{'get'.ucfirst($this->entityReflection->getIdColumn())}())) {
@@ -160,7 +160,7 @@ abstract class ActiveRecord
             if (method_exists($instance, $method)) {
                 $instance->{$method}($value);
             } else {
-                throw new ORMException("Undefine method $key" , 500);
+                throw new ORMException("Undefine method $key", 500);
             }
         }
 

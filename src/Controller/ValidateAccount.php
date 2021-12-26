@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
-use App\Core\Mailer\Mailer;
-use App\Core\Templating\Templating;
+use App\Core\Route\Route;
 use App\Entity\Users;
 use Config\AppConfig;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,7 +19,7 @@ class ValidateAccount extends AbstractController
         $code = $request->query->get('code');
 
         if (empty($email) || empty($code) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return new RedirectResponse(AppConfig::URL . '/signin');
+            return new RedirectResponse(AppConfig::URL.'/signin');
         }
 
         $user = new Users();
@@ -34,7 +32,7 @@ class ValidateAccount extends AbstractController
         ]);
 
         if (!$user instanceof Users) {
-            return new RedirectResponse(AppConfig::URL . '/signin');
+            return new RedirectResponse(AppConfig::URL.'/signin');
         }
 
         if ($code == $user->getCodeAuth()) {
@@ -42,6 +40,6 @@ class ValidateAccount extends AbstractController
             $user->save();
         }
 
-        return new RedirectResponse(AppConfig::URL . '/signin');
+        return new RedirectResponse(AppConfig::URL.'/signin');
     }
 }

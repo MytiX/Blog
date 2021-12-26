@@ -17,6 +17,6 @@ class SignInFormSecurity extends FormSecurity
             'type' => 'string',
             'isNull' => false,
             'constraint' => '/^[^\s]{8,16}$/',
-        ]
+        ],
     ];
 }

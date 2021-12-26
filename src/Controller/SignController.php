@@ -2,16 +2,16 @@
 
 namespace App\Controller;
 
-use DateTime;
-use App\Entity\Users;
-use App\Core\Route\Route;
+use App\Core\Controller\AbstractController;
 use App\Core\Mailer\Mailer;
+use App\Core\Route\Route;
 use App\Core\Templating\Templating;
+use App\Entity\Users;
+use App\Security\Authentication\Authentication;
 use App\Security\Form\SignInFormSecurity;
 use App\Security\Form\SignUpFormSecurity;
-use App\Core\Controller\AbstractController;
-use App\Security\Authentication\Authentication;
 use Config\AppConfig;
+use DateTime;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,17 +23,15 @@ class SignController extends AbstractController
         $form = new SignUpFormSecurity($this->getRequest(), $this->getSession());
 
         if ($form->isSubmit() && $form->isValid()) {
-
             $formData = $form->getData();
 
             if ($formData['passwordInput'] == $formData['cPasswordInput']) {
-
                 $user = new Users();
 
                 $userFind = $user->findOneBy([
                     'params' => [
-                        'email' => $formData['emailInput']
-                    ]
+                        'email' => $formData['emailInput'],
+                    ],
                 ]);
 
                 if ($userFind) {
@@ -45,12 +43,11 @@ class SignController extends AbstractController
                     $user->setPassword(sha1($formData['passwordInput']));
                     $user->setPseudo($formData['pseudoInput']);
                     $user->setCreatedAt($date->format('Y-m-d H:i:s'));
-                    $user->setCodeAuth(sha1($formData['emailInput'] . $formData['passwordInput']));
+                    $user->setCodeAuth(sha1($formData['emailInput'].$formData['passwordInput']));
 
                     $user->save();
 
                     if (!empty($user->getId())) {
-
                         $templating = new Templating();
 
                         $message = $templating->getView('/emails/signup.php', [
@@ -64,14 +61,11 @@ class SignController extends AbstractController
                             $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
 
                             $form->setMessages('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
-
                         } catch (\Throwable $th) {
                             // Supprime l'utilisateur
                             // Message d'erreur
                             // $form->setMessages('globalError', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
                         }
-
-
                     } else {
                         $form->setMessages('globalError', 'Une erreur est survenu, veuillez réessayer ultérieurement.');
                     }
@@ -94,13 +88,13 @@ class SignController extends AbstractController
         $form = new SignInFormSecurity($this->getRequest(), $this->getSession());
 
         if ($form->isSubmit() && $form->isValid()) {
-
             $credientials = $form->getData();
 
             $auth = new Authentication($session, $this->getRequest());
 
             try {
                 $auth->attemptLogin($credientials);
+
                 return new RedirectResponse(AppConfig::URL);
             } catch (\Exception $e) {
                 $session->set('errorFlash', $e->getMessage());

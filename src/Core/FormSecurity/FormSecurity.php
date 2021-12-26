@@ -2,10 +2,10 @@
 
 namespace App\Core\FormSecurity;
 
-use App\Core\Session\Session;
-use Symfony\Component\HttpFoundation\Request;
 use App\Core\FormSecurity\FormSecurityException\FormSecurityException;
 use App\Core\FormSecurity\FormSecurityInterface\FormSecurityInterface;
+use App\Core\Session\Session;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class FormSecurity implements FormSecurityInterface
 {
@@ -42,9 +42,10 @@ abstract class FormSecurity implements FormSecurityInterface
 
     public function isSubmit()
     {
-        if ($this->request->getMethod() === "POST") {
+        if ('POST' === $this->request->getMethod()) {
             return true;
         }
+
         return false;
     }
 
@@ -55,18 +56,15 @@ abstract class FormSecurity implements FormSecurityInterface
         $allInput = $this->getRequestParams();
 
         foreach ($allInput as $inputName => $value) {
-
             if (array_key_exists($inputName, $this->configInput)) {
-
                 $inputConfig = $this->configInput[$inputName];
 
                 switch ($inputConfig['type']) {
                     case 'string':
-
                         if (empty($value) && array_key_exists('isNull', $inputConfig) && true !== $inputConfig['isNull']) {
                             $this->setMessages($inputName, $this->isNullError);
                             $error = true;
-                            continue;
+                            break;
                         }
 
                         if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
@@ -100,7 +98,6 @@ abstract class FormSecurity implements FormSecurityInterface
                         break;
 
                     case 'checkbox':
-
                         if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
                             $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
                             $this->setMessages($inputName, $errorMessage);
@@ -110,17 +107,18 @@ abstract class FormSecurity implements FormSecurityInterface
                         break;
 
                     default:
-                        throw new FormSecurityException("The type is undefined", 500);
+                        throw new FormSecurityException('The type is undefined', 500);
                         break;
                 }
             } else {
-                throw new FormSecurityException("Name of Input form does not exist", 500);
+                throw new FormSecurityException('Name of Input form does not exist', 500);
             }
         }
 
         if ($error) {
             return false;
         }
+
         return true;
     }
 
@@ -137,10 +135,9 @@ abstract class FormSecurity implements FormSecurityInterface
     public function setConfigInput(string $nameInput, string $key, mixed $value): void
     {
         if (!array_key_exists($nameInput, $this->configInput) && !array_key_exists($key, $this->configInput[$nameInput])) {
-            throw new FormSecurityException("The key of input does not exist", 500);
+            throw new FormSecurityException('The key of input does not exist', 500);
         }
 
         $this->configInput[$nameInput][$key] = $value;
     }
 }
-

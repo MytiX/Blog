@@ -42,9 +42,7 @@ class Router
                         return $route;
                     }
 
-
                     $regex = $this->getParamsRegex($route);
-
 
                     if (null !== $regex) {
                         if (preg_match($regex, $this->request->getPathInfo(), $matches)) {

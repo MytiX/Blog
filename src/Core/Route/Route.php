@@ -59,5 +59,4 @@ class Route
     // {
     //     return [new $this->controller(), $this->action];
     // }
-
 }

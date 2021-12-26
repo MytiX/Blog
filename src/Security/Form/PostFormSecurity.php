@@ -35,7 +35,7 @@ class PostFormSecurity extends FormSecurity
             'type' => 'file',
             'class' => 'App\Core\Uploads\UploadImage',
             'function' => 'isValid',
-            'nullable' => false
+            'nullable' => false,
         ],
         'active' => [
             'type' => 'checkbox',

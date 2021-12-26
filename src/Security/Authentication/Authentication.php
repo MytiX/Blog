@@ -2,9 +2,9 @@
 
 namespace App\Security\Authentication;
 
-use App\Entity\Users;
 use App\Core\Session\Session;
 use App\Entity\AttemptConnection;
+use App\Entity\Users;
 use App\Security\Authentication\Exception\AuthenticationException;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +34,7 @@ class Authentication
         /** @var AttemptConncetion $attempt */
         $attempt = (new AttemptConnection())->findOneBy([
             'params' => [
-                'ip' => $ip
+                'ip' => $ip,
             ],
         ]);
 
@@ -52,7 +52,7 @@ class Authentication
 
         if ($attempt->getAttempt() >= $this->maxAttempt && $now->getTimestamp() - $attempt->getAttemptAt()->getTimestamp() < $this->timeout) {
             $timeoutInterval = (new DateTime())->setTimestamp($attempt->getAttemptAt()->getTimestamp() + $this->timeout);
-            throw new AuthenticationException('Votre session à été bloquer pour une durée de 15 min. </br> Temps restant : ' . $now->diff($timeoutInterval)->format('%i min %s sec'));
+            throw new AuthenticationException('Votre session à été bloquer pour une durée de 15 min. </br> Temps restant : '.$now->diff($timeoutInterval)->format('%i min %s sec'));
         }
 
         // Contrôle les données de l'utilisateur
@@ -61,7 +61,7 @@ class Authentication
             $attempt->setAttempt($attempt->getAttempt() + 1);
             $attempt->setAttemptAt($now->format('Y-m-d H:i:s'));
             $attempt->save();
-            throw new AuthenticationException('Votre mot de passe ou email est incorrect, tentative restante : ' . ($this->maxAttempt - $attempt->getAttempt()));
+            throw new AuthenticationException('Votre mot de passe ou email est incorrect, tentative restante : '.($this->maxAttempt - $attempt->getAttempt()));
         }
 
         $attempt->delete($attempt->getId());
@@ -82,8 +82,8 @@ class Authentication
         /** @var Users $user */
         $user = $user->findOneBy([
             'params' => [
-                'email' => $credentials['emailInput']
-            ]
+                'email' => $credentials['emailInput'],
+            ],
         ]);
 
         if (!$user instanceof Users) {

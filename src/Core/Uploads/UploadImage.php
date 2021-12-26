@@ -2,11 +2,11 @@
 
 namespace App\Core\Uploads;
 
-use Config\UploadsConfig;
 use App\Core\Session\Session;
-use Symfony\Component\HttpFoundation\Request;
 use App\Core\Uploads\UploadsException\UploadsException;
+use Config\UploadsConfig;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 
 class UploadImage
 {
@@ -27,7 +27,6 @@ class UploadImage
 
     public function isValid(string $key, bool $nullable = false)
     {
-
         if (!array_key_exists($key, $this->files->all())) {
             throw new UploadsException("The key = $key, does not exist", 500);
         }
@@ -35,6 +34,7 @@ class UploadImage
         if (false === $nullable) {
             if (empty($this->files->get($key))) {
                 $this->session->set($key, "Vous n'avez pas inséré de pièce jointe");
+
                 return false;
             }
         } else {
@@ -50,17 +50,19 @@ class UploadImage
 
         if (!in_array($extension, $this->getAllowedUpload())) {
             $this->session->set($key, "L'extension du fichier n'est pas bonne");
+
             return false;
         }
 
-
-        if ($file->getError() !== 0) {
+        if (0 !== $file->getError()) {
             $this->session->set($key, "Une erreur est survenu lors de l'upload");
+
             return false;
         }
 
         if ($file->getSize() > $this->getMaxSizeUpload() && $file->getSize() < $this->getMinSizeUpload()) {
-            $this->session->set($key, "Le fichier est trop volumineux ou trop petit");
+            $this->session->set($key, 'Le fichier est trop volumineux ou trop petit');
+
             return false;
         }
 
@@ -72,9 +74,9 @@ class UploadImage
         $file = $this->files->get($key);
 
         if (null === $name) {
-            $this->setFilename(uniqid().".".$file->getClientOriginalExtension());
+            $this->setFilename(uniqid().'.'.$file->getClientOriginalExtension());
         } else {
-            $this->setFilename($name.".".$file->getClientOriginalExtension());
+            $this->setFilename($name.'.'.$file->getClientOriginalExtension());
         }
 
         $file->move($this->getPathDestination(), $this->getFilename());
@@ -110,4 +112,3 @@ class UploadImage
         return $this->filename;
     }
 }
-

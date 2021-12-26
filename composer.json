@@ -9,8 +9,16 @@
     ],
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "Config\\": "config/"
         }
     },
-    "require": {}
+    "require-dev": {
+        "symfony/error-handler": "^5.3",
+        "friendsofphp/php-cs-fixer": "^3.2"
+    },
+    "require": {
+        "symfony/http-foundation": "^5.3",
+        "swiftmailer/swiftmailer": "6.0"
+    }
 }

@@ -37,6 +37,10 @@ class UploadImage
                 $this->session->set($key, "Vous n'avez pas inséré de pièce jointe");
                 return false;
             }
+        } else {
+            if (empty($this->files->get($key))) {
+                return null;
+            }
         }
 
         /** @var UploadedFile $image */

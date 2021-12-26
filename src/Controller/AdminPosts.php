@@ -60,37 +60,67 @@ class AdminPosts extends AbstractController
             return new RedirectResponse(AppConfig::URL . '/admin/posts');
         }
 
+        $formData = [
+            'title' => $post->getTitle(),
+            'header' => $post->getHeader(),
+            'slug' => $post->getSlug(),
+            'content' => $post->getContent(),
+            'image' => $post->getimage(),
+            'promote' => $post->getPromote(),
+            'active' => $post->getActive(),
+        ];
+
         $form = new PostFormSecurity($this->getRequest(), $this->getSession());
 
-        if ($form->isSubmit()) {
+        $form->setConfigInput('image', 'nullable', true);
 
-            $formPost = $form->getData();
+        if ($form->isValid() && $form->isSubmit()) {
 
-            if ($form->isValid()) {
+            $formData = $form->getData();
 
-                $session = $this->getSession();
+            $session = $this->getSession();
 
-                $user = $session->get('__user');
+            $user = $session->get('__user');
 
-                $date = (new DateTime())->format('Y-m-d H:i:s');
+            $date = (new DateTime())->format('Y-m-d H:i:s');
 
-                $post->setTitle($formPost->getTitle());
-                $post->setHeader($formPost->getHeader());
-                $post->setSlug($formPost->getSlug());
-                $post->setContent($formPost->getContent());
-                $post->setAuthor($user['id']);
-                $post->setUpdateAt($date);
+            $post->setTitle($formData['title']);
+            $post->setHeader($formData['header']);
+            $post->setSlug($formData['slug']);
+            $post->setContent($formData['content']);
+            $post->setAuthor($user['id']);
+            $post->setUpdateAt($date);
 
-                $post->save();
-
-                $session->set('successFlash', "L'article à bien été mis à jour !");
-
-                return new RedirectResponse(AppConfig::URL . '/admin/posts');
+            if (array_key_exists('promote', $formData)) {
+                $post->setPromote(1);
+            } else {
+                $post->setPromote(0);
             }
+
+            if (array_key_exists('active', $formData)) {
+                $post->setActive(1);
+            } else {
+                $post->setActive(0);
+            }
+
+            if (null !== ($image = $formData['image'])) {
+                /** @var UploadImage $image */
+                $image->uploadFile('image', $post->getId());
+
+                $post->setImage($image->getFilename());
+            }
+
+            $post->save();
+
+            $session->set('successFlash', "L'article à bien été mis à jour !");
+
+            return new RedirectResponse(AppConfig::URL . '/admin/posts');
+
         }
 
         return $this->render('/admin/posts/editPost.php', [
-            'post' => isset($formPost) ? $formPost : $post,
+            'post' => $formData,
+            'edit' => true
         ]);
     }
 
@@ -103,25 +133,39 @@ class AdminPosts extends AbstractController
 
         $form = new PostFormSecurity($request, $session);
 
-        // $uploadsImage = new UploadImage($request, $session);
-
         if ($form->isSubmit() && $form->isValid()) {
             $user = $session->get('__user');
 
-            $post = $form->getData();
+            $formData = $form->getData();
+
+            $post = new Posts();
 
             $date = (new DateTime())->format('Y-m-d H:i:s');
 
+            $post->setTitle($formData['title']);
+            $post->setHeader($formData['header']);
+            $post->setSlug($formData['slug']);
+            $post->setContent($formData['content']);
             $post->setAuthor($user['id']);
             $post->setCreatedAt($date);
             $post->setUpdateAt($date);
-            $post->setActive(1);
-            $post->setPromote(1);
-            /** @var UploadImage $image */
-            $image = $post->getImage();
-            $post->setImage(null);
+            
+            if (array_key_exists('promote', $formData)) {
+                $post->setPromote(1);
+            } else {
+                $post->setPromote(0);
+            }
+
+            if (array_key_exists('active', $formData)) {
+                $post->setActive(1);
+            } else {
+                $post->setActive(0);
+            }
 
             $post->save();
+
+            /** @var UploadImage $image */
+            $image = $formData['image'];
 
             $image->uploadFile('image', $post->getId());
 
@@ -134,9 +178,9 @@ class AdminPosts extends AbstractController
             return new RedirectResponse(AppConfig::URL . '/admin/posts');
 
         }
-
         return $this->render('/admin/posts/editPost.php', [
             'post' => $form->getData(),
+            'edit' => false,
         ]);
     }
 }

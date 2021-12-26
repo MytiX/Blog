@@ -20,7 +20,7 @@ class SignController extends AbstractController
     #[Route('/signup', false)]
     public function signUp(): Response
     {
-        $form = new SignUpFormSecurity($this->getRequest());
+        $form = new SignUpFormSecurity($this->getRequest(), $this->getSession());
 
         if ($form->isSubmit() && $form->isValid()) {
 
@@ -82,7 +82,6 @@ class SignController extends AbstractController
         }
 
         return $this->render('/sign/signUp.php', [
-            'formErrors' => $form->getMessages(),
             'formValue' => $form->getData(),
         ]);
     }
@@ -92,7 +91,7 @@ class SignController extends AbstractController
     {
         $session = $this->getSession();
 
-        $form = new SignInFormSecurity($this->getRequest());
+        $form = new SignInFormSecurity($this->getRequest(), $this->getSession());
 
         if ($form->isSubmit() && $form->isValid()) {
 

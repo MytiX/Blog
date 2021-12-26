@@ -7,7 +7,7 @@
             <?php include "../template/admin/posts/components/formPost.php";?>
         </div>
     </div>
-    <?php if(null !== $post->getId()): ?>
+    <?php if($edit): ?>
 
     <!-- Commentaire -->
         <div class="row">

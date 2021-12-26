@@ -13,7 +13,7 @@ abstract class FormSecurity implements FormSecurityInterface
 
     protected Session $session;
 
-    protected array $configInput = [];
+    public array $configInput = [];
 
     public array $requestParams = [];
 
@@ -79,14 +79,14 @@ abstract class FormSecurity implements FormSecurityInterface
 
                     case 'file':
                         if (empty($class = $inputConfig['class']) || empty($function = $inputConfig['function'])) {
-                            dd('Throw File');
+                            throw new FormSecurityException('Error : '.get_class($this).', the class or the function is missing on the key', 500);
                         }
 
                         if (!class_exists($class) || !method_exists($class, $function)) {
-                            dd('function ou class n\'existe pas');
+                            throw new FormSecurityException('Error : '.get_class($this).', the class or the function does not exist', 500);
                         }
 
-                        $nullable = !empty($inputConfig['params']['nullable']) ? $inputConfig['params']['nullable'] : false;
+                        $nullable = !empty($inputConfig['nullable']) ? $inputConfig['nullable'] : false;
 
                         $class = new $class($this->request, $this->session);
 
@@ -99,8 +99,18 @@ abstract class FormSecurity implements FormSecurityInterface
 
                         break;
 
+                    case 'checkbox':
+
+                        if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
+                            $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
+                            $this->setMessages($inputName, $errorMessage);
+                            $error = true;
+                        }
+
+                        break;
+
                     default:
-                        dd('Throw');
+                        throw new FormSecurityException("The type is undefined", 500);
                         break;
                 }
             } else {
@@ -121,23 +131,16 @@ abstract class FormSecurity implements FormSecurityInterface
 
     public function getData()
     {
-        $data = $this->getRequestParams();
-
-        if (null !== ($class = $this->getDataClass()) && class_exists($class)) {
-
-            $data = new $class();
-
-            foreach ($this->getRequestParams() as $key => $value) {
-                $data->{'set'.ucfirst($key)}($value);
-            }
-        }
-
-        return $data;
+        return $this->getRequestParams();
     }
 
-    protected function getDataClass(): ?string
+    public function setConfigInput(string $nameInput, string $key, mixed $value): void
     {
-        return null;
+        if (!array_key_exists($nameInput, $this->configInput) && !array_key_exists($key, $this->configInput[$nameInput])) {
+            throw new FormSecurityException("The key of input does not exist", 500);
+        }
+
+        $this->configInput[$nameInput][$key] = $value;
     }
 }
 

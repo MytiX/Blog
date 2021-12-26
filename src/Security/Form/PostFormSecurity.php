@@ -6,7 +6,7 @@ use App\Core\FormSecurity\FormSecurity;
 
 class PostFormSecurity extends FormSecurity
 {
-    protected array $configInput = [
+    public array $configInput = [
         'title' => [
             'type' => 'string',
             'isNull' => false,
@@ -33,17 +33,19 @@ class PostFormSecurity extends FormSecurity
         ],
         'image' => [
             'type' => 'file',
-            'isNull' => false,
             'class' => 'App\Core\Uploads\UploadImage',
             'function' => 'isValid',
-            'params' => [
-                'nullable' => false
-            ],
+            'nullable' => false
+        ],
+        'active' => [
+            'type' => 'checkbox',
+            'constraint' => '/^[1]{1}$/',
+            'constraintError' => 'Une erreur est survenue sur ce champs',
+        ],
+        'promote' => [
+            'type' => 'checkbox',
+            'constraint' => '/^[1]{1}$/',
+            'constraintError' => 'Une erreur est survenue sur ce champs',
         ],
     ];
-
-    protected function getDataClass(): string
-    {
-        return 'App\Entity\Posts';
-    }
 }

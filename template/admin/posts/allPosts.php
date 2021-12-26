@@ -22,20 +22,30 @@
                         <th scope="col">Titre</th>
                         <th scope="col">Crée le</th>
                         <th scope="col">Dernière mise à jour</th>
+                        <th scope="col">Active</th>
+                        <th scope="col">Promu</th>
                         <th colspan="2">Modification</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($posts as $post): ?>
+                    <?php if(!empty($posts)): ?>
+                        <?php foreach ($posts as $post): ?>
+                            <tr>
+                                <td><?= $post->getId() ?></td>
+                                <td><?= $post->getTitle() ?></td>
+                                <td><?= (new DateTime($post->getCreatedAt()))->format('d/m/Y H:i:s') ?></td>
+                                <td><?= (new DateTime($post->getUpdateAt()))->format('d/m/Y H:i:s') ?></td>
+                                <td><?= ($post->getActive() === 1) ? 'Oui' : 'Non' ?></td>
+                                <td><?= ($post->getPromote() === 1) ? 'Oui' : 'Non' ?></td>
+                                <td><a href="/admin/post/edit/<?= $post->getId() ?>" class="btn btn-custom a-custom">Edition</a></td>
+                                <td><a href="/admin/post/delete/<?= $post->getId() ?>" class="btn btn-custom a-custom">Suppression</a></td>
+                            </tr>
+                        <?php endforeach;?>
+                    <?php else: ?>
                         <tr>
-                            <td><?= $post->getId() ?></td>
-                            <td><?= $post->getTitle() ?></td>
-                            <td><?= (new DateTime($post->getCreatedAt()))->format('d/m/Y H:i:s') ?></td>
-                            <td><?= (new DateTime($post->getUpdateAt()))->format('d/m/Y H:i:s') ?></td>
-                            <td><a href="/admin/post/edit/<?= $post->getId() ?>" class="btn btn-custom a-custom">Edition</a></td>
-                            <td><a href="/admin/post/delete/<?= $post->getId() ?>" class="btn btn-custom a-custom">Suppression</a></td>
+                            <td colspan="5">Pas d'articles</td>
                         </tr>
-                    <?php endforeach;?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

@@ -31,7 +31,7 @@ class Posts extends ActiveRecord
 
     private int $promote;
 
-    private mixed $image;
+    private ?string $image = null;
 
     public function setId(int $id): void
     {
@@ -137,12 +137,12 @@ class Posts extends ActiveRecord
         return $this->promote;
     }
 
-    public function setImage(mixed $image): void
+    public function setImage(string $image): void
     {
         $this->image = $image;
     }
 
-    public function getImage(): mixed
+    public function getImage(): ?string
     {
         return $this->image;
     }

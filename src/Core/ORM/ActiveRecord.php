@@ -3,6 +3,7 @@
 namespace App\Core\ORM;
 
 use App\Core\ORM\EntityReflection\EntityReflection;
+use App\Core\ORM\ORMException\ORMException;
 use App\Core\ORM\SQLBuilder\SQLBuilder;
 use App\Core\PDO\PDOConnection;
 
@@ -25,23 +26,17 @@ abstract class ActiveRecord
     {
         $this->entityReflection->persistEntity();
 
-        // Si l'entity ne comporte pas de clé unique créer une erreur
         if (empty($this->entityReflection->getIdColumn())) {
-            // throw Exception
-            dd("Pas de clé unique sur l'entity");
+            throw new ORMException("No unique key on the entity", 500);
         }
 
-        // Si la valeur de la cle unique est vide c'est une insertion sinon une update
-
         if (empty($this->{'get'.ucfirst($this->entityReflection->getIdColumn())}())) {
-            // INSERT
             $lastInsert = $this->insert();
 
             if ($lastInsert) {
                 $this->{'setId'}($lastInsert);
             }
         } else {
-            // UPDATE
             $this->update();
         }
     }
@@ -165,7 +160,7 @@ abstract class ActiveRecord
             if (method_exists($instance, $method)) {
                 $instance->{$method}($value);
             } else {
-                dd('Pas de méthode pour '.$key);
+                throw new ORMException("Undefine method $key" , 500);
             }
         }
 

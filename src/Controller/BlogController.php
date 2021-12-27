@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-use App\Core\Controller\AbstractController;
-use App\Core\Route\Route;
+use DateTime;
 use App\Entity\Posts;
+use App\Entity\Users;
+use App\Entity\Comments;
+use App\Core\Route\Route;
+use App\Core\Controller\AbstractController;
 
 class BlogController extends AbstractController
 {
@@ -23,24 +26,44 @@ class BlogController extends AbstractController
     #[Route('/blog/{slug}-{id}')]
     public function viewPost(string $slug, int $id)
     {
-        $post = new Posts();
+        $post = (new Posts())->find($id);
 
-        $resultPost = $post->find($id);
+        $author = (new Users())->find($post->getAuthor());
 
-        // dd($resultPost);
-        // dd(__CLASS__ . " " . $slug);
-        // echo __CLASS__ . " Article : " . $slug;
-        // Tous les requis pour la page d'affichage de tous les blogs posts
+        $comments = (new Comments())->findBy([
+            'params' => [
+                'id_post' => $post->getId(),
+                'active' => 1,
+            ],
+        ]);
 
-        // Le titre ;
-        // Le chapô ;
-        // Le contenu ;
-        // L’auteur ;
-        // La date de dernière mise à jour ;
-        // Le formulaire permettant d’ajouter un commentaire (soumis pour validation) ;
-        // Les listes des commentaires validés et publiés.
+        $resultComments = [];
+
+        foreach ($comments as $comment) {
+
+            /** @var Comments $comment */
+            /** @var Users $user */
+            /** @var Posts $post */
+
+            $user = (new Users)->find($comment->getIdUser());
+
+            $resultComments[] = [
+                'content' => $comment->getContent(),
+                'pseudo' => $user->getPseudo(),
+            ];
+        }
+
+        $postResult = [
+            'title' => $post->getTitle(),
+            'author' => $author->getPseudo(),
+            'date' => (new DateTime($post->getUpdateAt()))->format('d/m/Y'),
+            'img' => $post->getImage(),
+            'content' => $post->getContent(),
+            'comments' => $resultComments,
+        ];
+
         return $this->render('/post/post.php', [
-            'post' => $resultPost,
+            'post' => $postResult,
         ]);
     }
 }

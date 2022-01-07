@@ -23,11 +23,7 @@
                                 <a href="/blog/<?= $post->getSlug() . '-' . $post->getId()  ?>" class="a-custom">
                                     <h2 class="mb-0 blog-post-title"><?= $post->getTitle() ?></h2>
                                     <div class="mb-1 blog-post-meta">
-                                        <?php
-                                            $date = new DateTime($post->getCreatedAt());
-
-                                            echo($date->format('d/m/Y'));
-                                        ?>
+                                        <?= $post->getCreatedAt()->format('d/m/Y')?>
                                     </div>
                                     <p class="card-text mb-auto"><?= $post->getHeader(); ?></p>
                                 </a>

@@ -11,11 +11,7 @@
                     <p><?= $posts[$i]->getHeader(); ?></p>
                 </a>
                 <p class="blog-post-meta">
-                    <?php
-                        $date = new DateTime($posts[$i]->getCreatedAt());
-
-                        echo($date->format('d/m/Y'));
-                    ?>
+                    <?= $date = $posts[$i]->getCreatedAt()->format('d/m/Y') ?>
                 </p>
             </article>
         <?php endfor; ?>

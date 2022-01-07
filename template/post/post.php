@@ -37,7 +37,7 @@
                     <?php foreach ($post['comments'] as $comment):?>
 
                         <div class="comment border-rounded my-3 p-3">
-                            <p class="mb-0"><?= $comment['content'] ?></p>
+                            <p class="mb-0"><?= htmlspecialchars($comment['content']) ?></p>
                             <p class="text-end mb-0"><?= $comment['pseudo'] ?></p>
                         </div>
 
@@ -47,20 +47,28 @@
                     <p>Pas de commentaire</p>
                 <?php endif ?>
 
-                <form action="" method="post" class="py-2">
+                <?php if(empty($session->get('__user'))): ?>
+                    <p>Vous pouvez poster un commentaire en vous créant un compte</p>
+                <?php else: ?>
+                    <form action="" method="post" class="py-2">
 
-                    <div class="form-group py-2">
-                        <label for="content" class="py-2">Votre commentaire</label>
-                        <textarea class="form-control" id="content" name="content" rows="3"></textarea>
-                        <?php if (!empty($errorFlash = $session->flash('content'))):?>
-                            <small class="text-danger"><?= $errorFlash ?></small>
-                        <?php endif; ?>
-                    </div>
+                        <div class="form-group py-2">
+                            <label for="content" class="py-2">Votre commentaire</label>
+                            <input type="text" class="form-control" id="content" name="content" value="">
+                            <?php if (!empty($errorFlash = $session->flash('content'))):?>
+                                <small class="text-danger"><?= $errorFlash ?></small>
+                            <?php endif; ?>
+                            <?php if (!empty($successFlash = $session->flash('successSubmit'))):?>
+                                <small class="text-success"><?= $successFlash ?></small>
+                            <?php endif; ?>
+                        </div>
 
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn-custom">Envoyer</button>
-                    </div>
-                </form>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn-custom">Envoyer</button>
+                        </div>
+                    </form>
+                <?php endif ?>
+
             </div>
         </div>
 

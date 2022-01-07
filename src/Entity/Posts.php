@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use App\Core\ORM\ActiveRecord;
 use App\Core\ORM\EntityReflection\EntityAttribute;
 
@@ -102,9 +103,9 @@ class Posts extends ActiveRecord
         $this->createdAt = $createdAt;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): DateTime
     {
-        return $this->createdAt;
+        return new DateTime($this->createdAt);
     }
 
     public function setUpdateAt(string $updateAt): void
@@ -112,9 +113,9 @@ class Posts extends ActiveRecord
         $this->updateAt = $updateAt;
     }
 
-    public function getUpdateAt(): string
+    public function getUpdateAt(): DateTime
     {
-        return $this->updateAt;
+        return new DateTime($this->updateAt);
     }
 
     public function setActive(int $active): void

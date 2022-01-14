@@ -32,7 +32,7 @@ class SignUpFormSecurity extends FormSecurity
             'constraintError' => 'Le mot de passe doit avoir une longueur entre 8 et 16 caractères',
         ],
         'checkInput' => [
-            'type' => 'string',
+            'type' => 'checkbox',
             'isNull' => false,
             'constraint' => '/^[1]{1}$/',
             'constraintError' => 'Veuillez cocher la case des CGU',

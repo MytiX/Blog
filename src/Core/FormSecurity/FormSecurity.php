@@ -17,8 +17,6 @@ abstract class FormSecurity implements FormSecurityInterface
 
     public array $requestParams = [];
 
-    protected array $formErrors = [];
-
     protected string $isNullError = 'Le champs ne peux pas être vide';
 
     public function __construct(Request $request, Session $session)
@@ -55,28 +53,28 @@ abstract class FormSecurity implements FormSecurityInterface
 
         $allInput = $this->getRequestParams();
 
-        foreach ($allInput as $inputName => $value) {
-            if (array_key_exists($inputName, $this->configInput)) {
-                $inputConfig = $this->configInput[$inputName];
-
-                switch ($inputConfig['type']) {
-                    case 'string':
-                        if (empty($value) && array_key_exists('isNull', $inputConfig) && true !== $inputConfig['isNull']) {
-                            $this->setMessages($inputName, $this->isNullError);
+        foreach ($this->configInput as $inputName => $config) {
+            if (array_key_exists($inputName, $allInput) || 'checkbox' === $config["type"]) {
+                switch ($config["type"]) {
+                    case 'string' || 'checkbox':
+                        if (empty($allInput[$inputName]) && array_key_exists('isNull', $config) && true !== $config['isNull']) {
+                            if ('checkbox' === $config['type']) {
+                                $this->setMessages($inputName, $config['constraintError']);
+                            } else {
+                                $this->setMessages($inputName, $this->isNullError);
+                            }
                             $error = true;
                             break;
                         }
 
-                        if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
-                            $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
+                        if (array_key_exists('constraint', $config) && !preg_match($config['constraint'], $allInput[$inputName])) {
+                            $errorMessage = array_key_exists('constraintError', $config) ? $config['constraintError'] : 'Ce champ n\'est pas valide';
                             $this->setMessages($inputName, $errorMessage);
                             $error = true;
                         }
-
-                        break;
-
+                            break;
                     case 'file':
-                        if (empty($class = $inputConfig['class']) || empty($function = $inputConfig['function'])) {
+                        if (empty($class = $config['class']) || empty($function = $config['function'])) {
                             throw new FormSecurityException('Error : '.get_class($this).', the class or the function is missing on the key', 500);
                         }
 
@@ -84,7 +82,7 @@ abstract class FormSecurity implements FormSecurityInterface
                             throw new FormSecurityException('Error : '.get_class($this).', the class or the function does not exist', 500);
                         }
 
-                        $nullable = !empty($inputConfig['nullable']) ? $inputConfig['nullable'] : false;
+                        $nullable = !empty($config['nullable']) ? $config['nullable'] : false;
 
                         $class = new $class($this->request, $this->session);
 
@@ -94,24 +92,14 @@ abstract class FormSecurity implements FormSecurityInterface
                             $error = true;
                         }
                         $this->requestParams[$inputName] = $result;
-
-                        break;
-
-                    case 'checkbox':
-                        if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
-                            $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
-                            $this->setMessages($inputName, $errorMessage);
-                            $error = true;
-                        }
-
-                        break;
+                            break;
 
                     default:
                         throw new FormSecurityException('The type is undefined', 500);
                         break;
                 }
             } else {
-                throw new FormSecurityException('Name of Input form does not exist', 500);
+                $error = true;
             }
         }
 

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Core\Controller\AbstractController;
 use App\Core\Route\Route;
 use App\Entity\Posts;
+use App\Security\Form\ContactFormSecurity;
 
 class HomeController extends AbstractController
 {
@@ -29,6 +30,15 @@ class HomeController extends AbstractController
                 'promote' => 1,
             ],
         ]);
+
+        $form = new ContactFormSecurity($this->getRequest(), $this->getSession());
+
+        if ($form->isSubmit() && $form->isValid()) {
+            $data = $form->getData();
+            dd($data);
+        }
+
+        // dd($this->getSession()->flash('checkInput'), $form->getData());
 
         // Votre nom et votre prénom ;
         // Une photo et/ou un logo ;

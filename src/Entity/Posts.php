@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use DateTime;
 use App\Core\ORM\ActiveRecord;
 use App\Core\ORM\EntityReflection\EntityAttribute;
+use DateTime;
 
 class Posts extends ActiveRecord
 {

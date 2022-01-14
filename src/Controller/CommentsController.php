@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Comments;
-use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
+use App\Core\Route\Route;
+use App\Entity\Comments;
 use Config\AppConfig;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -58,4 +58,3 @@ class CommentsController extends AbstractController
         return new RedirectResponse($this->getRequest()->server->get('HTTP_REFERER'));
     }
 }
-

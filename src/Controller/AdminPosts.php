@@ -21,7 +21,6 @@ class AdminPosts extends AbstractController
         $posts = (new Posts())->findAll();
 
         foreach ($posts as $post) {
-
             $comments = (new Comments())->findBy([
                 'params' => [
                     'active' => 0,
@@ -81,7 +80,7 @@ class AdminPosts extends AbstractController
                 'id_post' => $post->getId(),
             ],
             'orderBy' => [
-                'created_at DESC'
+                'created_at DESC',
             ],
         ]);
 

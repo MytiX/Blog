@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
-use DateTime;
+use App\Core\Controller\AbstractController;
+use App\Core\Route\Route;
+use App\Core\Session\Session;
+use App\Entity\Comments;
 use App\Entity\Posts;
 use App\Entity\Users;
-use App\Entity\Comments;
-use App\Core\Route\Route;
-use App\Core\Controller\AbstractController;
-use App\Core\Session\Session;
 use App\Security\Form\CommentsFormSecurity;
 use Config\AppConfig;
+use DateTime;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,7 +49,6 @@ class BlogController extends AbstractController
         $comments = new Comments();
 
         if ($form->isSubmit() && $form->isValid()) {
-
             if (null === ($user = $this->session->get('__user'))) {
                 return new RedirectResponse(AppConfig::URL);
             }
@@ -78,12 +77,10 @@ class BlogController extends AbstractController
 
         if ($comments) {
             foreach ($comments as $comment) {
-
                 /** @var Comments $comment */
                 /** @var Users $user */
                 /** @var Posts $post */
-
-                $user = (new Users)->find($comment->getIdUser());
+                $user = (new Users())->find($comment->getIdUser());
 
                 $resultComments[] = [
                     'content' => $comment->getContent(),

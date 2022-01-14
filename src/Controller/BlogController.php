@@ -71,6 +71,9 @@ class BlogController extends AbstractController
                 'id_post' => $post->getId(),
                 'active' => 1,
             ],
+            'orderBy' => [
+                'created_at ASC'
+            ]
         ]);
 
         $resultComments = [];

@@ -55,12 +55,6 @@ abstract class FormSecurity implements FormSecurityInterface
 
         $allInput = $this->getRequestParams();
 
-        foreach ($this->configInput as $InputName => $config) {
-            if (!array_key_exists($InputName, $allInput) && true !== $config['isNull']) {
-
-            }
-        }
-
         foreach ($allInput as $inputName => $value) {
             if (array_key_exists($inputName, $this->configInput)) {
                 $inputConfig = $this->configInput[$inputName];

@@ -34,6 +34,9 @@ class Posts extends ActiveRecord
 
     private ?string $image = null;
 
+    #[EntityAttribute(['Ignore' => true])]
+    private array $comments = [];
+
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -146,5 +149,15 @@ class Posts extends ActiveRecord
     public function getImage(): ?string
     {
         return $this->image;
+    }
+
+    public function setComments(array $comments): void
+    {
+        $this->comments = $comments;
+    }
+
+    public function getComments(): array
+    {
+        return $this->comments;
     }
 }

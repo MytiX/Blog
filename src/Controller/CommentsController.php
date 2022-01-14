@@ -41,5 +41,21 @@ class CommentsController extends AbstractController
 
         return new RedirectResponse($this->getRequest()->server->get('HTTP_REFERER'));
     }
+
+    #[Route('/admin/comment/disable/{id}')]
+    public function disable(int $id): RedirectResponse
+    {
+        /** @var Comments $comments */
+        if (null === ($comments = (new Comments())->find($id))) {
+            return new RedirectResponse(AppConfig::URL.'/admin/posts');
+        }
+
+        $comments->setActive(0);
+        $comments->save();
+
+        $this->getSession()->set('comments', 'Le commentaire à bien été désactiver');
+
+        return new RedirectResponse($this->getRequest()->server->get('HTTP_REFERER'));
+    }
 }
 

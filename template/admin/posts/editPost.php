@@ -38,7 +38,11 @@
                                         <tr>
                                             <td><?= $comment->getContent() ?></td>
                                             <td><?= $comment->getCreatedAt()->format('d/m/Y H:i:s') ?></td>
-                                            <td><a href="/admin/comment/validate/<?= $comment->getId() ?>" class="btn btn-custom a-custom">Valider</a></td>
+                                            <?php if ($comment->getActive() === 0): ?>
+                                                <td><a href="/admin/comment/validate/<?= $comment->getId() ?>" class="btn btn-custom a-custom">Valider</a></td>
+                                            <?php else: ?>
+                                                <td><a href="/admin/comment/disable/<?= $comment->getId() ?>" class="btn btn-custom a-custom">Désactiver</a></td>
+                                            <?php endif; ?>
                                             <td><a href="/admin/comment/delete/<?= $comment->getId() ?>" class="btn btn-custom a-custom">Suppression</a></td>
                                         </tr>
                                     <?php endforeach;?>

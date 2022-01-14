@@ -10,6 +10,7 @@ class EntityAttribute
     public array $attributes = [
         'AutoIncrement' => false,
         'Id' => false,
+        'Ignore' => false,
     ];
 
     public function __construct(array $attributes)
@@ -25,6 +26,13 @@ class EntityAttribute
                     $this->attributes[$key] = $value;
                 }
             }
+        }
+    }
+
+    public function ignoreEntity(): bool
+    {
+        if (in_array('Ignore', $this->attributes)) {
+            return $this->attributes['Ignore'];
         }
     }
 

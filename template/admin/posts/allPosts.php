@@ -24,6 +24,7 @@
                         <th scope="col">Dernière mise à jour</th>
                         <th scope="col">Active</th>
                         <th scope="col">Promu</th>
+                        <th scope="col">Commentaires</th>
                         <th colspan="2">Modification</th>
                     </tr>
                 </thead>
@@ -37,6 +38,7 @@
                                 <td><?= $post->getUpdateAt()->format('d/m/Y H:i:s') ?></td>
                                 <td><?= ($post->getActive() === 1) ? 'Oui' : 'Non' ?></td>
                                 <td><?= ($post->getPromote() === 1) ? 'Oui' : 'Non' ?></td>
+                                <td><?= (!empty($post->getComments())) ? 'Oui' : 'Non' ?></td>
                                 <td><a href="/admin/post/edit/<?= $post->getId() ?>" class="btn btn-custom a-custom">Edition</a></td>
                                 <td><a href="/admin/post/delete/<?= $post->getId() ?>" class="btn btn-custom a-custom">Suppression</a></td>
                             </tr>

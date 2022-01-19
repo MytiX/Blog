@@ -53,7 +53,6 @@ abstract class FormSecurity implements FormSecurityInterface
 
         $allInput = $this->getRequestParams();
 
-<<<<<<< HEAD
         foreach ($this->configInput as $inputName => $config) {
             $type = $config['type'];
             if (!array_key_exists($inputName, $allInput)) {
@@ -62,27 +61,6 @@ abstract class FormSecurity implements FormSecurityInterface
                     continue;
                 }
             }
-=======
-        foreach ($allInput as $inputName => $value) {
-            if (array_key_exists($inputName, $this->configInput)) {
-                $inputConfig = $this->configInput[$inputName];
-
-                switch ($inputConfig['type']) {
-                    case 'string':
-                        if (empty($value) && array_key_exists('isNull', $inputConfig) && true !== $inputConfig['isNull']) {
-                            $this->setMessages($inputName, $this->isNullError);
-                            $error = true;
-                            break;
-                        }
-
-                        if (array_key_exists('constraint', $inputConfig) && !preg_match($inputConfig['constraint'], $value)) {
-                            $errorMessage = array_key_exists('constraintError', $inputConfig) ? $inputConfig['constraintError'] : 'Ce champ n\'est pas valide';
-                            $this->setMessages($inputName, $errorMessage);
-                            $error = true;
-                        }
-
-                        break;
->>>>>>> 159c933 (WIP)
 
             $nullable = $config['nullable'];
 

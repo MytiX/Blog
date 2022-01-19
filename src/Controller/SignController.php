@@ -20,7 +20,8 @@ class SignController extends AbstractController
     #[Route('/signup', false)]
     public function signUp(): Response
     {
-        $form = new SignUpFormSecurity($this->getRequest(), $this->getSession());
+        $session = $this->getSession();
+        $form = new SignUpFormSecurity($this->getRequest(), $session);
 
         if ($form->isSubmit() && $form->isValid()) {
             $formData = $form->getData();
@@ -35,7 +36,7 @@ class SignController extends AbstractController
                 ]);
 
                 if ($userFind) {
-                    $form->setMessages('globalError', 'Cette adresse mail existe déjà.');
+                    $session->set('globalError', 'Cette adresse mail existe déjà.');
                 } else {
                     $date = new DateTime();
 
@@ -55,23 +56,20 @@ class SignController extends AbstractController
                             'code' => $user->getCodeAuth(),
                         ]);
 
-                        try {
-                            $mailer = new Mailer();
+                        $mailer = new Mailer();
 
-                            $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
+                        $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
 
-                            $form->setMessages('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
-                        } catch (\Throwable $th) {
-                            // Supprime l'utilisateur
-                            // Message d'erreur
-                            // $form->setMessages('globalError', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
-                        }
+                        $session->set('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail.');
+
+                        return new RedirectResponse(AppConfig::URL.'/signin');
+
                     } else {
-                        $form->setMessages('globalError', 'Une erreur est survenu, veuillez réessayer ultérieurement.');
+                        $session->set('globalError', 'Une erreur est survenu, veuillez réessayer ultérieurement.');
                     }
                 }
             } else {
-                $form->setMessages('passwordInput', 'Le mot de passe doit être identique.');
+                $session->set('passwordInput', 'Le mot de passe doit être identique.');
             }
         }
 
@@ -92,12 +90,8 @@ class SignController extends AbstractController
 
             $auth = new Authentication($session, $this->getRequest());
 
-            try {
-                $auth->attemptLogin($credientials);
-
+            if ($auth->attemptLogin($credientials)) {
                 return new RedirectResponse(AppConfig::URL);
-            } catch (\Exception $e) {
-                $session->set('errorFlash', $e->getMessage());
             }
         }
 

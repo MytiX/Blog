@@ -1,12 +1,4 @@
 <form action="" method="post" class="pb-4" enctype="multipart/form-data">
-    <?php if(!empty($post['image'])): ?>
-        <div class="row">
-            <div class="col-12 col-md-6">
-                <p class="my-2">Photo de présentation</p>
-                <img src="../../../uploads/img/<?= $post['image'] ?>" alt="" class="img-fluid">
-            </div>
-        </div>
-    <?php endif; ?>
     <div class="form-group pb-2">
         <label for="title">Titre de l'article</label>
         <input type="text" class="form-control mt-2" id="title" name="title" value="<?php if(!empty($post['title'])) { echo($post['title']); } ?>">

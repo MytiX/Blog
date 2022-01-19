@@ -137,7 +137,7 @@ class Posts extends ActiveRecord
         return $this->promote;
     }
 
-    public function setImage(string $image): void
+    public function setImage(?string $image): void
     {
         $this->image = $image;
     }

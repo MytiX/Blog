@@ -73,7 +73,7 @@ class AdminPosts extends AbstractController
 
         $form->setConfigInput('image', 'nullable', true);
 
-        if ($form->isValid() && $form->isSubmit()) {
+        if ($form->isSubmit() && $form->isValid()) {
             $formData = $form->getData();
 
             $session = $this->getSession();

@@ -14,11 +14,13 @@ class ValidateAccount extends AbstractController
     public function validEmail()
     {
         $request = $this->getRequest();
+        $session = $this->getSession();
 
         $email = $request->query->get('email');
         $code = $request->query->get('code');
 
         if (empty($email) || empty($code) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $session->set('errorFlash', 'Une erreur est survenue lors de la validation de votre compte');
             return new RedirectResponse(AppConfig::URL.'/signin');
         }
 
@@ -39,6 +41,8 @@ class ValidateAccount extends AbstractController
             $user->setActive(1);
             $user->save();
         }
+
+        $session->set('successFlash', 'Votre compte est maintenant activé');
 
         return new RedirectResponse(AppConfig::URL.'/signin');
     }

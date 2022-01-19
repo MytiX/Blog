@@ -2,12 +2,14 @@
 
 namespace App\Security\Authentication;
 
+use DateTime;
+use App\Entity\Users;
+use App\Core\Mailer\Mailer;
 use App\Core\Session\Session;
 use App\Entity\AttemptConnection;
-use App\Entity\Users;
-use App\Security\Authentication\Exception\AuthenticationException;
-use DateTime;
+use App\Core\Templating\Templating;
 use Symfony\Component\HttpFoundation\Request;
+use App\Security\Authentication\Exception\AuthenticationException;
 
 class Authentication
 {
@@ -52,7 +54,8 @@ class Authentication
 
         if ($attempt->getAttempt() >= $this->maxAttempt && $now->getTimestamp() - $attempt->getAttemptAt()->getTimestamp() < $this->timeout) {
             $timeoutInterval = (new DateTime())->setTimestamp($attempt->getAttemptAt()->getTimestamp() + $this->timeout);
-            throw new AuthenticationException('Votre session à été bloquer pour une durée de 15 min. </br> Temps restant : '.$now->diff($timeoutInterval)->format('%i min %s sec'));
+            $this->session->set('errorFlash', 'Votre session à été bloquer pour une durée de 15 min. </br> Temps restant : '.$now->diff($timeoutInterval)->format('%i min %s sec'));
+            return false;
         }
 
         // Contrôle les données de l'utilisateur
@@ -61,7 +64,25 @@ class Authentication
             $attempt->setAttempt($attempt->getAttempt() + 1);
             $attempt->setAttemptAt($now->format('Y-m-d H:i:s'));
             $attempt->save();
-            throw new AuthenticationException('Votre mot de passe ou email est incorrect, tentative restante : '.($this->maxAttempt - $attempt->getAttempt()));
+            $this->session->set('errorFlash', 'Votre mot de passe ou email est incorrect, tentative restante : '.($this->maxAttempt - $attempt->getAttempt()));
+            return false;
+        }
+
+        if (0 === $user->getActive()) {
+            $templating = new Templating();
+
+            $message = $templating->getView('/emails/signup.php', [
+                'email' => $user->getEmail(),
+                'code' => $user->getCodeAuth(),
+            ]);
+
+            $mailer = new Mailer();
+
+            $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
+
+            $this->session->set('errorFlash', 'Vous n\'avez pas encore activé votre compte, nous venons de vous renvoyer un email.');
+
+            return false;
         }
 
         $attempt->delete($attempt->getId());
@@ -73,6 +94,8 @@ class Authentication
             'email' => $user->getEmail(),
             'role' => $user->getRole(),
         ]);
+
+        return true;
     }
 
     public function getUser(array $credentials): ?Users

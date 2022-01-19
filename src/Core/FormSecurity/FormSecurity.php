@@ -17,7 +17,7 @@ abstract class FormSecurity implements FormSecurityInterface
 
     public array $requestParams = [];
 
-    protected string $isNullError = 'Le champs ne peux pas être vide';
+    protected string $isNullError = 'Champ obligatoire';
 
     public function __construct(Request $request, Session $session)
     {
@@ -53,53 +53,69 @@ abstract class FormSecurity implements FormSecurityInterface
 
         $allInput = $this->getRequestParams();
 
+        /**
+         *
+         * Regarder que l'élément existe dans le tableau POST
+         *
+         *
+         * Parcourir tous les éléments de la config
+         *
+         * si l'élément est dans le tableau on contrôle si il peux être vide ou pas
+         *
+         * si il peut être vide
+         *
+         */
+
         foreach ($this->configInput as $inputName => $config) {
-            if (array_key_exists($inputName, $allInput) || 'checkbox' === $config["type"]) {
-                switch ($config["type"]) {
-                    case 'string' || 'checkbox':
-                        if (empty($allInput[$inputName]) && array_key_exists('isNull', $config) && true !== $config['isNull']) {
-                            if ('checkbox' === $config['type']) {
-                                $this->setMessages($inputName, $config['constraintError']);
-                            } else {
-                                $this->setMessages($inputName, $this->isNullError);
-                            }
-                            $error = true;
-                            break;
-                        }
-
-                        if (array_key_exists('constraint', $config) && !preg_match($config['constraint'], $allInput[$inputName])) {
-                            $errorMessage = array_key_exists('constraintError', $config) ? $config['constraintError'] : 'Ce champ n\'est pas valide';
-                            $this->setMessages($inputName, $errorMessage);
-                            $error = true;
-                        }
-                            break;
-                    case 'file':
-                        if (empty($class = $config['class']) || empty($function = $config['function'])) {
-                            throw new FormSecurityException('Error : '.get_class($this).', the class or the function is missing on the key', 500);
-                        }
-
-                        if (!class_exists($class) || !method_exists($class, $function)) {
-                            throw new FormSecurityException('Error : '.get_class($this).', the class or the function does not exist', 500);
-                        }
-
-                        $nullable = !empty($config['nullable']) ? $config['nullable'] : false;
-
-                        $class = new $class($this->request, $this->session);
-
-                        $result = call_user_func_array([$class, $function], [$inputName, $nullable]);
-
-                        if (false === $result) {
-                            $error = true;
-                        }
-                        $this->requestParams[$inputName] = $result;
-                            break;
-
-                    default:
-                        throw new FormSecurityException('The type is undefined', 500);
-                        break;
+            $type = $config['type'];
+            if (!array_key_exists($inputName, $allInput)) {
+                if ('checkbox' !== $type) {
+                    $error = true;
+                    continue;
                 }
-            } else {
-                $error = true;
+            }
+
+            $nullable = $config['nullable'];
+
+            if ('string' === $type || 'checkbox' === $type) {
+
+                if (false === $nullable && empty($allInput[$inputName])) {
+                    if (array_key_exists('nullError', $config) && !empty($config['nullError'])) {
+                        $this->setMessages($inputName, $config['nullError']);
+                    } else {
+                        $this->setMessages($inputName, $this->isNullError);
+                    }
+                    $error = true;
+                    continue;
+                }
+
+                if (array_key_exists($inputName, $allInput) && !preg_match($config['constraint'], $allInput[$inputName])) {
+                    $this->setMessages($inputName, $config['constraintError']);
+                    $error = true;
+                    continue;
+                }
+            }
+
+            if ('file' === $type) {
+                if (empty($class = $config['class']) || empty($function = $config['function'])) {
+                    throw new FormSecurityException('Error : '.get_class($this).', the class or the function is missing on the key', 500);
+                }
+
+                if (!class_exists($class) || !method_exists($class, $function)) {
+                    throw new FormSecurityException('Error : '.get_class($this).', the class or the function does not exist', 500);
+                }
+
+                $nullable = !empty($config['nullable']) ? $config['nullable'] : false;
+
+                $class = new $class($this->request, $this->session);
+
+                $result = call_user_func_array([$class, $function], [$inputName, $nullable]);
+
+                if (false === $result) {
+                    $error = true;
+                } else {
+                    $this->requestParams[$inputName] = $result;
+                }
             }
         }
 
@@ -118,6 +134,11 @@ abstract class FormSecurity implements FormSecurityInterface
     public function getData()
     {
         return $this->getRequestParams();
+    }
+
+    public function setData(string $key, mixed $value): void
+    {
+        $this->requestParams[$key] = $value;
     }
 
     public function setConfigInput(string $nameInput, string $key, mixed $value): void

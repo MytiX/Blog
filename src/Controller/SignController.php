@@ -56,17 +56,14 @@ class SignController extends AbstractController
                             'code' => $user->getCodeAuth(),
                         ]);
 
-                        try {
-                            $mailer = new Mailer();
+                        $mailer = new Mailer();
 
-                            $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
+                        $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
 
-                            $session->set('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
-                        } catch (\Throwable $th) {
-                            // Supprime l'utilisateur
-                            // Message d'erreur
-                            // $session->set('globalError', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail');
-                        }
+                        $session->set('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail.');
+
+                        return new RedirectResponse(AppConfig::URL.'/signin');
+
                     } else {
                         $session->set('globalError', 'Une erreur est survenu, veuillez réessayer ultérieurement.');
                     }
@@ -93,12 +90,8 @@ class SignController extends AbstractController
 
             $auth = new Authentication($session, $this->getRequest());
 
-            try {
-                $auth->attemptLogin($credientials);
-
+            if ($auth->attemptLogin($credientials)) {
                 return new RedirectResponse(AppConfig::URL);
-            } catch (\Exception $e) {
-                $session->set('errorFlash', $e->getMessage());
             }
         }
 

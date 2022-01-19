@@ -9,25 +9,25 @@ class PostFormSecurity extends FormSecurity
     public array $configInput = [
         'title' => [
             'type' => 'string',
-            'isNull' => false,
+            'nullable' => false,
             'constraint' => '/^[^<>]{1,255}$/',
             'constraintError' => 'Les caractères <> ne sont pas supporté ou longueur du titre incorrect maximum 255 caractères',
         ],
         'header' => [
             'type' => 'string',
-            'isNull' => false,
+            'nullable' => false,
             'constraint' => '/^[^<>]+$/',
             'constraintError' => 'Les caractères <> ne sont pas supporté',
         ],
         'slug' => [
             'type' => 'string',
-            'isNull' => false,
+            'nullable' => false,
             'constraint' => '/^[a-z-]{1,255}$/',
-            'constraintError' => 'Le slug ne peut comporter uniquement des lettres minuscule et du tiret -',
+            'constraintError' => 'Le slug ne peut comporter uniquement des lettres minuscule et des tirets -',
         ],
         'content' => [
             'type' => 'string',
-            'isNull' => false,
+            'nullable' => false,
             'constraint' => '/.+/',
             'constraintError' => 'Veuillez renseignez le champs ci-dessous',
         ],
@@ -36,16 +36,19 @@ class PostFormSecurity extends FormSecurity
             'class' => 'App\Core\Uploads\UploadImage',
             'function' => 'isValid',
             'nullable' => false,
+            'constraintError' => 'Veuillez insérer une image',
         ],
         'active' => [
             'type' => 'checkbox',
+            'nullable' => true,
             'constraint' => '/^[1]{1}$/',
-            'constraintError' => 'Une erreur est survenue sur ce champs',
+            'constraintError' => 'Veuillez cocher la case',
         ],
         'promote' => [
             'type' => 'checkbox',
+            'nullable' => true,
             'constraint' => '/^[1]{1}$/',
-            'constraintError' => 'Une erreur est survenue sur ce champs',
+            'constraintError' => 'Veuillez cocher la case',
         ],
     ];
 }

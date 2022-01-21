@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Core\ORM\ActiveRecord;
 use App\Core\ORM\EntityReflection\EntityAttribute;
+use DateTime;
 
 class Users extends ActiveRecord
 {
@@ -18,10 +19,6 @@ class Users extends ActiveRecord
     private string $password;
 
     private string $pseudo;
-
-    // private string $firstname;
-
-    // private string $lastname;
 
     private string $role = 'ROLE_USER';
 
@@ -63,26 +60,6 @@ class Users extends ActiveRecord
         return $this->password;
     }
 
-    // public function setFirstname(string $firstname): void
-    // {
-    //     $this->firstname = $firstname;
-    // }
-
-    // public function getFirstname(): string
-    // {
-    //     return $this->firstname;
-    // }
-
-    // public function setLastname(string $lastname): void
-    // {
-    //     $this->lastname = $lastname;
-    // }
-
-    // public function getLastname(): string
-    // {
-    //     return $this->lastname;
-    // }
-
     public function setPseudo(string $pseudo): void
     {
         $this->pseudo = $pseudo;
@@ -118,9 +95,9 @@ class Users extends ActiveRecord
         $this->createdAt = $createdAt;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): DateTime
     {
-        return $this->createdAt;
+        return new DateTime($this->createdAt);
     }
 
     public function setCodeAuth(?string $codeAuth): void

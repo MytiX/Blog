@@ -4,11 +4,26 @@ namespace App\Controller;
 
 use App\Core\Controller\AbstractController;
 use App\Core\Route\Route;
+use App\Core\Session\Session;
+use App\Entity\Comments;
 use App\Entity\Posts;
+use App\Entity\Users;
+use App\Security\Form\CommentsFormSecurity;
+use Config\AppConfig;
+use DateTime;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class BlogController extends AbstractController
 {
-    public function viewAllPosts()
+    private Session $session;
+
+    public function __construct()
+    {
+        $this->session = $this->getSession();
+    }
+
+    public function viewAllPosts(): Response
     {
         // echo 'View All Posts';
         // Tous les requis pour la page d'affichage de tous les blogs posts
@@ -21,26 +36,59 @@ class BlogController extends AbstractController
     }
 
     #[Route('/blog/{slug}-{id}')]
-    public function viewPost(string $slug, int $id)
+    public function viewPost(string $slug, int $id): Response
     {
-        $post = new Posts();
+        if (null === ($post = (new Posts())->find($id))) {
+            return new RedirectResponse(AppConfig::URL);
+        }
 
-        $resultPost = $post->find($id);
+        $author = (new Users())->find($post->getAuthor());
 
-        // dd($resultPost);
-        // dd(__CLASS__ . " " . $slug);
-        // echo __CLASS__ . " Article : " . $slug;
-        // Tous les requis pour la page d'affichage de tous les blogs posts
+        $post->setUser($author);
 
-        // Le titre ;
-        // Le chapô ;
-        // Le contenu ;
-        // L’auteur ;
-        // La date de dernière mise à jour ;
-        // Le formulaire permettant d’ajouter un commentaire (soumis pour validation) ;
-        // Les listes des commentaires validés et publiés.
+        $form = new CommentsFormSecurity($this->getRequest(), $this->session);
+
+        $comments = new Comments();
+
+        if ($form->isSubmit() && $form->isValid()) {
+            if (null === ($user = $this->session->get('__user'))) {
+                return new RedirectResponse(AppConfig::URL);
+            }
+
+            $data = $form->getData();
+
+            $comments->setContent(htmlspecialchars($data['content']));
+            $comments->setActive(0);
+            $comments->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
+            $comments->setIdPost($id);
+            $comments->setIdUser($user['id']);
+
+            $comments->save();
+
+            $this->session->set('successSubmit', 'Votre commentaires à bien été soumis, il doit maintenant être validé par l\'administrateur.');
+        }
+
+        $comments = $comments->findBy([
+            'params' => [
+                'id_post' => $post->getId(),
+                'active' => 1,
+            ],
+            'orderBy' => [
+                'created_at ASC'
+            ]
+        ]);
+
+        if ($comments) {
+            foreach ($comments as $comment) {
+                $user = (new Users())->find($comment->getIdUser());
+                $comment->setUser($user);
+            }
+        }
+
         return $this->render('/post/post.php', [
-            'post' => $resultPost,
+            'post' => $post,
+            'comments' => $comments,
+            'form' => $form->getData(),
         ]);
     }
 }

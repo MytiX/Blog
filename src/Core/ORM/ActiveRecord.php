@@ -74,7 +74,7 @@ abstract class ActiveRecord
      *
      * @param array $idOrParams takes as parameter an array accepting the keys params, orderBy, limit, offset
      *
-     * @return void
+     * @return mixed
      */
     public function findBy(array $idOrParams)
     {

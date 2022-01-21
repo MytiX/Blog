@@ -27,6 +27,9 @@
                         <a class="blog-header-logo" href="/">DevCoding</a>
                     </div>
                     <div class="col-4 d-flex justify-content-end align-items-center">
+                        <?php if (!empty($user = $session->get('__user')) AND $user['role'] === "ROLE_ADMIN"): ?>
+                            <a class="btn btn-sm btn-outline-secondary mx-2" href="/admin/posts">Dashboard</a>
+                        <?php endif; ?>
                         <?php if (!empty($session->get('__user'))): ?>
                             <a class="btn btn-sm btn-outline-secondary mx-2" href="/logout">Déconnexion</a>
                         <?php else: ?>

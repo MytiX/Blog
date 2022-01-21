@@ -48,7 +48,7 @@ class UploadImage
 
         $extension = $file->getClientOriginalExtension();
 
-        if (!in_array($extension, $this->getAllowedUpload())) {
+        if (!in_array($extension, $this->getAllowedUpload()) || !in_array(mime_content_type($file->getRealPath()), $this->getMimetypeAllowed())) {
             $this->session->set($key, "L'extension du fichier n'est pas bonne");
 
             return false;
@@ -87,9 +87,14 @@ class UploadImage
         return UploadsConfig::IMAGE_PATH;
     }
 
+    private function getMimetypeAllowed(): array
+    {
+        return UploadsConfig::MIMETYPE_ALLOWED;
+    }
+
     private function getAllowedUpload(): array
     {
-        return UploadsConfig::IMAGE_ALLOWED;
+        return UploadsConfig::EXTENSION_ALLOWED;
     }
 
     private function getMaxSizeUpload(): int

@@ -31,6 +31,10 @@ class EntityReflection
                     /** @var EntityAttribute $entityAttribute */
                     $entityAttribute = $attribute->newInstance();
 
+                    if ($entityAttribute->ignoreEntity()) {
+                        continue;
+                    }
+
                     if ($entityAttribute->isAutoIncrement()) {
                         $this->setAutoIncrementKey($this->formatKeyName($propertie->getName()));
                     } else {

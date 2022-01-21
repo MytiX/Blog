@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Core\Controller\AbstractController;
 use App\Core\Route\Route;
 use App\Core\Uploads\UploadImage;
+use App\Entity\Comments;
 use App\Entity\Posts;
 use App\Security\Form\PostFormSecurity;
 use Config\AppConfig;
@@ -18,6 +19,21 @@ class AdminPosts extends AbstractController
     public function getAllPosts(): Response
     {
         $posts = (new Posts())->findAll();
+
+        foreach ($posts as $post) {
+            $comments = (new Comments())->findBy([
+                'params' => [
+                    'active' => 0,
+                    'id_post' => $post->getId(),
+                ],
+            ]);
+
+            if (null === $comments) {
+                continue;
+            }
+
+            $post->setComments($comments);
+        }
 
         return $this->render('/admin/posts/allPosts.php', [
             'posts' => $posts,
@@ -58,6 +74,15 @@ class AdminPosts extends AbstractController
 
             return new RedirectResponse(AppConfig::URL.'/admin/posts');
         }
+
+        $comments = (new Comments())->findBy([
+            'params' => [
+                'id_post' => $post->getId(),
+            ],
+            'orderBy' => [
+                'created_at DESC',
+            ],
+        ]);
 
         $formData = [
             'title' => $post->getTitle(),
@@ -117,6 +142,7 @@ class AdminPosts extends AbstractController
 
         return $this->render('/admin/posts/editPost.php', [
             'post' => $formData,
+            'comments' => $comments,
             'edit' => true,
         ]);
     }

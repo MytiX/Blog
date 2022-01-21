@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Core\ORM\ActiveRecord;
 use App\Core\ORM\EntityReflection\EntityAttribute;
+use DateTime;
 
 class Posts extends ActiveRecord
 {
@@ -32,6 +33,12 @@ class Posts extends ActiveRecord
     private int $promote;
 
     private ?string $image = null;
+
+    #[EntityAttribute(['Ignore' => true])]
+    private ?Users $user;
+
+    #[EntityAttribute(['Ignore' => true])]
+    private array $comments = [];
 
     public function setId(int $id): void
     {
@@ -102,9 +109,9 @@ class Posts extends ActiveRecord
         $this->createdAt = $createdAt;
     }
 
-    public function getCreatedAt(): string
+    public function getCreatedAt(): DateTime
     {
-        return $this->createdAt;
+        return new DateTime($this->createdAt);
     }
 
     public function setUpdateAt(string $updateAt): void
@@ -112,9 +119,9 @@ class Posts extends ActiveRecord
         $this->updateAt = $updateAt;
     }
 
-    public function getUpdateAt(): string
+    public function getUpdateAt(): DateTime
     {
-        return $this->updateAt;
+        return new DateTime($this->updateAt);
     }
 
     public function setActive(int $active): void
@@ -145,5 +152,25 @@ class Posts extends ActiveRecord
     public function getImage(): ?string
     {
         return $this->image;
+    }
+
+    public function setComments(array $comments): void
+    {
+        $this->comments = $comments;
+    }
+
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
+
+    public function setUser(Users $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getUser(): ?Users
+    {
+        return $this->user;
     }
 }

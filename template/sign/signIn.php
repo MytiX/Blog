@@ -22,11 +22,17 @@
                         <div class="form-group pb-2">
                             <label for="emailInput">Votre email :</label>
                             <input type="email" class="form-control mt-2" id="emailInput" name="emailInput" value="" required>
+                            <?php if (!empty($errorFlash = $session->flash('emailInput'))):?>
+                                <small class="text-danger"><?= $errorFlash ?></small>
+                            <?php endif; ?>
                         </div>
 
                         <div class="form-group pb-2">
                             <label for="passwordInput">Votre mot de passe :</label>
                             <input type="password" class="form-control mt-2" id="passwordInput" name="passwordInput" value="" required>
+                            <?php if (!empty($errorFlash = $session->flash('passwordInput'))):?>
+                                <small class="text-danger"><?= $errorFlash ?></small>
+                            <?php endif; ?>
                         </div>
 
                         <div class="d-flex justify-content-end">

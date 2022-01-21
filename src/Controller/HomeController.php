@@ -51,7 +51,7 @@ class HomeController extends AbstractController
 
             $mailer = new Mailer();
 
-            $mailer->sendMail('Un utilisateur de DevCoding vous a envoyé un message', AppConfig::CONTACT_FORM_EMAIL, $message);
+            $mailer->sendMail('Un utilisateur de DevCoding vous a envoyé un message', AppConfig::CONTACT_FORM_EMAIL, $message, ['Reply-To' => $data['emailInput']]);
 
             $session->set('successFlash', 'Votre email à bien été envoyé, nous répondrons dans les plus brefs délai.');
 

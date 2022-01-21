@@ -35,6 +35,10 @@
                             <?php endif; ?>
                         </div>
 
+                        <div>
+                            <a href="/reset-password">Mot de passe oubliée</a>
+                        </div>
+
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn-custom">Envoyer</button>
                         </div>

@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
-use App\Core\Controller\AbstractController;
-use App\Core\Route\Route;
 use App\Entity\Posts;
+use App\Core\Route\Route;
+use App\Core\Mailer\Mailer;
+use App\Core\Templating\Templating;
 use App\Security\Form\ContactFormSecurity;
+use App\Core\Controller\AbstractController;
+use Config\AppConfig;
 
 class HomeController extends AbstractController
 {
@@ -13,6 +16,8 @@ class HomeController extends AbstractController
     public function home()
     {
         $posts = new Posts();
+
+        $session = $this->getSession();
 
         $resultPosts = $posts->findBy([
             'params' => [
@@ -31,14 +36,27 @@ class HomeController extends AbstractController
             ],
         ]);
 
-        $form = new ContactFormSecurity($this->getRequest(), $this->getSession());
+        $form = new ContactFormSecurity($this->getRequest(), $session);
 
         if ($form->isSubmit() && $form->isValid()) {
             $data = $form->getData();
-            dd($data);
-        }
 
-        // dd($this->getSession()->flash('checkInput'), $form->getData());
+            $templating = new Templating();
+
+            $message = $templating->getView('/emails/contactForm.php', [
+                'email' => $data['emailInput'],
+                'objet' => $data['objetInput'],
+                'message' => $data['messageInput'],
+            ]);
+
+            $mailer = new Mailer();
+
+            $mailer->sendMail('Un utilisateur de DevCoding vous a envoyé un message', AppConfig::CONTACT_FORM_EMAIL, $message);
+
+            $session->set('successFlash', 'Votre email à bien été envoyé, nous répondrons dans les plus brefs délai.');
+
+            $form->clearData();
+        }
 
         // Votre nom et votre prénom ;
         // Une photo et/ou un logo ;
@@ -53,6 +71,7 @@ class HomeController extends AbstractController
         return $this->render('/home/home.php', [
             'posts' => $resultPosts,
             'postsPromote' => $postsPromote,
+            'form' => $form->getData(),
         ]);
     }
 }

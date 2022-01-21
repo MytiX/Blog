@@ -128,6 +128,11 @@ abstract class FormSecurity implements FormSecurityInterface
         $this->requestParams[$key] = $value;
     }
 
+    public function clearData(): void
+    {
+        $this->requestParams = [];
+    }
+
     public function setConfigInput(string $nameInput, string $key, mixed $value): void
     {
         if (!array_key_exists($nameInput, $this->configInput) && !array_key_exists($key, $this->configInput[$nameInput])) {

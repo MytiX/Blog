@@ -53,7 +53,7 @@ class CommentsController extends AbstractController
         $comments->setActive(0);
         $comments->save();
 
-        $this->getSession()->set('comments', 'Le commentaire à bien été désactiver');
+        $this->getSession()->set('comments', 'Le commentaire à bien été désactivé');
 
         return new RedirectResponse($this->getRequest()->server->get('HTTP_REFERER'));
     }

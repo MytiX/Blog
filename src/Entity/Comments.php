@@ -24,6 +24,9 @@ class Comments extends ActiveRecord
 
     private int $idUser;
 
+    #[EntityAttribute(['Ignore' => true])]
+    private ?Users $user;
+
     public function setId($id): void
     {
         $this->id = $id;
@@ -82,5 +85,15 @@ class Comments extends ActiveRecord
     public function getIdUser(): int
     {
         return $this->idUser;
+    }
+
+    public function setUser(Users $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getUser(): ?Users
+    {
+        return $this->user;
     }
 }

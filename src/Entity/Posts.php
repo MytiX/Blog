@@ -35,6 +35,9 @@ class Posts extends ActiveRecord
     private ?string $image = null;
 
     #[EntityAttribute(['Ignore' => true])]
+    private ?Users $user;
+
+    #[EntityAttribute(['Ignore' => true])]
     private array $comments = [];
 
     public function setId(int $id): void
@@ -159,5 +162,15 @@ class Posts extends ActiveRecord
     public function getComments(): array
     {
         return $this->comments;
+    }
+
+    public function setUser(Users $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getUser(): ?Users
+    {
+        return $this->user;
     }
 }

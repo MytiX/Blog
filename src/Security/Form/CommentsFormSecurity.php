@@ -10,8 +10,8 @@ class CommentsFormSecurity extends FormSecurity
         'content' => [
             'type' => 'string',
             'isNull' => false,
-            'constraint' => '/^[^<>]{1,500}$/',
-            'constraintError' => 'Les caractères <> ne sont pas supporté ou la longueur du commentaire trop long 500 caractères maximum',
+            'constraint' => '/^.{1,500}$/',
+            'constraintError' => 'La longueur du commentaire est trop longue 500 caractères maximum',
         ],
     ];
 }

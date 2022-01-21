@@ -9,20 +9,20 @@
 
             <div class="d-flex justify-content-between">
                 <span class="blog-post-meta">Dernière mise à jour le :
-                    <?= $post['date']?>
+                    <?= $post->getUpdateAt()->format('d/m/Y') ?>
                 </span>
                 <span class="blog-post-meta">Auteur :
-                    <?= $post['author'] ?>
+                    <?= $post->getUser()->getPseudo() ?>
                 </span>
             </div>
 
                 <h2 class="pb-4 fst-italic blog-post-title">
-                    <?= $post['title'] ?>
+                    <?= $post->getTitle() ?>
                 </h2>
 
-                <img src="../uploads/img/<?= $post['img'] ?>" alt="" class="img-fluid pb-3">
+                <img src="../uploads/img/<?= $post->getImage() ?>" alt="" class="img-fluid pb-3">
 
-                <?= $post['content'] ?>
+                <?= $post->getContent() ?>
 
             </article>
 
@@ -32,13 +32,13 @@
 
                 <h3 class="mt-2">Les commentaires</h3>
 
-                <?php if(!empty($post['comments'])): ?>
+                <?php if(!empty($comments)): ?>
 
-                    <?php foreach ($post['comments'] as $comment):?>
+                    <?php foreach ($comments as $comment):?>
 
                         <div class="comment border-rounded my-3 p-3">
-                            <p class="mb-0"><?= htmlspecialchars($comment['content']) ?></p>
-                            <p class="text-end mb-0"><?= $comment['pseudo'] ?></p>
+                            <p class="mb-0"><?= htmlspecialchars($comment->getContent()) ?></p>
+                            <p class="text-end mb-0"><?= $comment->getUser()->getPseudo() ?></p>
                         </div>
 
                     <?php endforeach;?>

@@ -23,7 +23,7 @@ class BlogController extends AbstractController
         $this->session = $this->getSession();
     }
 
-    public function viewAllPosts()
+    public function viewAllPosts(): Response
     {
         // echo 'View All Posts';
         // Tous les requis pour la page d'affichage de tous les blogs posts
@@ -44,6 +44,8 @@ class BlogController extends AbstractController
 
         $author = (new Users())->find($post->getAuthor());
 
+        $post->setUser($author);
+
         $form = new CommentsFormSecurity($this->getRequest(), $this->session);
 
         $comments = new Comments();
@@ -55,7 +57,7 @@ class BlogController extends AbstractController
 
             $data = $form->getData();
 
-            $comments->setContent($data['content']);
+            $comments->setContent(htmlspecialchars($data['content']));
             $comments->setActive(0);
             $comments->setCreatedAt((new DateTime())->format('Y-m-d H:i:s'));
             $comments->setIdPost($id);
@@ -76,33 +78,17 @@ class BlogController extends AbstractController
             ]
         ]);
 
-        $resultComments = [];
-
         if ($comments) {
             foreach ($comments as $comment) {
-                /** @var Comments $comment */
-                /** @var Users $user */
-                /** @var Posts $post */
                 $user = (new Users())->find($comment->getIdUser());
-
-                $resultComments[] = [
-                    'content' => $comment->getContent(),
-                    'pseudo' => $user->getPseudo(),
-                ];
+                $comment->setUser($user);
             }
         }
 
-        $postResult = [
-            'title' => $post->getTitle(),
-            'author' => $author->getPseudo(),
-            'date' => $post->getUpdateAt()->format('d/m/Y'),
-            'img' => $post->getImage(),
-            'content' => $post->getContent(),
-            'comments' => $resultComments,
-        ];
-
         return $this->render('/post/post.php', [
-            'post' => $postResult,
+            'post' => $post,
+            'comments' => $comments,
+            'form' => $form->getData(),
         ]);
     }
 }

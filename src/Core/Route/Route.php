@@ -15,14 +15,22 @@ class Route
 
     private array $params = [];
 
-    public function __construct(string $path, bool $secure = null, array $roles = null)
+    private array $roles = [];
+
+    public function __construct(string $path, array $roles = [])
     {
         $this->path = $path;
+        $this->roles = $roles;
     }
 
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
     }
 
     public function setController(string $controller): void
@@ -54,9 +62,4 @@ class Route
     {
         return $this->params;
     }
-
-    // public function getInstance(): mixed
-    // {
-    //     return [new $this->controller(), $this->action];
-    // }
 }

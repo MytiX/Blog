@@ -51,7 +51,7 @@ class BlogController extends AbstractController
         $comments = new Comments();
 
         if ($form->isSubmit() && $form->isValid()) {
-            if (null === ($user = $this->session->get('__user'))) {
+            if (null === ($user = $this->session->get(AppConfig::USER_SESSION))) {
                 return new RedirectResponse(AppConfig::URL);
             }
 

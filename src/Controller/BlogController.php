@@ -25,8 +25,6 @@ class BlogController extends AbstractController
 
     public function viewAllPosts(): Response
     {
-        // echo 'View All Posts';
-        // Tous les requis pour la page d'affichage de tous les blogs posts
 
         // Le titre ;
         // La date de dernière modification ;

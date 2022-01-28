@@ -46,7 +46,8 @@ class HomeController extends AbstractController
             $message = $templating->getView('/emails/contactForm.php', [
                 'email' => $data['emailInput'],
                 'objet' => $data['objetInput'],
-                'message' => $data['messageInput'],
+                'message' => nl2br(htmlspecialchars($data['messageInput'])),
+                'name' => sprintf('%s %s', $data['firstname'], $data['lastname']),
             ]);
 
             $mailer = new Mailer();

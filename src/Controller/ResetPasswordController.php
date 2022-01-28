@@ -52,12 +52,9 @@ class ResetPasswordController extends AbstractController
 
                 $mailer->sendMail('Demande de réinitialisation mot de passe', $user->getEmail(), $message);
 
-                $session->set('successFlash', 'Un email vous a été envoyer afin de réinitialiser votre mot de passe.');
-
                 // $form->clearData(); TODO function exist on branch Feature_Contact after rebase uncomment this part
-            } else {
-                $session->set('errorFlash', 'Le compte n\'existe pas ou l\'email est incorrect.');
             }
+            $session->set('successFlash', 'Un email vous a été envoyer afin de réinitialiser votre mot de passe.');
         }
 
         return $this->render('/reset-password/emailResetPassword.php', [

@@ -1,3 +1,6 @@
+<?php
+    $pagination = false;
+?>
 <!-- Header -->
 <?php include "../template/components/header.php"; ?>
 

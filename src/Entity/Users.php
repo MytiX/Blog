@@ -28,7 +28,9 @@ class Users extends ActiveRecord
 
     private ?string $codeAuth = null;
 
-    private ?string $resetPassRequest = null;
+    private ?string $resetPassCode = null;
+
+    private ?string $resetPassCreatedAt = null;
 
     public function setId(int $id): void
     {
@@ -110,13 +112,23 @@ class Users extends ActiveRecord
         return $this->codeAuth;
     }
 
-    public function setResetPassRequest(?string $resetPassRequest): void
+    public function setResetPassCode(?string $resetPassCode): void
     {
-        $this->resetPassRequest = $resetPassRequest;
+        $this->resetPassCode = $resetPassCode;
     }
 
-    public function getResetPassRequest(): ?string
+    public function getResetPassCode(): ?string
     {
-        return $this->resetPassRequest;
+        return $this->resetPassCode;
+    }
+
+    public function setResetPassCreatedAt(?string $resetPassCreatedAt): void
+    {
+        $this->resetPassCreatedAt = $resetPassCreatedAt;
+    }
+
+    public function getResetPassCreatedAt(): DateTime
+    {
+        return new DateTime($this->resetPassCreatedAt);
     }
 }

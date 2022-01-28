@@ -13,6 +13,18 @@ class ContactFormSecurity extends FormSecurity
             'constraint' => '/^[a-zA-Z0-9-_.+]+[@]{1}[a-zA-Z0-9-]+[.]{1}[a-z]{2,4}$/',
             'constraintError' => 'Veuillez renseignez une adresse mail valide',
         ],
+        'firstname' => [
+            'type' => 'string',
+            'nullable' => false,
+            'constraint' => '/^[\p{L}\s-]{1,255}$/',
+            'constraintError' => 'Veuillez renseignez votre prénom',
+        ],
+        'lastname' => [
+            'type' => 'string',
+            'nullable' => false,
+            'constraint' => '/^[\p{L}\s-]{1,255}$/',
+            'constraintError' => 'Veuillez renseignez votre nom',
+        ],
         'objetInput' => [
             'type' => 'string',
             'nullable' => false,

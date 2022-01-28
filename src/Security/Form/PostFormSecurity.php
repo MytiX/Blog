@@ -16,8 +16,8 @@ class PostFormSecurity extends FormSecurity
         'header' => [
             'type' => 'string',
             'nullable' => false,
-            'constraint' => '/^[^<>]+$/',
-            'constraintError' => 'Les caractères <> ne sont pas supporté',
+            'constraint' => '/^[^<>]{1,255}+$/',
+            'constraintError' => 'Les caractères <> ne sont pas supporté ou longueur du titre incorrect maximum 255 caractères',
         ],
         'slug' => [
             'type' => 'string',

@@ -21,6 +21,7 @@ class Authorization
         }
 
         if (!in_array($user['role'], $roles)) {
+            $session->set('accessDenied', 'Accès non autorisée');
             return new RedirectResponse(AppConfig::URL);
         }
         return true;

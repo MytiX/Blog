@@ -1,3 +1,7 @@
+<?php
+    $route = '/all-post';
+    $pagination = true;
+?>
 <!-- Header -->
 <?php include "../template/components/header.php"; ?>
 

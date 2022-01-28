@@ -48,4 +48,10 @@
                     <a class="p-2 link-secondary" href="#">HTML/CSS</a>
                 </nav>
             </div>
+
+            <?php if (!empty($errorFlash = $session->flash('accessDenied'))):?>
+                <div class="alert alert-warning" role="alert">
+                    <?= $errorFlash ?>
+                </div>
+            <?php endif; ?>
         </div>

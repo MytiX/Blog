@@ -4,6 +4,7 @@ namespace App\Security\Authentication;
 
 use DateTime;
 use App\Entity\Users;
+use Config\AppConfig;
 use App\Core\Mailer\Mailer;
 use App\Core\Session\Session;
 use App\Entity\AttemptConnection;
@@ -13,8 +14,6 @@ use App\Security\Authentication\Exception\AuthenticationException;
 
 class Authentication
 {
-    public const SESSION_USER_KEY = '__user';
-
     private int $maxAttempt = 5;
 
     private int $timeout = 900;
@@ -88,7 +87,7 @@ class Authentication
         $attempt->delete($attempt->getId());
 
         // mise en session de l'utilisateur
-        $this->session->set(self::SESSION_USER_KEY, [
+        $this->session->set(AppConfig::USER_SESSION, [
             'id' => $user->getId(),
             'pseudo' => $user->getPseudo(),
             'email' => $user->getEmail(),

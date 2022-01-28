@@ -17,10 +17,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SignController extends AbstractController
 {
-    #[Route('/signup', false)]
+    #[Route('/signup')]
     public function signUp(): Response
     {
         $session = $this->getSession();
+
+        if (!empty($session->get(AppConfig::USER_SESSION))) {
+            return new RedirectResponse(AppConfig::URL);
+        }
+
         $form = new SignUpFormSecurity($this->getRequest(), $session);
 
         if ($form->isSubmit() && $form->isValid()) {
@@ -83,6 +88,10 @@ class SignController extends AbstractController
     {
         $session = $this->getSession();
 
+        if (!empty($session->get(AppConfig::USER_SESSION))) {
+            return new RedirectResponse(AppConfig::URL);
+        }
+
         $form = new SignInFormSecurity($this->getRequest(), $this->getSession());
 
         if ($form->isSubmit() && $form->isValid()) {
@@ -103,7 +112,7 @@ class SignController extends AbstractController
     {
         $session = $this->getSession();
 
-        $session->remove('__user');
+        $session->remove(AppConfig::USER_SESSION);
 
         return new RedirectResponse(AppConfig::URL);
     }

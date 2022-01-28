@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminPosts extends AbstractController
 {
-    #[Route('/admin/posts')]
+    #[Route('/admin/posts', ['ROLE_ADMIN'])]
     public function getAllPosts(): Response
     {
         $posts = (new Posts())->findAll();
@@ -40,7 +40,7 @@ class AdminPosts extends AbstractController
         ]);
     }
 
-    #[Route('/admin/post/delete/{id}')]
+    #[Route('/admin/post/delete/{id}', ['ROLE_ADMIN'])]
     public function deletePost(int $id): RedirectResponse
     {
         if (!is_numeric($id)) {
@@ -63,7 +63,7 @@ class AdminPosts extends AbstractController
         }
     }
 
-    #[Route('/admin/post/edit/{id}')]
+    #[Route('/admin/post/edit/{id}', ['ROLE_ADMIN'])]
     public function editPost($id): Response
     {
         /** @var Posts $post */
@@ -103,7 +103,7 @@ class AdminPosts extends AbstractController
 
             $session = $this->getSession();
 
-            $user = $session->get('__user');
+            $user = $session->get(AppConfig::USER_SESSION);
 
             $date = (new DateTime())->format('Y-m-d H:i:s');
 
@@ -147,7 +147,7 @@ class AdminPosts extends AbstractController
         ]);
     }
 
-    #[Route('/admin/post/add')]
+    #[Route('/admin/post/add', ['ROLE_ADMIN'])]
     public function addPost(): Response
     {
         $request = $this->getRequest();
@@ -157,7 +157,7 @@ class AdminPosts extends AbstractController
         $form = new PostFormSecurity($request, $session);
 
         if ($form->isSubmit() && $form->isValid()) {
-            $user = $session->get('__user');
+            $user = $session->get(AppConfig::USER_SESSION);
 
             $formData = $form->getData();
 

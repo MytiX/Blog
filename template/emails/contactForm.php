@@ -8,6 +8,7 @@
 <body>
     <div>
         <p>Email : <?= $email ?></p>
+        <p>Nom complet : <?= $name ?></p>
         <p>Objet : <?= $objet ?></p>
         <p>Message : <br> <?= $message ?></p>
     </div>

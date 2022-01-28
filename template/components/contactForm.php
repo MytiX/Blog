@@ -15,6 +15,20 @@
                 <?php endif; ?>
             </div>
             <div class="form-group pb-2">
+                <label for="firstname">Votre prénom :</label>
+                <input type="text" class="form-control mt-2" id="firstname" name="firstname" value="<?= (!empty($form['firstname'])) ? $form['firstname'] : '' ?>" required>
+                <?php if (!empty($errorFlash = $session->flash('firstname'))):?>
+                    <small class="text-danger"><?= $errorFlash ?></small>
+                <?php endif; ?>
+            </div>
+            <div class="form-group pb-2">
+                <label for="lastname">Votre nom :</label>
+                <input type="text" class="form-control mt-2" id="lastname" name="lastname" value="<?= (!empty($form['lastname'])) ? $form['lastname'] : '' ?>" required>
+                <?php if (!empty($errorFlash = $session->flash('lastname'))):?>
+                    <small class="text-danger"><?= $errorFlash ?></small>
+                <?php endif; ?>
+            </div>
+            <div class="form-group pb-2">
                 <label for="objetInput">Quel est l'objet de votre message ?</label>
                 <input type="text" class="form-control mt-2" id="objetInput" name="objetInput" value="<?= (!empty($form['objetInput'])) ? $form['objetInput'] : '' ?>" required>
                 <?php if (!empty($errorFlash = $session->flash('objetInput'))):?>

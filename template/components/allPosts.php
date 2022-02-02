@@ -4,8 +4,8 @@
             <?php for ($i=0; $i < count($posts); $i++): ?>
                 <article class="blog-post border-bottom-custom">
                     <a href="/blog/<?= $posts[$i]->getSlug() . '-' . $posts[$i]->getId()  ?>" class="a-custom">
-                        <h2 class="blog-post-title"><?= $posts[$i]->getTitle() ?></h2>
-                        <p><?= $posts[$i]->getHeader(); ?></p>
+                        <h2 class="blog-post-title"><?= htmlspecialchars($posts[$i]->getTitle()) ?></h2>
+                        <p><?= htmlspecialchars($posts[$i]->getHeader()) ?></p>
                     </a>
                     <p class="blog-post-meta">
                         <?= $date = $posts[$i]->getCreatedAt()->format('d/m/Y') ?>

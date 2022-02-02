@@ -24,11 +24,11 @@
                             <article>
                                 <strong class="d-inline-block mb-2 text-primary">PHP</strong>
                                 <a href="/blog/<?= $post->getSlug() . '-' . $post->getId()  ?>" class="a-custom">
-                                    <h2 class="mb-0 blog-post-title"><?= $post->getTitle() ?></h2>
+                                    <h2 class="mb-0 blog-post-title"><?= htmlspecialchars($post->getTitle()) ?></h2>
                                     <div class="mb-1 blog-post-meta">
                                         <?= $post->getCreatedAt()->format('d/m/Y')?>
                                     </div>
-                                    <p class="card-text mb-auto"><?= $post->getHeader(); ?></p>
+                                    <p class="card-text mb-auto"><?= htmlspecialchars($post->getHeader()) ?></p>
                                 </a>
                             </article>
                         </div>

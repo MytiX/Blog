@@ -17,7 +17,7 @@
             </div>
 
                 <h2 class="pb-4 fst-italic blog-post-title">
-                    <?= $post->getTitle() ?>
+                    <?= htmlspecialchars($post->getTitle()) ?>
                 </h2>
 
                 <img src="../uploads/img/<?= $post->getImage() ?>" alt="" class="img-fluid pb-3">

@@ -33,7 +33,7 @@
                         <?php foreach ($posts as $post): ?>
                             <tr>
                                 <td><?= $post->getId() ?></td>
-                                <td><?= $post->getTitle() ?></td>
+                                <td><?= htmlspecialchars($post->getTitle()) ?></td>
                                 <td><?= $post->getCreatedAt()->format('d/m/Y H:i:s') ?></td>
                                 <td><?= $post->getUpdateAt()->format('d/m/Y H:i:s') ?></td>
                                 <td><?= ($post->getActive() === 1) ? 'Oui' : 'Non' ?></td>

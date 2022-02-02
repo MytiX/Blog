@@ -11,13 +11,13 @@ class PostFormSecurity extends FormSecurity
             'type' => 'string',
             'nullable' => false,
             'constraint' => '/^.{1,255}$/',
-            'constraintError' => 'La longueur du titre incorrect maximum 255 caractères',
+            'constraintError' => 'La longueur du titre est incorrecte, Maximum 255 caractères',
         ],
         'header' => [
             'type' => 'string',
             'nullable' => false,
             'constraint' => '/^.{1,255}+$/',
-            'constraintError' => 'La longueur du châpo est incorrect maximum 255 caractères',
+            'constraintError' => 'La longueur du châpo est incorrecte, Maximum 255 caractères',
         ],
         'slug' => [
             'type' => 'string',

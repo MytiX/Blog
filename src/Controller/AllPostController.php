@@ -18,7 +18,7 @@ class AllPostController extends AbstractController
         $limit = 2;
         $moreResult = false;
 
-        if (!empty($pageNumber = $request->query->get('page')) && is_numeric($r) && $r > 0) {
+        if (!empty($pageNumber = $request->query->get('page')) && is_numeric($pageNumber) && $pageNumber > 0) {
             $page = $pageNumber - 1;
         }
 
@@ -37,8 +37,6 @@ class AllPostController extends AbstractController
             $moreResult = true;
             unset($posts[array_key_last($posts)]);
         }
-
-        // dd($posts, $moreResult, $limit, $page * $limit);
 
         return $this->render('/post/all-post.php', [
             'posts' => $posts,

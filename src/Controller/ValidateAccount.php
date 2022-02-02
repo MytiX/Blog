@@ -21,6 +21,7 @@ class ValidateAccount extends AbstractController
 
         if (empty($email) || empty($code) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $session->set('errorFlash', 'Une erreur est survenue lors de la validation de votre compte');
+
             return new RedirectResponse(AppConfig::URL.'/signin');
         }
 

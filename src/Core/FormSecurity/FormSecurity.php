@@ -53,19 +53,6 @@ abstract class FormSecurity implements FormSecurityInterface
 
         $allInput = $this->getRequestParams();
 
-        /**
-         *
-         * Regarder que l'élément existe dans le tableau POST
-         *
-         *
-         * Parcourir tous les éléments de la config
-         *
-         * si l'élément est dans le tableau on contrôle si il peux être vide ou pas
-         *
-         * si il peut être vide
-         *
-         */
-
         foreach ($this->configInput as $inputName => $config) {
             $type = $config['type'];
             if (!array_key_exists($inputName, $allInput)) {
@@ -78,7 +65,6 @@ abstract class FormSecurity implements FormSecurityInterface
             $nullable = $config['nullable'];
 
             if ('string' === $type || 'checkbox' === $type) {
-
                 if (false === $nullable && empty($allInput[$inputName])) {
                     if (array_key_exists('nullError', $config) && !empty($config['nullError'])) {
                         $this->setMessages($inputName, $config['nullError']);

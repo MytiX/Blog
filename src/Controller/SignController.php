@@ -68,7 +68,6 @@ class SignController extends AbstractController
                         $session->set('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail.');
 
                         return new RedirectResponse(AppConfig::URL.'/signin');
-
                     } else {
                         $session->set('globalError', 'Une erreur est survenu, veuillez réessayer ultérieurement.');
                     }

@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Posts;
-use Config\AppConfig;
-use App\Core\Route\Route;
-use App\Core\Mailer\Mailer;
-use App\Core\Templating\Templating;
-use App\Security\Form\ContactFormSecurity;
 use App\Core\Controller\AbstractController;
+use App\Core\Mailer\Mailer;
+use App\Core\Route\Route;
+use App\Core\Templating\Templating;
+use App\Entity\Posts;
+use App\Security\Form\ContactFormSecurity;
+use Config\AppConfig;
 
 class HomeController extends AbstractController
 {

@@ -1,5 +1,5 @@
 <div class="row g-5">
-    <div class="col-md-8">
+    <div class="col-12 col-lg-8">
         <?php if(!empty($posts)): ?>
             <?php for ($i=0; $i < count($posts); $i++): ?>
                 <article class="blog-post border-bottom-custom">

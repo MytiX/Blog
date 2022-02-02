@@ -1,10 +1,10 @@
 <div class="row justify-content-around">
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-lg-8">
         <?php if (!empty($successFlash = $session->flash('successFlash'))):?>
             <small class="text-success"><?= $successFlash ?></small>
         <?php endif; ?>
     </div>
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-lg-8">
         <h3 class="blog-post-title mb-4 border-bottom-custom pb-4">Contactez-moi !</h3>
         <form action="#" method="post" class="pb-4">
             <div class="form-group pb-2">

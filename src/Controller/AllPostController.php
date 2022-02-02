@@ -18,7 +18,7 @@ class AllPostController extends AbstractController
         $limit = 2;
         $moreResult = false;
 
-        if (!empty($pageNumber = $request->query->get('page')) && is_numeric($pageNumber) && $pageNumber > 0) {
+        if (null !== ($pageNumber = $request->query->get('page')) && is_numeric($pageNumber) && $pageNumber > 0) {
             $page = $pageNumber - 1;
         }
 

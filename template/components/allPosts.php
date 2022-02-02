@@ -8,7 +8,7 @@
                         <p><?= htmlspecialchars($posts[$i]->getHeader()) ?></p>
                     </a>
                     <p class="blog-post-meta">
-                        <?= $date = $posts[$i]->getCreatedAt()->format('d/m/Y') ?>
+                        <?= $date = $posts[$i]->getUpdateAt()->format('d/m/Y') ?>
                     </p>
                 </article>
             <?php endfor; ?>

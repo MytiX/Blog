@@ -18,8 +18,8 @@ class AllPostController extends AbstractController
         $limit = 2;
         $moreResult = false;
 
-        if (!empty($r = $request->query->get('page')) && is_numeric($r) && $r > 0) {
-            $page = $r - 1;
+        if (!empty($pageNumber = $request->query->get('page')) && is_numeric($r) && $r > 0) {
+            $page = $pageNumber - 1;
         }
 
         $posts = (new Posts())->findBy([

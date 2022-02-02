@@ -36,7 +36,7 @@
                         </div>
 
                         <div>
-                            <a href="/reset-password">Mot de passe oubliée</a>
+                            <a href="/reset-password">Mot de passe oublié</a>
                         </div>
 
                         <div class="d-flex justify-content-end">

@@ -1,3 +1,6 @@
+<?php
+    $pagination = false;
+?>
 <!-- Header -->
 <?php include "../template/components/header.php"; ?>
 
@@ -25,7 +28,7 @@
                                     <div class="mb-1 blog-post-meta">
                                         <?= $post->getCreatedAt()->format('d/m/Y')?>
                                     </div>
-                                    <p class="card-text mb-auto"><?= $post->getHeader(); ?></p>
+                                    <p class="card-text mb-auto"><?= $post->getHeader() ?></p>
                                 </a>
                             </article>
                         </div>
@@ -35,6 +38,13 @@
         <?php endif; ?>
     </div>
 
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="pb-4 mb-4 fst-italic border-bottom-custom">
+                Les derniers articles
+            </h2>
+        </div>
+    </div>
     <?php include "../template/components/allPosts.php" ?>
 
     <?php include "../template/components/contactForm.php" ?>

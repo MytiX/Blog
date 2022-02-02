@@ -37,7 +37,7 @@
                     <?php foreach ($comments as $comment):?>
 
                         <div class="comment border-rounded my-3 p-3">
-                            <p class="mb-0"><?= htmlspecialchars($comment->getContent()) ?></p>
+                            <p class="mb-0"><?= $comment->getContent() ?></p>
                             <p class="text-end mb-0"><?= $comment->getUser()->getPseudo() ?></p>
                         </div>
 

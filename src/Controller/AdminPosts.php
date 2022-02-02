@@ -107,8 +107,8 @@ class AdminPosts extends AbstractController
 
             $date = (new DateTime())->format('Y-m-d H:i:s');
 
-            $post->setTitle($formData['title']);
-            $post->setHeader($formData['header']);
+            $post->setTitle(htmlspecialchars($formData['title']));
+            $post->setHeader(htmlspecialchars($formData['header']));
             $post->setSlug($formData['slug']);
             $post->setContent($formData['content']);
             $post->setAuthor($user['id']);
@@ -165,8 +165,8 @@ class AdminPosts extends AbstractController
 
             $date = (new DateTime())->format('Y-m-d H:i:s');
 
-            $post->setTitle($formData['title']);
-            $post->setHeader($formData['header']);
+            $post->setTitle(htmlspecialchars($formData['title']));
+            $post->setHeader(htmlspecialchars($formData['header']));
             $post->setSlug($formData['slug']);
             $post->setContent($formData['content']);
             $post->setAuthor($user['id']);

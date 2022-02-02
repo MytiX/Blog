@@ -42,10 +42,8 @@
 
             <div class="nav-scroller py-1 mb-2 border-bottom-custom">
                 <nav class="nav d-flex justify-content-center">
-                    <a class="p-2 link-secondary" href="#">PHP</a>
-                    <a class="p-2 link-secondary" href="#">Symfony</a>
-                    <a class="p-2 link-secondary" href="#">GIT</a>
-                    <a class="p-2 link-secondary" href="#">HTML/CSS</a>
+                    <a class="p-2 link-secondary" href="/">Accueil</a>
+                    <a class="p-2 link-secondary" href="/all-post?page=1">Tous les articles</a>
                 </nav>
             </div>
 

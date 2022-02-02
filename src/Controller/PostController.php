@@ -14,25 +14,13 @@ use DateTime;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class BlogController extends AbstractController
+class PostController extends AbstractController
 {
     private Session $session;
 
     public function __construct()
     {
         $this->session = $this->getSession();
-    }
-
-    public function viewAllPosts(): Response
-    {
-        // echo 'View All Posts';
-        // Tous les requis pour la page d'affichage de tous les blogs posts
-
-        // Le titre ;
-        // La date de dernière modification ;
-        // Le châpo ;
-        // Lien vers le blog post.
-        return $this->render('/home/home.php');
     }
 
     #[Route('/blog/{slug}-{id}')]

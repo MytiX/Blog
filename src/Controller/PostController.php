@@ -24,7 +24,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/blog/{slug}-{id}')]
-    public function viewPost(string $slug, int $id): Response
+    public function viewPost(int $id): Response
     {
         if (null === ($post = (new Posts())->find($id))) {
             return new RedirectResponse(AppConfig::URL);

@@ -22,7 +22,7 @@
                     <div class="row g-0 border-rounded flex-md-row mb-4 shadow-custom h-md-250">
                         <div class="col p-4 d-flex flex-column position-static">
                             <article>
-                                <strong class="d-inline-block mb-2 text-primary">PHP</strong>
+                                <strong class="d-inline-block mb-2 text-primary">TOP</strong>
                                 <a href="/blog/<?= $post->getSlug() . '-' . $post->getId()  ?>" class="a-custom">
                                     <h2 class="mb-0 blog-post-title"><?= $post->getTitle() ?></h2>
                                     <div class="mb-1 blog-post-meta">

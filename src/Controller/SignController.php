@@ -65,7 +65,7 @@ class SignController extends AbstractController
 
                         $mailer->sendMail('Confirmer votre compte DevCoding', $user->getEmail(), $message);
 
-                        $session->set('globalSuccess', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail.');
+                        $session->set('successFlash', 'Votre compte à bien été crée, veuillez confirmer votre adresse mail.');
 
                         return new RedirectResponse(AppConfig::URL.'/signin');
                     } else {
@@ -103,7 +103,9 @@ class SignController extends AbstractController
             }
         }
 
-        return $this->render('/sign/signIn.php');
+        return $this->render('/sign/signIn.php', [
+            'formValue' => $form->getData(),
+        ]);
     }
 
     #[Route('/logout')]

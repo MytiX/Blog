@@ -43,7 +43,7 @@ class ValidateAccount extends AbstractController
             $user->save();
         }
 
-        $session->set('successFlash', 'Votre compte est maintenant activé');
+        $session->set('successFlash', 'Votre compte est maintenant activé.');
 
         return new RedirectResponse(AppConfig::URL.'/signin');
     }

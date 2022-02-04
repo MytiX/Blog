@@ -21,7 +21,7 @@
                     <form action="/signin" method="post" class="pb-4">
                         <div class="form-group pb-2">
                             <label for="emailInput">Votre email :</label>
-                            <input type="email" class="form-control mt-2" id="emailInput" name="emailInput" value="" required>
+                            <input type="email" class="form-control mt-2" id="emailInput" name="emailInput" value="<?= (!empty($formValue['emailInput'])) ? $formValue['emailInput'] : '';?>" required>
                             <?php if (!empty($errorFlash = $session->flash('emailInput'))):?>
                                 <small class="text-danger"><?= $errorFlash ?></small>
                             <?php endif; ?>

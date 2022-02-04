@@ -172,7 +172,7 @@ abstract class ActiveRecord
      * @param  mixed $results
      * @return null
      */
-    private function mapping(?array $results): null|array
+    private function mapping($results): null|array
     {
         if (empty($results)) {
             return null;
@@ -193,7 +193,7 @@ abstract class ActiveRecord
      * @param  mixed $result
      * @return null|array
      */
-    private function mappingResult(?array $result): null|object
+    private function mappingResult($result): null|object
     {
         if (empty($result)) {
             return null;

@@ -1,7 +1,7 @@
 <form action="" method="post" class="pb-4" enctype="multipart/form-data">
     <div class="form-group pb-2">
         <label for="title">Titre de l'article</label>
-        <input type="text" class="form-control mt-2" id="title" name="title" value="<?php if(!empty($post['title'])) { echo($post['title']); } ?>">
+        <input type="text" class="form-control mt-2" id="title" name="title" value="<?php if(!empty($post['title'])) { echo($post['title']); } ?>" required>
         <?php if (!empty($errorFlash = $session->flash('title'))):?>
             <small class="text-danger"><?= $errorFlash ?></small>
         <?php endif; ?>
@@ -9,7 +9,7 @@
 
     <div class="form-group pb-2">
         <label for="header">Texte d'accroche</label>
-        <input type="text" class="form-control mt-2" id="header" name="header" value="<?php if(!empty($post['header'])) { echo($post['header']); } ?>">
+        <input type="text" class="form-control mt-2" id="header" name="header" value="<?php if(!empty($post['header'])) { echo($post['header']); } ?>" required>
         <?php if (!empty($errorFlash = $session->flash('header'))):?>
             <small class="text-danger"><?= $errorFlash ?></small>
         <?php endif; ?>
@@ -17,7 +17,7 @@
 
     <div class="form-group pb-2">
         <label for="slug">Slug</label>
-        <input type="text" class="form-control mt-2" id="slug" name="slug" value="<?php if(!empty($post['slug'])) { echo($post['slug']); } ?>">
+        <input type="text" class="form-control mt-2" id="slug" name="slug" value="<?php if(!empty($post['slug'])) { echo($post['slug']); } ?>" required>
         <?php if (!empty($errorFlash = $session->flash('slug'))):?>
             <small class="text-danger"><?= $errorFlash ?></small>
         <?php endif; ?>

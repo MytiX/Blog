@@ -13,7 +13,16 @@ class Mailer
         $this->mailer = new \Swift_Mailer(new \Swift_SmtpTransport(MailerConfig::HOST_MAILER, MailerConfig::PORT_MAILER));
     }
 
-    public function sendMail(string $subject, string|array $to, string $message, array $additionnalHeader = []): bool
+    /**
+     * sendMail
+     * 
+     * @param  string $subject
+     * @param  string|array $to
+     * @param  string $message
+     * @param  array $additionnalHeader
+     * @return int
+     */
+    public function sendMail(string $subject, string|array $to, string $message, array $additionnalHeader = []): int
     {
         if (false === is_array($to)) {
             $to = [$to];

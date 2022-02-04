@@ -45,7 +45,7 @@
                         <?php endforeach;?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5">Pas d'articles</td>
+                            <td colspan="9">Pas d'articles</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

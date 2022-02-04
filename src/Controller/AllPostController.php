@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Core\Route\Route;
 use App\Core\Controller\AbstractController;
+use App\Core\Route\Route;
 use App\Entity\Posts;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,12 +24,12 @@ class AllPostController extends AbstractController
 
         $posts = (new Posts())->findBy([
             'params' => [
-                'active' => 1
+                'active' => 1,
             ],
             'limit' => $limit + 1,
             'offset' => $page * $limit,
             'orderBy' => [
-                'id DESC'
+                'id DESC',
             ],
         ]);
 
@@ -45,4 +45,3 @@ class AllPostController extends AbstractController
         ]);
     }
 }
-

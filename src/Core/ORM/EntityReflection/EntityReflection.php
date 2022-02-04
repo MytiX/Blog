@@ -20,6 +20,11 @@ class EntityReflection
         $this->instance = $instance;
     }
 
+    /**
+     * persistEntity
+     * Persist Data of entity in array
+     * @return void
+     */
     public function persistEntity(): void
     {
         foreach ($this->reflection->getProperties() as $propertie) {
@@ -51,32 +56,65 @@ class EntityReflection
         }
     }
 
-    public function getEntityName()
+    /**
+     * getEntityName
+     * Get name class of the entity
+     * @return string
+     */
+    public function getEntityName(): string
     {
         return $this->reflection->getName();
     }
 
-    private function setIdColumn(string $column)
+    /**
+     * setIdColumn
+     * Set name of the unique column
+     * @param  string $column
+     * @return void
+     */
+    private function setIdColumn(string $column): void
     {
         $this->uniqueColumn = $column;
     }
 
-    public function getIdColumn()
+    /**
+     * getIdColumn
+     * Return value of index column
+     * @return string
+     */
+    public function getIdColumn(): string
     {
         return $this->uniqueColumn;
     }
 
-    private function setAutoIncrementKey(string $column)
+    /**
+     * setAutoIncrementKey
+     * Set name of the autoIncrement column
+     * @param  string $column
+     * @return void
+     */
+    private function setAutoIncrementKey(string $column): void
     {
         $this->autoIncrement = $column;
     }
 
-    public function getAutoIncrementKey()
+    /**
+     * getAutoIncrementKey
+     * Return name of AutoIncrementKey column
+     * @return string
+     */
+    public function getAutoIncrementKey(): string
     {
         return $this->autoIncrement;
     }
 
-    private function formatKeyName($columnsName)
+    /**
+     * formatKeyName
+     * Formate key name ex : createdAt = [':created_at']
+     * @param  string $columnsName
+     * @return string
+     */
+    private function formatKeyName($columnsName): string
     {
         $parts = preg_split('/(?=[A-Z])/', $columnsName);
 
@@ -87,17 +125,35 @@ class EntityReflection
         return ':'.$columnsName;
     }
 
-    private function setColumnsWithValues(string $column, mixed $value)
+    /**
+     * setColumnsWithValues
+     * Set value and key in array [':created_at'] => '29/06/1995'
+     * @param  string $column
+     * @param  mixed $value
+     * @return void
+     */
+    private function setColumnsWithValues(string $column, mixed $value): void
     {
         $this->columnsWithValues[$column] = $value;
     }
 
-    public function getColumnsWithValues()
+    /**
+     * getColumnsWithValues
+     *
+     * @return array
+     */
+    public function getColumnsWithValues(): array
     {
         return $this->columnsWithValues;
     }
 
-    public function formatFunctionName(string $columnName)
+    /**
+     * formatFunctionName
+     * Convert name of column to name of function
+     * @param  mixed $columnName
+     * @return string
+     */
+    public function formatFunctionName(string $columnName): string
     {
         $functionName = '';
 

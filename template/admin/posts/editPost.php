@@ -4,7 +4,7 @@
 <main class="container">
     <?php if(!empty($post['image']) && is_string($post['image'])): ?>
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-lg-8">
                 <p class="my-2">Photo de présentation</p>
                 <img src="../../../uploads/img/<?= $post['image'] ?>" alt="" class="img-fluid">
             </div>

@@ -2,15 +2,14 @@
 
 namespace App\Security\Authentication;
 
-use DateTime;
-use App\Entity\Users;
-use Config\AppConfig;
 use App\Core\Mailer\Mailer;
 use App\Core\Session\Session;
-use App\Entity\AttemptConnection;
 use App\Core\Templating\Templating;
+use App\Entity\AttemptConnection;
+use App\Entity\Users;
+use Config\AppConfig;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
-use App\Security\Authentication\Exception\AuthenticationException;
 
 class Authentication
 {
@@ -54,16 +53,16 @@ class Authentication
         if ($attempt->getAttempt() >= $this->maxAttempt && $now->getTimestamp() - $attempt->getAttemptAt()->getTimestamp() < $this->timeout) {
             $timeoutInterval = (new DateTime())->setTimestamp($attempt->getAttemptAt()->getTimestamp() + $this->timeout);
             $this->session->set('errorFlash', 'Votre session à été bloquer pour une durée de 15 min. </br> Temps restant : '.$now->diff($timeoutInterval)->format('%i min %s sec'));
+
             return false;
         }
-
-        // Contrôle les données de l'utilisateur
 
         if (null === ($user = $this->getUser($credentials))) {
             $attempt->setAttempt($attempt->getAttempt() + 1);
             $attempt->setAttemptAt($now->format('Y-m-d H:i:s'));
             $attempt->save();
             $this->session->set('errorFlash', 'Votre mot de passe ou email est incorrect, tentative restante : '.($this->maxAttempt - $attempt->getAttempt()));
+
             return false;
         }
 
@@ -86,7 +85,6 @@ class Authentication
 
         $attempt->delete($attempt->getId());
 
-        // mise en session de l'utilisateur
         $this->session->set(AppConfig::USER_SESSION, [
             'id' => $user->getId(),
             'pseudo' => $user->getPseudo(),

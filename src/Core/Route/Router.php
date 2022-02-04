@@ -13,12 +13,17 @@ class Router
 
     public const DELIMITER = '/';
 
-    public function __construct(array $controllers)
+    public function __construct(array $controllers, Request $request)
     {
         $this->controllers = $controllers;
-        $this->request = Request::createFromGlobals();
+        $this->request = $request;
     }
 
+    /**
+     * getRoute
+     * Iterate through all attributes of each class and return a Route if he find a good controller
+     * @return Route
+     */
     public function getRoute(): ?Route
     {
         foreach ($this->controllers as $fichier) {
@@ -63,6 +68,12 @@ class Router
         return null;
     }
 
+    /**
+     * getParamsRegex
+     * Extract params in URL ex : /blog/post/1 = /blog/post/{id}
+     * @param  mixed $route
+     * @return string
+     */
     private function getParamsRegex(Route $route): ?string
     {
         if (preg_match_all('/{[a-zA-Z0-9-]+}/', $route->getPath(), $matches)) {
@@ -83,6 +94,12 @@ class Router
         return null;
     }
 
+    /**
+     * cleanMatches
+     *
+     * @param  mixed $matches
+     * @return array
+     */
     private function cleanMatches(array $matches): array
     {
         foreach ($matches as $matche => $value) {

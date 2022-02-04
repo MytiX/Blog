@@ -4,7 +4,7 @@
 <main class="container">
 
     <div class="row g-5">
-        <div class="col-md-8">
+        <div class="col-12 col-lg-8">
             <article class="blog-post">
 
             <div class="d-flex justify-content-between">
@@ -19,6 +19,8 @@
                 <h2 class="pb-4 fst-italic blog-post-title">
                     <?= $post->getTitle() ?>
                 </h2>
+
+                <p><?= $post->getHeader() ?></p>
 
                 <img src="../uploads/img/<?= $post->getImage() ?>" alt="" class="img-fluid pb-3">
 

@@ -25,7 +25,14 @@ class UploadImage
         $this->files = $request->files;
     }
 
-    public function isValid(string $key, bool $nullable = false)
+    /**
+     * isValid
+     *
+     * @param  string $key
+     * @param  bool $nullable
+     * @return mixed
+     */
+    public function isValid(string $key, bool $nullable = false): mixed
     {
         if (!array_key_exists($key, $this->files->all())) {
             throw new UploadsException("The key = $key, does not exist", 500);
@@ -69,7 +76,14 @@ class UploadImage
         return $this;
     }
 
-    public function uploadFile(string $key, string $name = null)
+    /**
+     * uploadFile
+     * Upload file on server
+     * @param  string $key
+     * @param  string $name
+     * @return void
+     */
+    public function uploadFile(string $key, string $name = null): void
     {
         $file = $this->files->get($key);
 
@@ -82,36 +96,72 @@ class UploadImage
         $file->move($this->getPathDestination(), $this->getFilename());
     }
 
+    /**
+     * getPathDestination
+     *
+     * @return string
+     */
     private function getPathDestination(): string
     {
         return UploadsConfig::IMAGE_PATH;
     }
 
+    /**
+     * getMimetypeAllowed
+     *
+     * @return array
+     */
     private function getMimetypeAllowed(): array
     {
         return UploadsConfig::MIMETYPE_ALLOWED;
     }
 
+    /**
+     * getAllowedUpload
+     *
+     * @return array
+     */
     private function getAllowedUpload(): array
     {
         return UploadsConfig::EXTENSION_ALLOWED;
     }
 
+    /**
+     * getMaxSizeUpload
+     *
+     * @return int
+     */
     private function getMaxSizeUpload(): int
     {
         return UploadsConfig::MAX_SIZE_IMAGE;
     }
 
+    /**
+     * getMinSizeUpload
+     *
+     * @return int
+     */
     private function getMinSizeUpload(): int
     {
         return UploadsConfig::MIN_SIZE_IMAGE;
     }
 
-    private function setFilename(string $name)
+    /**
+     * setFilename
+     *
+     * @param  mixed $name
+     * @return void
+     */
+    private function setFilename(string $name): void
     {
         $this->filename = $name;
     }
 
+    /**
+     * getFilename
+     *
+     * @return string
+     */
     public function getFilename(): string
     {
         return $this->filename;

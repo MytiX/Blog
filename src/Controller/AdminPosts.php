@@ -20,19 +20,21 @@ class AdminPosts extends AbstractController
     {
         $posts = (new Posts())->findAll();
 
-        foreach ($posts as $post) {
-            $comments = (new Comments())->findBy([
-                'params' => [
-                    'active' => 0,
-                    'id_post' => $post->getId(),
-                ],
-            ]);
+        if (null !== $posts) {
+            foreach ($posts as $post) {
+                $comments = (new Comments())->findBy([
+                    'params' => [
+                        'active' => 0,
+                        'id_post' => $post->getId(),
+                    ],
+                ]);
 
-            if (null === $comments) {
-                continue;
+                if (null === $comments) {
+                    continue;
+                }
+
+                $post->setComments($comments);
             }
-
-            $post->setComments($comments);
         }
 
         return $this->render('/admin/posts/allPosts.php', [

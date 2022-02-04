@@ -2,8 +2,8 @@
 
 namespace App\Security\Authorization;
 
-use Config\AppConfig;
 use App\Core\Session\Session;
+use Config\AppConfig;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Authorization
@@ -22,8 +22,10 @@ class Authorization
 
         if (!in_array($user['role'], $roles)) {
             $session->set('accessDenied', 'Accès non autorisée');
+
             return new RedirectResponse(AppConfig::URL);
         }
+
         return true;
     }
 }

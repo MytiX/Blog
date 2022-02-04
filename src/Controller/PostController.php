@@ -62,8 +62,8 @@ class PostController extends AbstractController
                 'active' => 1,
             ],
             'orderBy' => [
-                'created_at ASC'
-            ]
+                'created_at ASC',
+            ],
         ]);
 
         if ($comments) {

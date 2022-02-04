@@ -2,18 +2,18 @@
 
 namespace App\Controller;
 
-use DateTime;
-use App\Entity\Users;
-use Config\AppConfig;
-use App\Core\Route\Route;
-use App\Core\Mailer\Mailer;
-use App\Core\Templating\Templating;
 use App\Core\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
+use App\Core\Mailer\Mailer;
+use App\Core\Route\Route;
+use App\Core\Templating\Templating;
+use App\Entity\Users;
 use App\Security\Form\EmailResetPasswordFormSecurity;
 use App\Security\Form\NewPasswordFormSecurity;
+use Config\AppConfig;
 use DateInterval;
+use DateTime;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResetPasswordController extends AbstractController
 {
@@ -73,6 +73,7 @@ class ResetPasswordController extends AbstractController
 
         if (empty($email) || empty($code) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $session->set('errorFlash', 'Une erreur est survenue lors de la procédure réinitialisation de votre mot de passe, veuillez refaire la demande de réinitialisation.');
+
             return new RedirectResponse(AppConfig::URL.'/reset-password');
         }
 
@@ -85,6 +86,7 @@ class ResetPasswordController extends AbstractController
 
         if (null === $user) {
             $session->set('errorFlash', 'Une erreur est survenue lors de la procédure réinitialisation de votre mot de passe, veuillez refaire la demande de réinitialisation.');
+
             return new RedirectResponse(AppConfig::URL.'/reset-password');
         }
 
@@ -92,6 +94,7 @@ class ResetPasswordController extends AbstractController
 
         if ($user->getResetPassCreatedAt() < $now || $code !== $user->getResetPassCode()) {
             $session->set('errorFlash', 'Votre code n\'est plus valide, veuillez refaire la demande de réinitialisation.');
+
             return new RedirectResponse(AppConfig::URL.'/reset-password');
         }
 
@@ -103,8 +106,8 @@ class ResetPasswordController extends AbstractController
                 $user->setPassword(sha1($data['passwordInput']));
                 $user->save();
                 $session->set('successFlash', 'Votre mot de passe à bien été réinitialisé.');
-                return new RedirectResponse(AppConfig::URL.'/signin');
 
+                return new RedirectResponse(AppConfig::URL.'/signin');
             }
             $session->set('errorFlash', 'Vous avez saisi 2 mots de passe différents, veuillez saisir le même mot de passe dans les 2 champs.');
         }

@@ -18,7 +18,13 @@ class EntityAttribute
         $this->setAttribute($attributes);
     }
 
-    private function setAttribute($attributes)
+    /**
+     * setAttribute
+     * Override the value of attributes params
+     * @param  array $attributes
+     * @return void
+     */
+    private function setAttribute(array $attributes): void
     {
         if (!empty($attributes)) {
             foreach ($attributes as $key => $value) {
@@ -29,6 +35,11 @@ class EntityAttribute
         }
     }
 
+    /**
+     * ignoreEntity
+     * Used to change the comportement in EntityReflection
+     * @return bool
+     */
     public function ignoreEntity(): bool
     {
         if (in_array('Ignore', $this->attributes)) {
@@ -36,6 +47,11 @@ class EntityAttribute
         }
     }
 
+    /**
+     * isAutoIncrement
+     * Used to change the comportement in EntityReflection
+     * @return bool
+     */
     public function isAutoIncrement(): bool
     {
         if (in_array('AutoIncrement', $this->attributes)) {
@@ -43,6 +59,11 @@ class EntityAttribute
         }
     }
 
+    /**
+     * isId
+     * Used to change the comportement in EntityReflection
+     * @return bool
+     */
     public function isId(): bool
     {
         if (in_array('Id', $this->attributes)) {

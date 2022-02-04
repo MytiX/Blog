@@ -28,17 +28,32 @@ abstract class FormSecurity implements FormSecurityInterface
         $this->setRequestParams();
     }
 
+    /**
+     * setRequestParams
+     * Merge array POST and FILES ans set requestParams
+     * @return void
+     */
     private function setRequestParams(): void
     {
         $this->requestParams = array_merge($this->request->request->all(), $this->request->files->all());
     }
 
+    /**
+     * getRequestParams
+     * Get POST and FILES array
+     * @return array
+     */
     private function getRequestParams(): array
     {
         return $this->requestParams;
     }
 
-    public function isSubmit()
+    /**
+     * isSubmit
+     * Check if the form is Submit method POST
+     * @return bool
+     */
+    public function isSubmit(): bool
     {
         if ('POST' === $this->request->getMethod()) {
             return true;
@@ -47,7 +62,12 @@ abstract class FormSecurity implements FormSecurityInterface
         return false;
     }
 
-    public function isValid()
+    /**
+     * isValid
+     * Check if the value submit is Valid
+     * @return bool
+     */
+    public function isValid(): bool
     {
         $error = false;
 
@@ -112,26 +132,46 @@ abstract class FormSecurity implements FormSecurityInterface
         return true;
     }
 
-    public function setMessages($key, $message): void
+    /**
+     * setMessages
+     * Set message error in Session
+     * @param  string $key
+     * @param  string $message
+     * @return void
+     */
+    public function setMessages(string $key, string $message): void
     {
         $this->session->set($key, $message);
     }
 
+    /**
+     * getData
+     * Used in Controller for the view and data Entity
+     * @return array
+     */
     public function getData()
     {
         return $this->getRequestParams();
     }
 
-    public function setData(string $key, mixed $value): void
-    {
-        $this->requestParams[$key] = $value;
-    }
-
+    /**
+     * clearData
+     * Clear array requestParams (POST and FILES)
+     * @return void
+     */
     public function clearData(): void
     {
         $this->requestParams = [];
     }
 
+    /**
+     * setConfigInput
+     * Override the Form config
+     * @param  string $nameInput
+     * @param  string $key
+     * @param  mixed $value
+     * @return void
+     */
     public function setConfigInput(string $nameInput, string $key, mixed $value): void
     {
         if (!array_key_exists($nameInput, $this->configInput) && !array_key_exists($key, $this->configInput[$nameInput])) {

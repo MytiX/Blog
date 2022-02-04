@@ -29,7 +29,7 @@ class Application
 
             unset($controllers[0], $controllers[1]);
 
-            $this->router = new Router($controllers);
+            $this->router = new Router($controllers, $this->request);
 
             if (($route = $this->router->getRoute()) === null) {
                 throw new RouteMatchException('Page not found', 404);

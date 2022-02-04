@@ -17,7 +17,14 @@ class Templating
         $this->error = new ErrorController();
     }
 
-    public function getView(string $file, array $args = [])
+    /**
+     * getView
+     * Return the HTML template 
+     * @param  string $file
+     * @param  array $args
+     * @return string
+     */
+    public function getView(string $file, array $args = []): string
     {
         if (!file_exists($this->configTemplate['path'].$file)) {
             throw new TemplatingException(sprintf('Incorrect file path : %s', $this->configTemplate['path'].$file), 500);

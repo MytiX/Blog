@@ -32,6 +32,11 @@ class PDOConnection
         );
     }
 
+    /**
+     * getConnection
+     * Initialisation connection on database
+     * @return self
+     */
     public static function getConnection(): self
     {
         if (null === self::$_instance) {
@@ -41,6 +46,13 @@ class PDOConnection
         return self::$_instance;
     }
 
+    /**
+     * __call
+     * Execute function of PDO
+     * @param  mixed $name
+     * @param  mixed $arguments
+     * @return void
+     */
     public function __call(string $name, array $arguments)
     {
         return call_user_func_array([$this->connection, $name], $arguments);

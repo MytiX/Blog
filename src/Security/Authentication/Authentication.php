@@ -57,8 +57,6 @@ class Authentication
             return false;
         }
 
-        // Contrôle les données de l'utilisateur
-
         if (null === ($user = $this->getUser($credentials))) {
             $attempt->setAttempt($attempt->getAttempt() + 1);
             $attempt->setAttemptAt($now->format('Y-m-d H:i:s'));
@@ -87,7 +85,6 @@ class Authentication
 
         $attempt->delete($attempt->getId());
 
-        // mise en session de l'utilisateur
         $this->session->set(AppConfig::USER_SESSION, [
             'id' => $user->getId(),
             'pseudo' => $user->getPseudo(),

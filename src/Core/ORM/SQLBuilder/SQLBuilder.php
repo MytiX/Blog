@@ -23,11 +23,21 @@ class SQLBuilder
         $this->instance = $instance;
     }
 
+    /**
+     * getTable
+     * Get table name
+     * @return string
+     */
     public function getTable(): string
     {
         return $this->table;
     }
 
+    /**
+     * setTable
+     * Formate table name
+     * @return void
+     */
     private function setTable(): void
     {
         if (empty($this->table)) {
@@ -39,6 +49,12 @@ class SQLBuilder
         }
     }
 
+    /**
+     * buildSQLSelect
+     * Create SELECT SQL request
+     * @param  mixed $idOrParams
+     * @return string
+     */
     public function buildSQLSelect(mixed $idOrParams = null): string
     {
         $sql = "SELECT * FROM {$this->getTable()}";
@@ -69,7 +85,12 @@ class SQLBuilder
         return $sql;
     }
 
-    public function buildSQLInsert()
+    /**
+     * buildSQLInsert
+     * Create INSERT SQL request
+     * @return string
+     */
+    public function buildSQLInsert(): string
     {
         $columnsString = '';
         $valuesString = '';
@@ -93,7 +114,12 @@ class SQLBuilder
         return $sql;
     }
 
-    public function buildSQLUpdate()
+    /**
+     * buildSQLUpdate
+     * Create UPDATE SQL request
+     * @return string
+     */
+    public function buildSQLUpdate(): string
     {
         $this->entityReflection->persistEntity();
 
@@ -116,7 +142,12 @@ class SQLBuilder
         return $sql;
     }
 
-    public function buildSQLDelete()
+    /**
+     * buildSQLDelete
+     * Create DELETE SQL request
+     * @return string
+     */
+    public function buildSQLDelete(): string
     {
         $this->entityReflection->persistEntity();
 
@@ -131,7 +162,13 @@ class SQLBuilder
         return $sql;
     }
 
-    public function buildSQLWhere($idOrParams)
+    /**
+     * buildSQLWhere
+     * Create WHERE SQL request
+     * @param  mixed $idOrParams
+     * @return string
+     */
+    public function buildSQLWhere($idOrParams): string
     {
         $where = ' WHERE ';
 
@@ -171,7 +208,13 @@ class SQLBuilder
         throw new SQLBuilderException('An error occurred while generating the where condition, with the values. </br>'.__FILE__, 500);
     }
 
-    private function buildSQLOrderBy(array $paramsOrder)
+    /**
+     * buildSQLOrderBy
+     * Create ORDER BY SQL request
+     * @param  array $paramsOrder
+     * @return string
+     */
+    private function buildSQLOrderBy(array $paramsOrder): string
     {
         $orderBy = ' ORDER BY ';
 
@@ -182,7 +225,14 @@ class SQLBuilder
         return substr($orderBy, 0, -2);
     }
 
-    private function buildSQLLimit(int $limit, int $offset = null)
+    /**
+     * buildSQLLimit
+     * Create LIMIT SQL request
+     * @param  int $limit
+     * @param  int $offset
+     * @return string
+     */
+    private function buildSQLLimit(int $limit, int $offset = null): string
     {
         $sql = ' LIMIT '.$limit;
 
@@ -193,11 +243,23 @@ class SQLBuilder
         return $sql;
     }
 
-    private function setWhereParams($key, $value)
+    /**
+     * setWhereParams
+     * Insert in array the value of WHERE SQL
+     * @param  mixed $key
+     * @param  mixed $value
+     * @return void
+     */
+    private function setWhereParams($key, $value): void
     {
         $this->whereParams[$key] = $value;
     }
 
+    /**
+     * getWhereParams
+     * Return a array of WHERE value
+     * @return array
+     */
     public function getWhereParams(): array
     {
         $whereParams = $this->whereParams;
@@ -206,6 +268,12 @@ class SQLBuilder
         return $whereParams;
     }
 
+    /**
+     * getParamsExecute
+     * Get All value present on SQL request to set array for prepare request
+     * @param  string $sql
+     * @return array
+     */
     public function getParamsExecute(string $sql): array
     {
         $params = [];

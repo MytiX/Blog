@@ -22,7 +22,12 @@ abstract class ActiveRecord
         $this->sqlBuilder = new SQLBuilder($this, $this->entityReflection);
     }
 
-    public function save()
+    /**
+     * save
+     * Insert or Update entity on database
+     * @return void
+     */
+    public function save(): void
     {
         $this->entityReflection->persistEntity();
 
@@ -41,7 +46,12 @@ abstract class ActiveRecord
         }
     }
 
-    public function findAll()
+    /**
+     * findAll
+     * Return All value of table and put the value on array of Entity or null
+     * @return array|null
+     */
+    public function findAll(): array|null
     {
         $sql = $this->sqlBuilder->buildSQLSelect();
 
@@ -52,7 +62,13 @@ abstract class ActiveRecord
         return $this->mapping($query->fetchAll());
     }
 
-    public function find(int $id)
+    /**
+     * find
+     * Find element by id, return null or object Entity
+     * @param  int $id
+     * @return null|object
+     */
+    public function find(int $id): null|object
     {
         $sql = $this->sqlBuilder->buildSQLSelect($id);
 
@@ -87,7 +103,13 @@ abstract class ActiveRecord
         return $this->mapping($query->fetchAll());
     }
 
-    public function findOneBy(array $idOrParams)
+    /**
+     * findOneBy
+     *
+     * @param  mixed $idOrParams
+     * @return null|object
+     */
+    public function findOneBy(array $idOrParams): null|object
     {
         $sql = $this->sqlBuilder->buildSQLSelect($idOrParams);
 
@@ -98,7 +120,12 @@ abstract class ActiveRecord
         return $this->mappingResult($query->fetch());
     }
 
-    private function insert()
+    /**
+     * insert
+     * Return the last id Insert in database
+     * @return int
+     */
+    private function insert(): int
     {
         $sql = $this->sqlBuilder->buildSQLInsert();
 
@@ -109,7 +136,12 @@ abstract class ActiveRecord
         return $this->db->lastInsertId();
     }
 
-    private function update()
+    /**
+     * update
+     *
+     * @return object Entity
+     */
+    private function update(): object
     {
         $sql = $this->sqlBuilder->buildSQLUpdate();
 
@@ -120,6 +152,11 @@ abstract class ActiveRecord
         return $this;
     }
 
+    /**
+     * delete
+     *
+     * @return void
+     */
     public function delete()
     {
         $sql = $this->sqlBuilder->buildSQLDelete();
@@ -129,7 +166,13 @@ abstract class ActiveRecord
         $query->execute($this->sqlBuilder->getParamsExecute($sql));
     }
 
-    private function mapping($results)
+    /**
+     * mapping
+     * Mapping return array of Entity object
+     * @param  mixed $results
+     * @return null
+     */
+    private function mapping(?array $results): null|array
     {
         if (empty($results)) {
             return null;
@@ -144,7 +187,13 @@ abstract class ActiveRecord
         return $array;
     }
 
-    private function mappingResult($result)
+    /**
+     * mappingResult
+     * Return one Entity object
+     * @param  mixed $result
+     * @return null|array
+     */
+    private function mappingResult(?array $result): null|object
     {
         if (empty($result)) {
             return null;
